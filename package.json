@@ -1,0 +1,24 @@
+{
+  "name": "cs546a-fianl-project",
+  "version": "1.0.0",
+  "description": "CS546A-Final Project: Hosptial Management System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shih-Hao-Lo/CS546A-Fianl-Project.git"
+  },
+  "author": "Shih-Hao Lo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shih-Hao-Lo/CS546A-Fianl-Project/issues"
+  },
+  "homepage": "https://github.com/Shih-Hao-Lo/CS546A-Fianl-Project#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.2.2"
+  }
+}
