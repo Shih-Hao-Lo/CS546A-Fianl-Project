@@ -1,8 +1,9 @@
 const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const patient = mongoCollections.patient;
-const ObjectID = require('mongodb').ObjectID
+const ObjectID = require('mongodb').ObjectID;
 
+// Find patient by id. id is String or ObjectId.
 async function getbyid(id){
     if(id === undefined){
         throw 'input is empty';
@@ -12,23 +13,26 @@ async function getbyid(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/animals.get)'
+            throw 'Id is invalid!(in data/patient.getbyid)'
         }
     }
 
     const patientCollections = await patient();
     const target = await patientCollections.findOne({ _id: id });
-    if(target === null) throw 'Animal not found!';
+    if(target === null) throw 'Data not found!';
 
     return target;
 }
 
+// Return all patients in database.
 async function getAll(){
-    const animalsCollections = await animals();
-    const targets = await animalsCollections.find({}).toArray();
+    const patientCollections = await patient();
+    const targets = await patientCollections.find({}).toArray();
     return targets;
 }
 
+
+// Add new patient. newname , newgender , newdob , newusername , newpassword are string.
 async function addpatient(newname , newgender , newdob , newusername , newpassword){
     const patientCollections = await patient();
     let newpatient = {
@@ -45,7 +49,15 @@ async function addpatient(newname , newgender , newdob , newusername , newpasswo
     return await this.getbyid(InsertInfo.insertedId);
 }
 
-async function updatepatient(id , newname , newgender , newdob , newusername , newpassword){
+// Update patient. id is String or ObjectId.
+// data = {
+//     newname: String or undefined,
+//     newgender: String or undefined,
+//     newdob: String or undefined,
+//     newusername: String or undefined,
+//     newpassword: String or undefined
+// }
+async function updatepatient(id , ){
     if(id === undefined){
         throw 'input is empty';
     }
@@ -57,37 +69,37 @@ async function updatepatient(id , newname , newgender , newdob , newusername , n
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/animals.rename)'
+            throw 'Id is invalid!(in data/patient.updatepatient)'
         }
     }
 
     const patientCollections = await patient();
     const target = await this.getbyid(id);
 
-    if(newname === undefined){
-        newname = target.name;
+    if(data.newname === undefined){
+        data.newname = target.name;
     }
-    if(newgender === undefined){
-        newgender = target.gender;
+    if(data.newgender === undefined){
+        data.newgender = target.gender;
     }
-    if(newdob === undefined){
-        newdob = target.dob;
+    if(data.newdob === undefined){
+        data.newdob = target.dob;
     }
-    if(newusername === undefined){
-        newusername = target.username;
+    if(data.newusername === undefined){
+        data.newusername = target.username;
     }
-    if(newpassword === undefined){
-        newpassword = target.password;
+    if(data.newpassword === undefined){
+        data.newpassword = target.password;
     }
 
     let updatedata = {
         $set:{
             _id: id,
-            name: newname,
-            gender: newgender,
-            dob: newdob,
-            username: newusername,
-            password: newpassword 
+            name: data.newname,
+            gender: data.newgender,
+            dob: data.newdob,
+            username: data.newusername,
+            password: data.newpassword 
         }
     }
 
@@ -96,6 +108,7 @@ async function updatepatient(id , newname , newgender , newdob , newusername , n
     return await this.getbyid(id);
 }
 
+// Delete a patient. id is String or Objectid.
 async function delpatient(id){
     if(id === undefined){
         throw 'input is empty';
@@ -108,7 +121,7 @@ async function delpatient(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/animals.remove)'
+            throw 'Id is invalid!(in data/patient.delpaient)'
         }
     }
 
@@ -121,10 +134,21 @@ async function delpatient(id){
     return target;
 }
 
+// Patient sign in. return true if username matches password.
+async function patientsighin(pusername , ppassword){
+    const patientCollections = await patient();
+    const target = await patientCollections.findOne({ username: pusername });
+    if(target === null) throw 'Data not found!';
+
+    if(target.password === ppassword) return true;
+    else return false;
+}
+
 module.exports = {
     getbyid,
     getAll,
     addpatient,
     updatepatient,
-    delpatient
+    delpatient,
+    patientsighin
 }
