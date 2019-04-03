@@ -147,6 +147,21 @@ async function updateroom(id , newprice){
     return await this.getbyid(id);
 }
 
+//Delete room according to id. id is String or objectid.
+async function delroom(id){
+    if(id === undefined){
+        throw 'input is empty';
+    }
+    if(id.constructor != ObjectID){
+        if(ObjectID.isValid(id)){
+            id = new ObjectID(id);
+        }
+        else{
+            throw 'Id is invalid!(in data/doctor.getbyid)'
+        }
+    }
+}
+
 module.exports = {
     getAll,
     getbyid,
@@ -154,5 +169,6 @@ module.exports = {
     checkout,
     updateroom,
     addroom,
-    availableroom
+    availableroom,
+    delroom
 }

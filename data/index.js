@@ -1,9 +1,11 @@
 const patientData = require("./patient");
-// const animalData = require("./animals");
-// const likeData = require('./likes');
+const doctorData = require("./doctor");
+const roomData = require('./room');
+const medicineData = require('./medicine');
 
 module.exports = {
     patient: patientData,
-    // posts: postData,
-    // likes: likeData
+    doctor: doctorData,
+    room: roomData,
+    medicine: medicineData
 };
