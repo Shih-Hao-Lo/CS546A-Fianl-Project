@@ -4,6 +4,7 @@ const reservation = mongoCollections.reservation;
 const doctorf = require("./doctor");
 const patientf = require("./patient");
 const prescriptionf = require("./prescription");
+const roomf = require('./room');
 const ObjectID = require('mongodb').ObjectID;
 
 // Find reservation by id. id is a string or objectid.
@@ -37,7 +38,7 @@ async function getbypid(pid){
             pid = new ObjectID(pid);
         }
         else{
-            throw 'Id is invalid!(in data/reservation.getbyid)'
+            throw 'Id is invalid!(in data/reservation.getbypid)'
         }
     }
 
@@ -92,9 +93,9 @@ async function makereservation(pid , did , newdate){
     return await this.getbyid(insertinfo.insertedId);
 }
 
-// assign prescription.id = reservation._id ; pid = prescription._id(String or objectid)
+// assign prescription. id = reservation._id ; pid = prescription._id(String or objectid)
 async function assignprescription(id , pid){
-    if(id === undefined){
+    if(id === undefined || pid === undefined){
         throw 'input is empty';
     }
     if(id.constructor != ObjectID){
@@ -117,7 +118,7 @@ async function assignprescription(id , pid){
             roomid: target.roomid,
             days: target.days,
             prescriptionid: pid,
-            status: 'pending'
+            status: target.status
         }
 
     }
@@ -143,6 +144,7 @@ async function assignroom(id , rid , day){
         }
     }
 
+    const rtarget = await roomf.getbyid(rid).catch(e => { throw e });
     const reservationCollections = await reservation();
     const target = await this.getbyid(id);
     const data = {
@@ -153,13 +155,13 @@ async function assignroom(id , rid , day){
             roomid: rid,
             days: day,
             prescriptionid: target.prescriptionid,
-            status: 'pending'
+            status: target.status
         }
 
     }
 
-    const updatedata = await reservationCollections.update( { _id: id } , data);
-    if(updatedata.modifiedCount === 0) throw 'Update fail!';
+    const updateinfo = await reservationCollections.update( { _id: id } , data);
+    if(updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
 }
@@ -172,7 +174,7 @@ async function assignroom(id , rid , day){
 // arr1: ['Mon' , 'Tue' , 'Wed' , 'Thu' , 'Fri' , 'Sat' , 'Sun']
 // arr2: ['Morning' , 'Afternoon' , 'Night']
 async function modifyreservation(id , data){
-    if(id === undefined || pid === undefined || did === undefined){
+    if(id === undefined || data.did === undefined){
         throw 'input is empty';
     }
     if(id.constructor != ObjectID){
@@ -183,24 +185,16 @@ async function modifyreservation(id , data){
             throw 'Id is invalid!(in data/reservation.modifyreservation)'
         }
     }
-    if(pid.constructor != ObjectID){
-        if(ObjectID.isValid(pid)){
-            pid = new ObjectID(pid);
-        }
-        else{
-            throw 'Patient Id is invalid!(in data/reservation.modifyreservation)'
-        }
-    }
-    if(did.constructor != ObjectID){
-        if(ObjectID.isValid(did)){
-            id = new ObjectID(did);
+    if(data.did.constructor != ObjectID){
+        if(ObjectID.isValid(data.did)){
+            data.did = new ObjectID(data.did);
         }
         else{
             throw 'Doctor Id is invalid!(in data/reservation.modifyreservation)'
         }
     }
 
-    const ptarget = await doctorf.getbyid(data.did);
+    const dtarget = await doctorf.getbyid(data.did).catch(e => { throw e });
     const reservationCollections = await reservation();
     const target = this.getbyid(id).catch(e => { throw e });
 
