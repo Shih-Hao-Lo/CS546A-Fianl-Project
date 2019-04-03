@@ -55,7 +55,7 @@ async function updatespecialism(id , newspecialism , action){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/doctor.updatespecialism)'
         }
     }
     const doctorCollections = await doctor();
@@ -82,7 +82,7 @@ async function updateschedule(id , newschedule , action){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/doctor.updateschedule)'
         }
     }
     const doctorCollections = await doctor();
@@ -115,7 +115,7 @@ async function updatedoctor(id , data){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/patient.updatepatient)'
+            throw 'Id is invalid!(in data/patient.updatedoctor)'
         }
     }
 
@@ -161,7 +161,7 @@ async function deldoctor(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/patient.delpaient)'
+            throw 'Id is invalid!(in data/patient.deldoctor)'
         }
     }
 

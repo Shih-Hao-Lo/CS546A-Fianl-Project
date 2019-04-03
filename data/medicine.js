@@ -90,6 +90,7 @@ async function updatemedicine(id , data){
     return await this.getbyid(id);
 }
 
+// delete medicine. id: medicine._id(String or objectid)
 async function delmedicine(id){
     if(id === undefined){
         throw 'input is empty';
