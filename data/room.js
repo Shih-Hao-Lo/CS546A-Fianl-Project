@@ -13,7 +13,7 @@ async function getbyid(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/room.getbyid)'
         }
     }
 
@@ -63,7 +63,7 @@ async function checkin(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/room.checkin)'
         }
     }
 
@@ -94,7 +94,7 @@ async function checkout(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/room.checkout)'
         }
     }
 
@@ -126,7 +126,7 @@ async function updateroom(id , newprice){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/room.updateroom)'
         }
     }
 
@@ -157,9 +157,17 @@ async function delroom(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/doctor.getbyid)'
+            throw 'Id is invalid!(in data/room.delroom)'
         }
     }
+
+    const roomCollections = await room();
+    target = await this.getbyid(id);
+
+    const delinfo = await roomCollections.removeOne({ _id: id });
+    if(delinfo.deletedCount === 0) throw 'Can not delete id: ' + id;
+
+    return target;
 }
 
 module.exports = {
