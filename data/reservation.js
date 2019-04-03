@@ -93,7 +93,7 @@ async function makereservation(pid , did , newdate){
     return await this.getbyid(insertinfo.insertedId);
 }
 
-// assign prescription.id = reservation._id ; pid = prescription._id(String or objectid)
+// assign prescription. id = reservation._id ; pid = prescription._id(String or objectid)
 async function assignprescription(id , pid){
     if(id === undefined || pid === undefined){
         throw 'input is empty';
