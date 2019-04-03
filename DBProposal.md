@@ -50,9 +50,9 @@ Doctor collection will store a doctor's data. And allow doctors to make prescrip
 | _id | ObjectId | A globally unique identifier to represent the doctor |
 | name | String | The name of doctor |
 | specialism | Array[String] | An array of specialism for the doctor |
-| scheduls   | Array[String] | An array of doctor's schedule |
+| scheduls   | Array[{String , String}] | An array of doctor's schedule |
 | username | String | Doctort's username for login |
-| password | String | Doctor's username for login |
+| password | String | Doctor's password for login |
 
 ## Medicine
 
