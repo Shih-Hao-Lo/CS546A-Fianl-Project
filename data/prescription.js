@@ -45,7 +45,7 @@ async function addprescription(pid , did , medicinelist , date){
             pid = new ObjectID(pid);
         }
         else{
-            throw 'Id is invalid!(in data/prescription.getbyid)'
+            throw 'Patient Id is invalid!(in data/prescription.getbyid)'
         }
     }    
     if(did.constructor != ObjectID){
@@ -53,7 +53,7 @@ async function addprescription(pid , did , medicinelist , date){
             did = new ObjectID(did);
         }
         else{
-            throw 'Id is invalid!(in data/prescription.getbyid)'
+            throw 'Doctor Id is invalid!(in data/prescription.getbyid)'
         }
     }
     const dtarget = await doctorf.getbyid(did).catch(e => { throw e });

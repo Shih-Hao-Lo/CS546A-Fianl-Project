@@ -69,7 +69,7 @@ async function checkin(id){
 
     const roomCollections = await room();
     const target = await roomCollections.findOne({ _id: id });
-    if(target === null) throw 'Data not found!';
+    if(target === null) throw 'Room not found!';
     if(target.available === false) throw 'Room already occupied!';
     const data = {
         $set = {
@@ -100,7 +100,7 @@ async function checkout(id){
 
     const roomCollections = await room();
     const target = await roomCollections.findOne({ _id: id });
-    if(target === null) throw 'Data not found!';
+    if(target === null) throw 'Room not found!';
     if(target.available === true) throw 'Room already available!';
     
     const data = {
