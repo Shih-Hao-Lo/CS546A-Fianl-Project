@@ -19,7 +19,7 @@ async function getbyid(id){
 
     const doctorCollections = await doctor();
     const target = await doctorCollections.findOne({ _id: id });
-    if(target === null) throw 'Data not found!';
+    if(target === null) throw 'Doctor not found!';
 
     return target;
 }

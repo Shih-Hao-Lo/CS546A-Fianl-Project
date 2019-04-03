@@ -20,5 +20,7 @@ module.exports = {
   patient: getCollectionFn("patient"),
   doctor: getCollectionFn("doctor"),
   room: getCollectionFn("room"),
-  medicine: getCollectionFn("medicine")
+  medicine: getCollectionFn("medicine"),
+  prescription: getCollectionFn("prescription"),
+  reservation: getCollectionFn("reservation")
 };
