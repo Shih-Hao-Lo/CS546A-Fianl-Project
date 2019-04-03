@@ -57,7 +57,7 @@ async function addpatient(newname , newgender , newdob , newusername , newpasswo
 //     newusername: String or undefined,
 //     newpassword: String or undefined
 // }
-async function updatepatient(id , ){
+async function updatepatient(id , data){
     if(id === undefined){
         throw 'input is empty';
     }
