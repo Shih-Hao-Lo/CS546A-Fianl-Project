@@ -14,11 +14,11 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 
 ## Project Structure
 * Front-end
-* `view`
+`view`
 * Server
 `routes`
 * Database
-* `data`
+`data`
 
 ## Group members:
 * Shih-Hao Lo
