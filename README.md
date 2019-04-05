@@ -2,8 +2,6 @@
 
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 <br>
-<br>
-
 
 ## Features
 #### For Patients:
