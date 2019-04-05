@@ -1,9 +1,9 @@
-// const animalsRoutes = require("./animals");
+const patientsRoutes = require("./patients");
 // const postsRoutes = require("./posts");
 // const likeRouts = require("./likes");
 
 const constructorMethod = app => {
-//   app.use("/animals", animalsRoutes);
+  app.use("/patients", patientsRoutes);
 //   app.use("/posts", postsRoutes);
 //   app.use("/likes", likeRouts);
 
