@@ -13,11 +13,11 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 * Medicine purchasing
 
 ## Project Structure
-* Front-end
+* Front-end <br>
 `view`
-* Server
+* Server <br>
 `routes`
-* Database
+* Database <br>
 `data`
 
 ## Group members:
