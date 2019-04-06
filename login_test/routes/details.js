@@ -73,4 +73,14 @@ router.get("/", async (req, res) =>
     return;
 });
 
+router.use(function (err, req, res, next)
+{
+    if (err.name === 'UnauthorizedError')
+    {
+        res.render("error", { title: "error", error: "Please relogin to continue" });
+        return;
+    }
+});
+
+
 module.exports = router;

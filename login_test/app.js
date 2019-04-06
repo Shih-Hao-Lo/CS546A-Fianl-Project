@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser');
 const app = express();
 const static = express.static(__dirname + "/public");
-const token_check = require('./data/token_check');
 
 const configRoutes = require("./routes");
 const exphbs = require("express-handlebars");
@@ -11,11 +10,12 @@ const exphbs = require("express-handlebars");
 app.use("/public", static);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser())
-//app.use(token_check.verifyToken());
+app.use(cookieParser());
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+console.log("1");
 
 configRoutes(app);
 
