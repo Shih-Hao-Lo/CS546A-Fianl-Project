@@ -1,0 +1,63 @@
+body {
+    background-color: rgb(255, 213, 213);
+  }
+  
+.HomeTitle {
+    color: rgb(41, 25, 255);
+  }
+
+.HomeContent {
+    color: rgb(42, 114, 0);
+}
+
+.Subtitle {
+    color: rgb(0, 134, 141);
+}
+
+.error {
+    color: red;
+    font-family: verdana;
+    font-size: 20px;
+}
+
+.button {
+    background-color: rgb(0, 238, 255);
+    border: none;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    font-size: 30px;
+}
+
+input[type=text] {
+    padding: 12px 12px;
+    box-sizing: border-box;
+  }
+
+.HomeError {
+    color: red;
+    font-family: verdana;
+    font-size: 20px;
+}
+
+.lnkAll {
+    color: rgb(255, 38, 0);
+  }
+
+.return {
+    color: rgb(255, 0, 200);
+    font-size: 40px;
+}
+
+ul.stl {
+    list-style-type: circle;
+  }
+
+.dTitle {
+    color: rgb(0, 99, 8);
+    font-size: 20px;
+}
+
+.dDetail {
+    color: rgb(131, 9, 0);
+    font-size: 17px;
+}
