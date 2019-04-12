@@ -72,7 +72,7 @@ async function checkin(id){
     if(target === null) throw 'Room not found!';
     if(target.available === false) throw 'Room already occupied!';
     const data = {
-        $set = {
+        $set:{
             _id: id,
             price: target.price,
             available: false  
@@ -104,7 +104,7 @@ async function checkout(id){
     if(target.available === true) throw 'Room already available!';
     
     const data = {
-        $set = {
+        $set:{
             _id: id,
             price: target.price,
             available: true  
@@ -135,7 +135,7 @@ async function updateroom(id , newprice){
     if(target === null) throw 'Data not found!';
 
     const data = {
-        $set = {
+        $set:{
             _id: id,
             price: newprice,
             available: target.available  
