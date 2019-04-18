@@ -37,9 +37,15 @@ const constructorMethod = app => {
       console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
-      var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
-      req.session.user = user;
-      res.redirect('/dashboard');
+      try{
+        var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
+        req.session.user = user;
+        res.redirect('/dashboard');
+      }
+      catch(e){
+        res.json({ error: e });
+      }
+
       // res.render()
    }
   });
