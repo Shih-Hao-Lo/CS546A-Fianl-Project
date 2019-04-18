@@ -18,9 +18,10 @@ const getCollectionFn = collection => {
 /* Now, you can list your collections here: */
 module.exports = {
   patient: getCollectionFn("patient"),
-  doctor: getCollectionFn("doctor"),
-  room: getCollectionFn("room"),
-  medicine: getCollectionFn("medicine"),
+  doctors: getCollectionFn("doctors"),
+  rooms: getCollectionFn("rooms"),
+  medicines: getCollectionFn("medicines"),
   prescription: getCollectionFn("prescription"),
-  reservation: getCollectionFn("reservation")
+  reservations: getCollectionFn("reservations"),
+  users: getCollectionFn("users")
 };

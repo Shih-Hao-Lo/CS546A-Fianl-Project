@@ -1,6 +1,6 @@
 const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
-const room = mongoCollections.room;
+const rooms = mongoCollections.rooms;
 const ObjectID = require('mongodb').ObjectID;
 
 // Find room by id. id is a string or objectid.
@@ -17,7 +17,7 @@ async function getbyid(id){
         }
     }
 
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
     if(target === null) throw 'Room not found!';
 
@@ -26,14 +26,14 @@ async function getbyid(id){
 
 // Return all rooms in database.
 async function getAll(){
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const targets = await roomCollections.find({}).toArray();
     return targets;
 }
 
 //Return all rooms available.
 async function availableroom(){
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const targets = await roomCollections.find({ available: true }).toArray();
     if(targets.length === 0) throw 'No room available!';
     return targets;

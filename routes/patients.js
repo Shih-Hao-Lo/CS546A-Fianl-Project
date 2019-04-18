@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
 const patients = require("../data/patient");
 
 // GET http://localhost:3000/patients
@@ -93,6 +94,16 @@ router.delete("/", async(req, res) => {
         return;
     } catch (e) {
         return;
+=======
+const data = require("../data");
+
+router.get("/new" , async (req , res) =>{
+    try{
+        res.render("posts/newpatient" , {});
+    }
+    catch(e){
+        res.status(400).json({ error: e });
+>>>>>>> master
     }
 });
 
