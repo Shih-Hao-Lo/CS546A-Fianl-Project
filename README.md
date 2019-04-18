@@ -1,23 +1,29 @@
-# CS546A-Fianl-Project
-#### Stevens Institute of Technology
-#### CS 546 Web Programming
-A Hospital Managment System Web-App
+# CS546A Fianl Project
 
-## Web-App Detail Description
-Provide a platform for patient to make reservation and proceed checkout.
-For doctor, make a judge according to patients' condition
+A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
+<br>
 
 ## Features
-* Login
-* Make resevation
-* Checkout
-* Make prescription
+#### For Patients:
+* User Registration/Login
+* Doctor appointment booking
+* Prescription checkout
+#### For Doctors:
+* User Registration/Login
+* Prescription system
+* Medicine purchasing
 
-## Student ID , Name and Template URL
--  Members: 
-Shih-Hao Lo <br>
-Hao-Ping Lin <br>
-Naman Yadav <br>
-Yoseph Borai <br>
-Alessandro Gangemi <br>
--  URL: Under Construction...
+## Project Structure
+* Front-end <br>
+`./view`
+* Server <br>
+`./routes`
+* Database <br>
+`./data`
+
+## Group members:
+* Shih-Hao Lo
+* Hao-Ping Lin
+* Naman Yadav
+* Yoseph Borai
+* Alessandro Gangemi
