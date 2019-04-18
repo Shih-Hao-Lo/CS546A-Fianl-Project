@@ -1,3 +1,5 @@
 
 DDProposal.pdf
 *.pdf
+node_modules
+package-lock.json
