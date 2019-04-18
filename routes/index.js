@@ -4,7 +4,7 @@ const doctorData = require("../data/doctors");
 const reservationData = require("../data/reservations");
 const medicineData = require("../data/medicines");
 const roomData = require("../data/rooms");
-const errorPage = 'search/error';
+const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
 
 const constructorMethod = app => {
@@ -18,7 +18,7 @@ const constructorMethod = app => {
   app.get("/signup", (req, res) => {
     res.render("signup", {title: "People Finder"});
   });
-  app.post("/signup", (req, res) => {
+  app.post("/signup", async (req, res) => {
     if(!req.body.email || !req.body.password){
       res.status("400");
       res.send("Invalid details!");
@@ -37,7 +37,7 @@ const constructorMethod = app => {
       console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
-      var user = usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
+      var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
       req.session.user = user;
       res.redirect('/dashboard');
       // res.render()
