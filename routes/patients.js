@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
-const patients = require("../data/patient");
+const patients = require("../data/patients");
 
 // GET http://localhost:3000/patients
 router.get("/", async (req, res) => {
@@ -91,19 +90,8 @@ router.delete("/", async(req, res) => {
         const status = await patients.delpatient(patientId);
         res.status(200);
         res.json(status);
-        return;
     } catch (e) {
         return;
-=======
-const data = require("../data");
-
-router.get("/new" , async (req , res) =>{
-    try{
-        res.render("posts/newpatient" , {});
-    }
-    catch(e){
-        res.status(400).json({ error: e });
->>>>>>> master
     }
 });
 
