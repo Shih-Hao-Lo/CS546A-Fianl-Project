@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
 
 // DEL http://localhost:3000/doctors
 router.delete("/", async(req, res) => {
-    const data = req.body.doctorId;
+    const doctorId = req.body.doctorId;
     try {
         const status = await doctors.deldoctor(doctorId);
         res.render("posts/doctor", {doctor: status});
