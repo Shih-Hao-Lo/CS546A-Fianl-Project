@@ -41,18 +41,18 @@ router.post("/", async (req, res) => {
     let errors = [];
 
     if (!pid) {
-        errors.push("Please provide a name");
+        errors.push("Please provide a patient Id");
     }
 
     if (!did) {
-        errors.push("Please provide a username");
+        errors.push("Please provide a doctor Id");
     }
 
     if (!medlist) {
-        errors.push("Please provide a password");
+        errors.push("Please provide a medication list");
     }
 
-    if (!data) {
+    if (!date) {
         errors.push("Please provide a date");
     }
 
