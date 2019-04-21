@@ -5,8 +5,8 @@ const patients = require("../data/patients");
 // GET http://localhost:3000/patients
 router.get("/", async (req, res) => {
     try {
-        const patients = patients.getAll();
-        res.render("posts/patient", {patients: patients});
+        const all_patients = await patients.getAll();
+        res.render("posts/patient", {patients: all_patients});
     } catch (e) {
         res.status(500);
         res.render("posts/patient", {error: e});
