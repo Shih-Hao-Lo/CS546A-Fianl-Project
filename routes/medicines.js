@@ -74,3 +74,5 @@ router.delete("/", async(req, res) => {
         return;
     }
 });
+
+module.exports = router;
