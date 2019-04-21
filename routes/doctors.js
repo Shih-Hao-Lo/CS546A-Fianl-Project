@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
         res.render("posts/doctor", {doctors: all_doctors})
     } catch (e) {
         res.status(500);
-        res.render("posts/patient", {error: e});
+        res.render("posts/doctor", {error: e});
     }
 });
 
