@@ -85,7 +85,7 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/", async(req, res) => {
-    const data = req.body.patientId;
+    const patientId = req.body.patientId;
     try {
         const status = await patients.delpatient(patientId);
         res.status(200);
