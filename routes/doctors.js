@@ -1,11 +1,11 @@
-const express = require("expres");
+const express = require("express");
 const router = express.Router();
 const doctors = require("../data/doctors");
 
 // GET http://localhost:3000/doctors
 router.get("/", async (req, res) => {
     try {
-        const all_doctors = doctors.getAll();
+        const all_doctors = await doctors.getAll();
         res.render("posts/doctor", {doctors: all_doctors})
     } catch (e) {
         res.status(500);
