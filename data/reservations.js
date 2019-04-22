@@ -275,6 +275,34 @@ async function modifyreservation(id , data){
     return await this.getbyid(id);
 }
 
+async function updatePrescRoomDiag(resId, prescId, roomId, diagnosis) {
+    if(resId === undefined || prescId === undefined){
+        throw 'input is empty';
+    }
+    if(resId.constructor != ObjectID){
+        if(ObjectID.isValid(resId)){
+            resId = new ObjectID(resId);
+        }
+        else{
+            throw 'Id is invalid!(in data/reservation.modifyreservation)'
+        }
+    }
+    if(prescId.constructor != ObjectID){
+        if(ObjectID.isValid(prescId)){
+            prescId = new ObjectID(prescId);
+        }
+        else{
+            throw 'Doctor Id is invalid!(in data/reservation.modifyreservation)'
+        }
+    }
+
+    const reservationCollections = await reservations();
+    const updateinfo = await reservationCollections.update({ _id: resId } , {$set: {prescriptionid:prescId, roomid: roomId, diagnosis: diagnosis}});
+    if(updateinfo.modifiedCount === 0) throw 'Update fail!';
+
+    return await this.getbyid(resId);
+}
+
 //delete reservation. id: reservation._id(String or objectid)
 async function delreservation(id){
     if(id === undefined){
@@ -349,5 +377,6 @@ module.exports = {
     modifyreservation,
     delreservation,
     payment,
-    getReservationList
+    getReservationList,
+    updatePrescRoomDiag
 }

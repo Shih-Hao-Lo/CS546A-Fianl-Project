@@ -1,8 +1,10 @@
 const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
-const prescription = mongoCollections.prescription;
-const doctorf = require("./doctor");
+const prescriptions = mongoCollections.prescriptions;
+const doctorf = require("./doctors");
 const patientf = require("./patient");
+const users = require("./users");
+const reservations = require("./reservations");
 const ObjectID = require('mongodb').ObjectID;
 
 // Find prescription by id. id is a string or objectid.
@@ -19,7 +21,7 @@ async function getbyid(id){
         }
     }
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const target = await prescriptionCollections.findOne({ _id: id });
     if(target === null) throw 'Prescription not found!';
 
@@ -36,8 +38,8 @@ async function getAll(){
 //Make new prescription. pid: patient._id(String or objectid) ; did: doctor._id(String or objectid)
 //medicinelist = [{ medinine._id , amount } , ...]
 //date is string
-async function addprescription(pid , did , medicinelist , date){
-    if(pid === undefined || did === undefined){
+async function addprescription(resId, pid , did , medicinelist , diagnosis, roomId, date){
+    if(pid === undefined || did === undefined || resId === undefined){
         throw 'input is empty';
     }
     if(pid.constructor != ObjectID){
@@ -57,9 +59,10 @@ async function addprescription(pid , did , medicinelist , date){
         }
     }
     const dtarget = await doctorf.getbyid(did).catch(e => { throw e });
-    const ptarget = await patientf.getbyid(pid).catch(e => { throw e });
+    const ptarget = await users.getbyid(pid).catch(e => { throw e });
+    const reservation = await reservations.getbyid(resId).catch(e => { throw e });
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const data = {
         patientid: pid,
         doctorid: did,
@@ -70,6 +73,10 @@ async function addprescription(pid , did , medicinelist , date){
     const insertinfo = await prescriptionCollections.insertOne(data);
     if(insertinfo.insertedCount === 0) throw 'Insert fail!';
 
+    console.log("inserted; updating resrevations")
+    // await reservations.addPrescriptionToReservation(resId, insertinfo.insertedId);
+    await reservations.updatePrescRoomDiag(resId, insertinfo.insertedId, roomId, diagnosis);
+    
     return await this.getbyid(insertinfo.insertedId);
 }
 
