@@ -19,10 +19,11 @@
   "homepage": "https://github.com/Shih-Hao-Lo/CS546A-Fianl-Project#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
+    "express-session": "^1.15.6",
     "mongodb": "^3.2.2",
-    "cookie-parser": "^1.4.4",
-    "express-session": "^1.15.6"
+    "number-to-words": "^1.2.4"
   }
 }
