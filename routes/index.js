@@ -6,6 +6,8 @@ const medicineData = require("../data/medicines");
 const roomData = require("../data/rooms");
 const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 const constructorMethod = app => {
   
@@ -37,9 +39,15 @@ const constructorMethod = app => {
       console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
-      var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
-      req.session.user = user;
-      res.redirect('/dashboard');
+      try{
+        var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
+        req.session.user = user;
+        res.redirect('/dashboard');
+      }
+      catch(e){
+        res.json({ error: e });
+      }
+
       // res.render()
    }
   });
@@ -79,7 +87,9 @@ const constructorMethod = app => {
         // });
 
         var user = await usersData.getUserByUsername(req.body.email);
-        if(user.username === req.body.email && user.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , user.password);
+        console.log(user.password);
+        if(user.username === req.body.email && log) {
           req.session.user = user;
           res.redirect('/dashboard');
         }
@@ -100,7 +110,8 @@ const constructorMethod = app => {
         res.render('login', {message: "Please enter both email and password"});
     } else {
         var doctor = await doctorData.getDoctorByEmail(req.body.email);
-        if(doctor && doctor.username === req.body.email && doctor.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , doctor.password);
+        if(doctor && doctor.username === req.body.email && log) {
           req.session.user = doctor;
           req.session.user["isDoctor"] = true;
           res.redirect('/dashboard');
