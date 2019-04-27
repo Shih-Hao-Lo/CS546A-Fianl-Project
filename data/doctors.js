@@ -45,7 +45,7 @@ async function getAll(){
 
 // Add new doctor. newname, newusrename and newpasswprd are String.
 async function adddoctor(newname , newusername , newpassword){
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     const data = {
         name: newname,
         specialism: [],
@@ -70,7 +70,7 @@ async function updatespecialism(id , newspecialism , action){
             throw 'Id is invalid!(in data/doctor.updatespecialism)'
         }
     }
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     var updatedata = null;
     if(action === 'add'){
         updatedata = await doctorCollections.update({ _id: id } , { $addToSet: { specialism: newspecialism } });
@@ -97,7 +97,7 @@ async function updateschedule(id , newschedule , action){
             throw 'Id is invalid!(in data/doctor.updateschedule)'
         }
     }
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     var updatedata = null;
     if(action === 'add'){
         updatedata = await doctorCollections.update({ _id: id } , { $addToSet: { schedule: newschedule } });
@@ -131,7 +131,7 @@ async function updatedoctor(id , data){
         }
     }
 
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     const target = await this.getbyid(id);
 
     if(data.newname === undefined){
@@ -177,7 +177,7 @@ async function deldoctor(id){
         }
     }
 
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     const target = await this.getbyid(id);
     
     const delinfo = await doctorCollections.removeOne({ _id: id });
@@ -204,7 +204,7 @@ async function searchbyschedule(inschedule){
 
 // Doctor sign in. return true if username matches password.
 async function doctorsighin(dusername , dpassword){
-    const doctorCollections = await doctor();
+    const doctorCollections = await doctors();
     const target = await doctorCollections.findOne({ email: dusername });
     if(target === null) throw 'Data not found!';
 

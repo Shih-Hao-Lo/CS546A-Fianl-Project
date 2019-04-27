@@ -110,7 +110,8 @@ const constructorMethod = app => {
         res.render('login', {message: "Please enter both email and password"});
     } else {
         var doctor = await doctorData.getDoctorByEmail(req.body.email);
-        if(doctor && doctor.username === req.body.email && doctor.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , doctor.password);
+        if(doctor && doctor.username === req.body.email && log) {
           req.session.user = doctor;
           req.session.user["isDoctor"] = true;
           res.redirect('/dashboard');
