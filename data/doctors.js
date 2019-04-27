@@ -50,7 +50,7 @@ async function adddoctor(newname , newusername , newpassword){
         name: newname,
         specialism: [],
         schedule: [],
-        username: newusername,
+        email: newusername,
         password: newpassword
     }
 
@@ -138,7 +138,7 @@ async function updatedoctor(id , data){
         data.newname = target.name;
     }
     if(data.newusername === undefined){
-        data.newusername = target.username;
+        data.newusername = target.email;
     }
     if(data.newpassword === undefined){
         data.newpassword = target.password;
@@ -150,7 +150,7 @@ async function updatedoctor(id , data){
             name: data.newname,
             specialism: target.specialism,
             schedule: target.schedule,
-            username: data.newusername,
+            email: data.newusername,
             password: data.newpassword 
         }
     }
@@ -186,10 +186,26 @@ async function deldoctor(id){
     return target;
 }
 
-// Patient sign in. return true if username matches password.
+//Search doctor by schedule. inschedule is { week: arr1 , time: arr2 }. 
+// action is 'add' or 'del'.
+// arr1: ['Mon' , 'Tue' , 'Wed' , 'Thu' , 'Fri' , 'Sat' , 'Sun']
+// arr2: ['Morning' , 'Afternoon' , 'Night']
+async function searchbyschedule(inschedule){
+    const doctorsCollection = await doctors();
+    const targets = await doctorsCollection.find({}).toArray();
+    var out = new Array(0);
+    for(var x = 0 ; x < out.length ; x++){
+        if(targets[x].schedule.week === inschedule.week && targets[x].schedule.time === inschedule.time){
+            out.push(targets[x]);
+        }
+    }
+    return out;
+}
+
+// Doctor sign in. return true if username matches password.
 async function doctorsighin(dusername , dpassword){
     const doctorCollections = await doctor();
-    const target = await doctorCollections.findOne({ username: dusername });
+    const target = await doctorCollections.findOne({ email: dusername });
     if(target === null) throw 'Data not found!';
 
     if(target.password === dpassword) return true;
@@ -205,5 +221,6 @@ module.exports = {
     updatedoctor,
     deldoctor,
     doctorsighin,
-    getDoctorByEmail
+    getDoctorByEmail,
+    searchbyschedule
 }
