@@ -6,6 +6,8 @@ const medicineData = require("../data/medicines");
 const roomData = require("../data/rooms");
 const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 const constructorMethod = app => {
   
@@ -85,7 +87,9 @@ const constructorMethod = app => {
         // });
 
         var user = await usersData.getUserByUsername(req.body.email);
-        if(user.username === req.body.email && user.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , user.password);
+        console.log(user.password);
+        if(user.username === req.body.email && log) {
           req.session.user = user;
           res.redirect('/dashboard');
         }
