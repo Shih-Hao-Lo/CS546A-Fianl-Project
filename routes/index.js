@@ -4,16 +4,12 @@ const doctorData = require("../data/doctors");
 const reservationData = require("../data/reservations");
 const medicineData = require("../data/medicines");
 const roomData = require("../data/rooms");
-const prescriptionData = require("../data/prescriptions");
-const Handlebars = require("express-handlebars");
 const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 const constructorMethod = app => {
-
-  // Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-  //   return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-  // });
   
   var users = [{id:0,email:'namanyadav@gmail.com',password:'hello',fname:'Naman',lname:'Yadav'}];
 
@@ -24,7 +20,7 @@ const constructorMethod = app => {
   app.get("/signup", (req, res) => {
     res.render("signup", {title: "People Finder"});
   });
-  app.post("/signup", (req, res) => {
+  app.post("/signup", async (req, res) => {
     if(!req.body.email || !req.body.password){
       res.status("400");
       res.send("Invalid details!");
@@ -43,9 +39,15 @@ const constructorMethod = app => {
       console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
-      var user = usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
-      req.session.user = user;
-      res.redirect('/dashboard');
+      try{
+        var user = await usersData.addUser(email, email, 'M', 'dob', fname, lname, password);
+        req.session.user = user;
+        res.redirect('/dashboard');
+      }
+      catch(e){
+        res.json({ error: e });
+      }
+
       // res.render()
    }
   });
@@ -73,7 +75,7 @@ const constructorMethod = app => {
   });
   app.post("/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    // console.log(users);
+    console.log(users);
     if(!req.body.email || !req.body.password){
         res.render('login', {message: "Please enter both email and password"});
     } else {
@@ -85,7 +87,9 @@ const constructorMethod = app => {
         // });
 
         var user = await usersData.getUserByUsername(req.body.email);
-        if(user.username === req.body.email && user.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , user.password);
+        console.log(user.password);
+        if(user.username === req.body.email && log) {
           req.session.user = user;
           res.redirect('/dashboard');
         }
@@ -101,12 +105,13 @@ const constructorMethod = app => {
   });
   app.post("/doctor/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    // console.log(users);
+    console.log(users);
     if(!req.body.email || !req.body.password){
         res.render('login', {message: "Please enter both email and password"});
     } else {
         var doctor = await doctorData.getDoctorByEmail(req.body.email);
-        if(doctor && doctor.username === req.body.email && doctor.password === req.body.password) {
+        var log = await bcrypt.compare(req.body.password , doctor.password);
+        if(doctor && doctor.username === req.body.email && log) {
           req.session.user = doctor;
           req.session.user["isDoctor"] = true;
           res.redirect('/dashboard');
@@ -142,96 +147,27 @@ const constructorMethod = app => {
     var reservationList = await reservationData.getReservationList(req.session.user);
     res.render('reservation', {user: req.session.user, reservationList: reservationList});
   });
-
   app.get("/reservation/:id", loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.params.id;
     var reservation = await reservationData.getbyid(resId);
     var doctorList = await doctorData.getAll();
     doctorList.forEach(function(ele) {
-      // console.log(`comparing ${ele._id} == ${reservation.doctor._id}`)
+      console.log(`comparing ${ele._id} == ${reservation.doctor._id}`)
       if(ele._id.toString() == reservation.doctor._id.toString()) ele["selected"] = true;
-      // console.log(`sel: ${ele.selected}`)
-    });
-    reservation[reservation.status] = true;
-    // console.log(`reseravation present status: ${reservation[reservation.status]}`);
-    // console.log("inside reservation view: user: "+req.session.user.isDoctor);
-    res.render('reservation_view', {user: req.session.user, doctorList: doctorList, reservation: reservation,
-      helpers: {
-        ifEquals: function(arg1, arg2, options) {return (arg1 == arg2) ? options.fn(this) : options.inverse(this);},
-        ifNotEquals: function(arg1, arg2, options) {return (arg1 != arg2) ? options.fn(this) : options.inverse(this);}
-      }
-    });
-  });
-
-  app.get("/reservation/:id/bill", loggedIn, async(req, res) => {
-    let reservation = await reservationData.getbyid(req.params.id);
-    res.render('reservation_bill', {user: req.session.user, reservation: reservation, layout:false});
-  });
-  app.get("/prescription/view", loggedIn, async (req, res) => {
-    console.log(req.body);
-    let resId = req.query.resId;
-    let reservation = await reservationData.getbyid(resId);
-    let prescription = reservation.prescriptionid ? await prescriptionData.getbyid(reservation.prescriptionid) : "";
-    let medicineList = await medicineData.getAll();
-    let roomList = await roomData.availableroom();
-    console.log(`medicines: ${prescription.medicine}`);
-    res.render('doctor/prescription_new', {user: req.session.user, prescription: prescription, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription'});
+      console.log(`sel: ${ele.selected}`)
+    })
+    console.log("inside reservation view: user: "+req.session.user.isDoctor);
+    res.render('reservation_view', {user: req.session.user, doctorList: doctorList, reservation: reservation});
   });
   app.get("/prescription/add", loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.query.resId;
     var reservation = await reservationData.getbyid(resId);
-    let prescription = reservation.prescriptionid ? await prescriptionData.getbyid(reservation.prescriptionid) : "";
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
-    let medicineCost = 0;
-    let roomCost = 0;
-    if(reservation.prescription && reservation.prescription.medicine) {
-      medicineList.forEach(function(elem, index) {
-        // console.log(`comparing medicne: ${reservation.prescription.medicine} == ${elem._id}`)
-        elem["selected"] = reservation.prescription.medicine.includes(elem._id.toString());
-        if(elem.selected) {
-          medicineCost += parseInt(elem.price);
-        }
-        // console.log(elem.selected);
-      });
-    }
-    
-    if(reservation.roomid) {
-      roomList.forEach(function(elem, index) {
-        elem["selected"] = reservation.roomid == elem._id.toString();
-        if(elem.selected) {
-          roomCost += parseInt(elem.price);
-        }
-      });
-    }
-
-    let totalCost = (medicineCost+roomCost).toFixed(2);
-    
-    res.render('doctor/prescription_new', {user: req.session.user, prescription: prescription, medicineCost: medicineCost, roomCost: roomCost, totalCost: totalCost, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription'});
+    res.render('doctor/prescription_new', {user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription'});
   });
-  app.post("/prescription/add", loggedIn, async (req, res) => {
-    console.log(req.body);
-    let resId = req.body.resId;
-    let meds = req.body.meds;
-    let diagnosis = req.body.diagnosis;
-    let roomId = req.body.room;
-    let reservation = await reservationData.getbyid(resId);
-    let prescription = await reservationData.addprescription(resId, reservation.patientid, reservation.doctorid, meds, diagnosis, roomId, Date.now());
-    var medicineList = await medicineData.getAll();
-    var roomList = await roomData.availableroom();
-    res.render('doctor/prescription_new', {user: req.session.user, prescription: prescription, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription'});
-
-  });
-  app.post("/reservation/:id/status/update", loggedIn, async(req, res) => {
-    console.log(req.params);
-    console.log(req.query)
-    let resId = req.params.id;
-    let newStatus = req.query.newStatus;
-    let reservation = await reservationData.updateReservationStatus(resId, newStatus);
-    res.send(200);
-  })
 
   function requireRole (role) {
     return function (req, res, next) {
