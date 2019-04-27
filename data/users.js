@@ -60,7 +60,7 @@ async function addUser(username, email, gender, dob, fname, lname, password){
         password: hashpassword
     };
     
-    const check = await userCollections.findOne({ email: email});
+    const check = await userCollections.findOne({ email: email });
     if(check != undefined) throw 'email already exists.';
 
     const InsertInfo = await userCollections.insertOne(newUser);
