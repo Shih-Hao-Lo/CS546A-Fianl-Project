@@ -1,0 +1,37 @@
+<main>
+
+  {{!-- <h1>MediDesk</h1> --}}
+  {{!-- <br/> --}}
+  {{!-- <p>
+      Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
+  </p> --}}
+
+<br/> 
+
+<div class="w3-container medi-yellow">
+            <h2>Login</h2>
+            <p class="extra"><a href="/signup">(Don't have an account? Sign Up</a>)</p>
+          </div>
+          
+          <div class="form-container">
+          <form class="w3-container" action="/login" method="POST">
+            <p>
+            <label>Email</label>
+            <input class="w3-input" type="email" name="email"></p>
+            <p>
+            <label>Password</label>
+            <input class="w3-input" type="password" name="password"></p>
+            <br/>
+            <p><button type="submit" class="button1">Login</button></p>
+            
+          </form>
+          </div>
+  {{!-- <form id="search_form" action="/search">
+      <label for="person_name">Person Name</label>
+      <br/>
+      <input name="personName" id="person_name" type="text" placeholder="Enter text to search"/>
+      <br/>
+      <button type="submit" class="button1">Go!</button>
+  </form> --}}
+
+</main>
