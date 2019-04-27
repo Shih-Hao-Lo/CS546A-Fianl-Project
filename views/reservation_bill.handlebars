@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/public/site.css">
+    <link rel="stylesheet" href="/public/css/form.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
+    <script src="/public/js/medi-client.js"></script>
+</head>
+<body class="bill_body">
+  
+<main>
+
+          <div class="bill-heading-container">
+            <h2><i class="fa fa-heartbeat"></i> Hell's Pass Hospital</h2>
+            <h2 class="pull-right">INVOICE</h2>
+          </div>
+          
+          <div class="" id="billing_info_table_cont">
+
+            <div>
+              <p><span class="pull-right">Booking ID: #{{reservation._id}}</span></p>
+
+              <p>
+                Date: {{reservation.date_formatted}} <br>
+                Name: {{reservation.patient.fname}} {{reservation.patient.lname}} <br>
+                Address: {{#if reservation.address}}{{reservation.address}}{{else}}128 Terrace Ave, NJ, 07307{{/if}}
+              </p>
+
+            </div>
+
+            <table id="patient_info_table" class="bill_info_table">
+              <tr>
+                <td>Patient Name <br>
+                Address
+                </td>
+              
+                <td>{{reservation.patient.fname}} {{reservation.patient.lname}} <br>
+                {{#if reservation.address}}{{reservation.address}}{{else}}128 Terrace Ave, NJ, 07307{{/if}}</td>
+                
+              
+                <td>
+                  <table class="invoice_table">
+                    <tr>
+                      <td>Invoice No.</td>
+                      <td>#{{reservation._id}}</td>
+                    </tr>
+                    <tr>
+                      <td>Bill date:</td>
+                      <td>04/23/2019</td>
+                    </tr>
+                    <tr>
+                      <td>DOA:</td>
+                      <td>03/28/2019</td>
+                    </tr>
+                    <tr>
+                      <td>DOD:</td>
+                      <td>04/23/2019</td>
+                    </tr>
+                  </table>                  
+                </td>
+              </tr>
+            </table>
+
+            {{!-- <table id="patient_info_table" class="bill_info_table">
+              <tr>
+                <td>Patient Name</td>
+                <td>Naman Yadav</td>
+                <td>Invoice no. #4433443</td>
+              </tr>
+              <tr>
+                <td>Address</td>
+                <td>128 Terrace Ave, NJ, 07307</td>
+                <td></td>
+              </tr>
+              <tr>
+
+              </tr>
+            </table> --}}
+            
+            <table id="billing_info_table" class="bill_info_table">
+             
+             <tr>
+                <th style="width:55%">Particulars</th>
+                <th style="width:15%">Quantity</th>
+                <th style="width:15%">Unit Price ($)</th>
+                <th style="width:15%">Amount ($)</th>
+                
+              </tr>
+
+              {{#if reservation.consultation_fee}}
+              <tr>
+                <td>Consultation fee</td>
+                <td>1</td>
+                <td>{{reservation.consultation_fee}}</td>
+                <td>{{reservation.consultation_fee}}</td>
+              </tr>
+              {{/if}}
+
+              {{#each reservation.prescription.medicineList}}
+              <tr>
+                <td>{{this.name}}</td>
+                <td>1</td>
+                <td>{{this.price}}</td>
+                <td>{{this.price}}</td>
+              </tr>
+              {{/each}}
+              {{#if reservation.room}}
+              <tr>
+                <td class="border-bottom-1">{{reservation.room.name}}</td>
+                <td class="border-bottom-1">1</td>
+                <td class="border-bottom-1">{{reservation.room.price}}</td>
+                <td class="border-bottom-1">{{reservation.room.price}}</td>
+              </tr>
+              {{else}}
+              <tr class="border-bottom-1">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              {{/if}}
+
+              <tr>
+                <td class="border_none"></td>
+                <td class="border_none"></td>
+                <td></td>
+                <td></td>
+              </tr>
+
+              <tr>
+                <td class=""></td>
+                <td class="border_none"></td>
+                <td class="border-bottom-1">Total</td>
+                <td class="border-bottom-1">{{reservation.cost}}</td>
+              </tr>
+
+<tr>
+                <td class="border_none"></td>
+                <td class="border_none"></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr class="border-bottom-1">
+                <td></td>
+                <td class="border_none"></td>
+                <td>Advance Amount</td>
+                <td>0.00</td>
+              </tr>
+
+              <tr  class="border-bottom-1">
+                <td>
+                  Amount in words
+                  <br>
+                  <b>USD {{reservation.cost_in_words}} only</b>
+                </td>
+                <td class="border_none"></td>
+                <td><b>Balance Amount</b></td>
+                <td><b>{{reservation.cost}}</b></td>
+              </tr>
+
+              <tr>
+                {{!-- <br>
+                <br>
+                <br> --}}
+                <td class="border_none"></td>
+                <td class="border_none"></td>
+                <td class="border_none" colspan="2">
+
+                  <p>
+                    <span class="pull-right">For Hell's Pass Hospital LLC.</span><br><br>
+                    <span class="pull-right">Director</span>
+
+                  </p>
+                  
+                  {{!-- <p class="pull-right"><br>For General Hospital Pvt. Ltd.<br></p>
+                  <p class="pull-right"><br><br><br>Director</p> --}}
+                  
+                </td>
+                {{!-- <td class="border_none"></td> --}}
+              </tr>
+              
+            </table>
+            
+          </div>
+
+
+</main>
+
+</body>
+</html>

@@ -1,8 +1,11 @@
 const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
-const prescription = mongoCollections.prescription;
-const doctorf = require("./doctor");
+const prescriptions = mongoCollections.prescriptions;
+const doctorf = require("./doctors");
 const patientf = require("./patient");
+const users = require("./users");
+// const reservations = require("./reservations");
+const medicines = require("./medicines");
 const ObjectID = require('mongodb').ObjectID;
 
 // Find prescription by id. id is a string or objectid.
@@ -19,11 +22,26 @@ async function getbyid(id){
         }
     }
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const target = await prescriptionCollections.findOne({ _id: id });
-    if(target === null) throw 'Prescription not found!';
+    // if(target === null) throw 'Prescription not found!';
+    return await processPrescriptionData(target);
 
-    return target;
+    // return target;
+}
+
+async function processPrescriptionData(prescription) {
+    if(prescription && prescription.medicine) {
+        let medicineList = [];
+        for(let i=0; i<prescription.medicine.length; i++) {
+            let med = await medicines.getbyid(prescription.medicine[i]);
+            med.price = parseInt(med.price).toFixed(2);
+            medicineList.push(med);
+        }
+
+        prescription["medicineList"] = medicineList;
+    }
+    return prescription;
 }
 
 // Return all prescriptions in database.
@@ -36,7 +54,8 @@ async function getAll(){
 //Make new prescription. pid: patient._id(String or objectid) ; did: doctor._id(String or objectid)
 //medicinelist = [{ medinine._id , amount } , ...]
 //date is string
-async function addprescription(pid , did , medicinelist , date){
+async function addprescription(pid , did , medicinelist, date){
+    console.log("inside prescriptions.addprescription")
     if(pid === undefined || did === undefined){
         throw 'input is empty';
     }
@@ -57,9 +76,10 @@ async function addprescription(pid , did , medicinelist , date){
         }
     }
     const dtarget = await doctorf.getbyid(did).catch(e => { throw e });
-    const ptarget = await patientf.getbyid(pid).catch(e => { throw e });
+    const ptarget = await users.getbyid(pid).catch(e => { throw e });
+    // const reservation = await reservations.getbyid(resId).catch(e => { throw e });
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const data = {
         patientid: pid,
         doctorid: did,
@@ -70,6 +90,10 @@ async function addprescription(pid , did , medicinelist , date){
     const insertinfo = await prescriptionCollections.insertOne(data);
     if(insertinfo.insertedCount === 0) throw 'Insert fail!';
 
+    // console.log("inserted; updating resrevations")
+    // await reservations.addPrescriptionToReservation(resId, insertinfo.insertedId);
+    // await reservations.updatePrescRoomDiag(resId, insertinfo.insertedId, roomId, diagnosis);
+    
     return await this.getbyid(insertinfo.insertedId);
 }
 
@@ -157,11 +181,18 @@ async function delprescription(id){
     return target;
 }
 
+async function updatePrescription(prescId, medicinelist, date) {
+    let prescriptionCollection = await prescriptions();
+    let modifyInfo = await prescriptionCollection.updateOne({_id: prescId}, {$set: { medicine: medicinelist, date: date }})
+    return await getbyid(prescId);
+}
+
 module.exports = {
     getbyid,
     getAll,
     addprescription,
     modifyprescription,
     modifymedicine,
-    delprescription
+    delprescription,
+    updatePrescription
 }

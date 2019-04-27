@@ -22,33 +22,73 @@
                 
               </tr> --}}
               <tr>
-                <td>Frist Name</td>
+                <td style="width: 30%">Patient Frist Name</td>
                 <td>{{reservation.patient.fname}}</td>
                 
               </tr>
               <tr>
-                <td>Last Name</td>
+                <td>Patient Last Name</td>
                 <td>{{reservation.patient.lname}}</td>
               </tr>
-              <tr>
+              {{!-- <tr>
                 <td>Email</td>
                 <td>{{reservation.patient.email}}</td>
-              </tr>
+              </tr> --}}
               <tr>
-                <td>Date</td>
+                <td>Appointment Date</td>
                 <td>{{reservation.date_formatted}}</td>
               </tr>
               <tr>
-                <td>Doctor</td>
+                <td>Doctor Name</td>
                 <td>Dr. {{reservation.doctor.lname}}</td>
               </tr>
+              {{#if reservation.diagnosis}}
               <tr>
-                <td>Status</td>
-                <td>{{reservation.status}}</td>
+                <td>Diagnosis</td>
+                <td>{{reservation.diagnosis}}</td>
               </tr>
+              {{/if}}
+              {{#if reservation.prescription}}
+              <tr>
+                <td>Medicines</td>
+                <td>
+                  {{#each reservation.prescription.medicineList}}
+                  <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
+                  {{/each}}
+                </td>
+              </tr>
+              {{/if}}
+              {{#if reservation.room}}
+              <tr>
+                <td>Room</td>
+                <td>
+                  <span>{{reservation.room.name}}</span>
+                </td>
+              </tr>
+              {{/if}}
               <tr>
                 <td>Cost</td>
+                {{#if reservation.cost}}
+                <td>${{reservation.cost}}</td>
+                {{else}}
                 <td>0</td>
+                {{/if}}
+              </tr>
+              <tr>
+                <td>Booking Status</td>
+                <td>
+                  {{#if user.isDoctor}}
+                  <select style="color:gray" class="w3-input select-50" name="reservation_status">
+                    <option value="confirmed" {{#if reservation.confirmed}}selected{{/if}}>Confirmed</option>
+                    <option value="consulted" {{#if reservation.consulted}}selected{{/if}}>Consulted</option>
+                    <option value="prescribed" {{#if reservation.prescribed}}selected{{/if}}>Prescribed</option>
+                    <option value="admitted" {{#if reservation.admitted}}selected{{/if}}>Admitted</option>
+                    <option value="completed" {{#if reservation.completed}}selected{{/if}}>Completed</option>
+                  </select>
+                  {{else}}
+                  <span>{{reservation.status}}</span>
+                  {{/if}}
+                </td>
               </tr>
               {{!-- <tr>
                 <td>Medicines</td>
@@ -79,14 +119,25 @@
             </table>
             {{#if user.isDoctor}}
             <p class="doc_actions_cont">
+              {{#if reservation.presription}}
+              <button class="button1" onclick="viewPrescription('{{reservation._id}}');return false">View Prescription</button>
+              {{else}}
               <button class="button1" onclick="createPrescription('{{reservation._id}}'); return false;">Prescribe</button>
-              <button class="button1" onclick="alert('this will take doc to allot room page');return false">Allot room</button>
+              {{/if}}
+              <button class="button1" onclick="location.href='/reservation'">All Bookings</button>
+              <button class="button1" onclick="updateReservationStatus('{{reservation._id}}')">Update Status</button>
             </p>
             {{else}}
             <p class="edit_buttons_cont">
+              {{#ifEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
               <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
+              {{/ifEquals}}
+
+              {{#ifNotEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="alert('this will redirect to payment');return false;">Pay</button>
+              <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
+              {{/ifNotEquals}}
             </p>
             {{/if}}
           </div>
