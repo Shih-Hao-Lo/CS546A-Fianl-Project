@@ -131,6 +131,7 @@ const constructorMethod = app => {
   });
 
   app.get("/reservation/new", loggedIn, async (req, res) => {
+    await doctorData.adddoctor('Test', 'testies', 'pass');
     var doctorList = await doctorData.getAll();
     res.render('reservation_new', {user: req.session.user, doctorList: doctorList});
   });
@@ -160,6 +161,18 @@ const constructorMethod = app => {
     console.log("inside reservation view: user: "+req.session.user.isDoctor);
     res.render('reservation_view', {user: req.session.user, doctorList: doctorList, reservation: reservation});
   });
+  app.post("/reservation/edit", loggedIn, async (req, res) => {
+    var pid = req.body.patient_id;
+    var did = req.body.doctor_id;
+    var rid = req.body.reservation_id;
+    var date = req.body.app_date;
+    var data = {
+      did: did,
+      newdate: date
+    }
+    var reservation = await reservationData.modifyreservation(rid, data);
+    res.redirect('/reservation');
+  })
   app.get("/prescription/add", loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.query.resId;
