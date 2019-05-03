@@ -4,6 +4,7 @@ const users = mongoCollections.users;
 const ObjectID = require('mongodb').ObjectID;
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
+const doctorsf = require('./doctors');
 
 // Find user by id. id is String or ObjectId.
 async function getbyid(id){
@@ -61,7 +62,8 @@ async function addUser(username, email, gender, dob, fname, lname, password){
     };
     
     const check = await userCollections.findOne({ email: email });
-    if(check != undefined) throw 'email already exists.';
+    const check2 = await doctorsf.getDoctorByEmail(email);
+    if(check != undefined || check2 != undefined) throw 'email already exists.';
 
     const InsertInfo = await userCollections.insertOne(newUser);
     if(InsertInfo.insertedCount === 0) throw 'Insert fail!';

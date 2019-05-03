@@ -2,6 +2,7 @@ const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const patient = mongoCollections.patient;
 const ObjectID = require('mongodb').ObjectID;
+const doctorf = require('./doctors');
 
 // Find patient by id. id is String or ObjectId.
 async function getbyid(id){

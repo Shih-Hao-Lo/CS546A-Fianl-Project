@@ -2,6 +2,8 @@ const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const doctors = mongoCollections.doctors;
 const ObjectID = require('mongodb').ObjectID;
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 // Find doctor by id. id is a string or objectid.
 async function getbyid(id){
@@ -44,14 +46,16 @@ async function getAll(){
 }
 
 // Add new doctor. newname, newusrename and newpasswprd are String.
-async function adddoctor(newname , newusername , newpassword){
+async function adddoctor(newfname , newlname , newusername , newpassword){
     const doctorCollections = await doctors();
+    const hashpassword = await bcrypt.hash(password, saltRounds);
     const data = {
-        name: newname,
+        fname: newfname,
+        lname: newlname,
         specialism: [],
         schedule: [],
         email: newusername,
-        password: newpassword
+        password: hashpassword
     }
 
     const Insertinfo = await doctorCollections.insertOne(data);
