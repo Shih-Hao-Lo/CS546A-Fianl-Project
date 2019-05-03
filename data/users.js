@@ -156,22 +156,11 @@ async function delpatient(id){
     return target;
 }
 
-// Patient sign in. return true if username matches password.
-async function patientsighin(pusername , ppassword){
-    const patientCollections = await patient();
-    const target = await patientCollections.findOne({ username: pusername });
-    if(target === null) throw 'Data not found!';
-
-    if(target.password === ppassword) return true;
-    else return false;
-}
-
 module.exports = {
     getbyid,
     getAll,
     updatepatient,
     delpatient,
-    patientsighin,
     addUser,
     getUserByUsername
 }

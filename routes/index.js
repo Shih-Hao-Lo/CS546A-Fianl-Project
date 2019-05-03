@@ -8,6 +8,7 @@ const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
+const specialismList = require("../data/specialism");
 
 const constructorMethod = app => {
 
@@ -148,7 +149,7 @@ const constructorMethod = app => {
 
   app.get("/reservation/new", loggedIn, async (req, res) => {
     var doctorList = await doctorData.getAll();
-    res.render('reservation_new', { user: req.session.user, doctorList: doctorList });
+    res.render('reservation_new', { user: req.session.user, doctorList: doctorList, spList:specialismList.List });
   });
 
   app.post("/reservation/new", loggedIn, async (req, res) => {
