@@ -189,17 +189,31 @@ const constructorMethod = app => {
 
   });
 
-  // ========== Edit Profile ========== //
+  // ====== Update user's profile ====== //
+  // A function used to set the html tag <select> to specific option
+  function GenderTool(gender) {
+    let genderArr = [];
+    if (gender === "male") {
+      genderArr.push("selected");
+      genderArr.push("");
+    }
+    else {
+      genderArr.push("");
+      genderArr.push("selected");
+    }
+    return genderArr;
+  }
 
-  // Show logined user's data
+  // Retrieve user's profile and show on page
   app.get('/edit-profile', loggedIn, function (req, res) {
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
     if (user.isDoctor) name = `Dr. ${name}`;
-    res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name });
+    let genderArr = GenderTool(user.gender);
+    res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1] });
   });
 
-  // Update logined user's data
+  // Update user's profile
   app.post('/edit-profile', loggedIn, async (req, res) => {
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
@@ -210,10 +224,12 @@ const constructorMethod = app => {
     data.email = req.body.email;
     data.gender = req.body.gender;
     data.dob = req.body.dob;
+    //let genderArr = GenderTool(user.gender);
 
     if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
-      //res.status("400");
-      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Profile Not Changed!" });
+      res.status("400");
+      /* res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Profile Not Changed!" }); */
+      res.redirect('/dashboard');
       return;
     }
 
@@ -221,35 +237,35 @@ const constructorMethod = app => {
       let getUser = await usersData.getUserByUsername(user.email);
       let updatedUser = await usersData.updatepatient(getUser._id, data);
       req.session.user = updatedUser;
-      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status1: "Profile updated Successfully!" });
+      /* res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status1: "Profile updated Successfully!", genderSel1: genderArr[0], genderSel2: genderArr[1] }); */
+      res.redirect('/dashboard');
       return;
     } catch (e) {
       // res.status("400");
       console.log(e);
-      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Profile Not Changed!" });
+      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
       return;
     }
   });
 
-  // ========== Change Password ========== //
-
+  // ====== Update user's password ====== //
   app.get('/change-password', loggedIn, function (req, res) {
     res.render('change-pwd');
   });
 
-  // Change password
+  // Change user's password
   app.post('/change-password', loggedIn, async (req, res) => {
     let user = req.session.user;
     let data = {};
     let oldPWD = req.body.oldPWD;
     let newPWD = req.body.newPWD;
     if (oldPWD == "") {
-      res.render('change-pwd', { status2: "Password Incorrect" });
+      res.render('change-pwd', { status2: "Old Password Incorrect" });
       res.status(400);
       return;
     }
     if (newPWD == "") {
-      res.render('change-pwd', { status2: "New Password cannot be empty" });
+      res.render('change-pwd', { status2: "New Password Cannot be Empty" });
       res.status(400);
       return;
     }
@@ -257,7 +273,7 @@ const constructorMethod = app => {
       let getUser = await usersData.getUserByUsername(user.email);
       let checkPWD = await bcrypt.compare(oldPWD , getUser.password);
       if (!checkPWD) {
-        res.render('change-pwd', { status2: "Password Incorrect" });
+        res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
         res.status(400);
         return;
       }
