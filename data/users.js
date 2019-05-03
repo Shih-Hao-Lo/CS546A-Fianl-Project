@@ -4,6 +4,7 @@ const users = mongoCollections.users;
 const ObjectID = require('mongodb').ObjectID;
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
+const doctorsf = require('./doctors');
 
 // Find user by id. id is String or ObjectId.
 async function getbyid(id){
@@ -21,7 +22,7 @@ async function getbyid(id){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ _id: id });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
@@ -33,7 +34,7 @@ async function getUserByUsername(username){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ username: username });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
@@ -61,7 +62,8 @@ async function addUser(username, email, gender, dob, fname, lname, password){
     };
     
     const check = await userCollections.findOne({ email: email });
-    if(check != undefined) throw 'email already exists.';
+    const check2 = await doctorsf.getDoctorByEmail(email);
+    if(check != undefined || check2 != undefined) throw 'email already exists.';
 
     const InsertInfo = await userCollections.insertOne(newUser);
     if(InsertInfo.insertedCount === 0) throw 'Insert fail!';
