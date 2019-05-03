@@ -4,6 +4,7 @@ const users = mongoCollections.users;
 const ObjectID = require('mongodb').ObjectID;
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
+const doctorsf = require('./doctors');
 
 // Find user by id. id is String or ObjectId.
 async function getbyid(id){
@@ -21,7 +22,7 @@ async function getbyid(id){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ _id: id });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
@@ -33,7 +34,7 @@ async function getUserByUsername(username){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ username: username });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
@@ -61,7 +62,8 @@ async function addUser(username, email, gender, dob, fname, lname, password){
     };
     
     const check = await userCollections.findOne({ email: email });
-    if(check != undefined) throw 'email already exists.';
+    const check2 = await doctorsf.getDoctorByEmail(email);
+    if(check != undefined || check2 != undefined) throw 'email already exists.';
 
     const InsertInfo = await userCollections.insertOne(newUser);
     if(InsertInfo.insertedCount === 0) throw 'Insert fail!';
@@ -93,38 +95,48 @@ async function updatepatient(id , data){
         }
     }
 
-    const patientCollections = await patient();
+    const patientCollections = await users();
     const target = await this.getbyid(id);
+    let changePWD = true;
 
-    if(data.newname === undefined){
-        data.newname = target.name;
+    if(data.email == "" || data.email === undefined){
+        data.email = target.email;
     }
-    if(data.newgender === undefined){
-        data.newgender = target.gender;
+    if(data.lname == "" || data.lname === undefined){
+        data.lname = target.lname;
     }
-    if(data.newdob === undefined){
-        data.newdob = target.dob;
+    if(data.fname == "" || data.fname === undefined){
+        data.fname = target.fname;
     }
-    if(data.newusername === undefined){
-        data.newusername = target.username;
+    if(data.gender == "" || data.gender === undefined){
+        data.gender = target.gender;
     }
-    if(data.newpassword === undefined){
-        data.newpassword = target.password;
+    if(data.dob == "" || data.dob === undefined){
+        data.dob = target.dob;
+    }
+    if(data.password == "" || data.password === undefined){
+        data.password = target.password;
+        changePWD = false;
+    }
+
+    if (changePWD) {
+        data.password = await bcrypt.hash(data.password, saltRounds);
     }
 
     let updatedata = {
         $set:{
             _id: id,
-            name: data.newname,
-            gender: data.newgender,
-            dob: data.newdob,
-            username: data.newusername,
-            password: data.newpassword 
+            username: data.email,
+            email: data.email,
+            gender: data.gender,
+            dob: data.dob,
+            fname: data.fname,
+            lname: data.lname,
+            password: data.password
         }
     }
 
     const updateinfo = await patientCollections.updateOne({ _id: id } , updatedata);
-    if(updateinfo.modifiedCount === 0) throw 'Update fail!';
     return await this.getbyid(id);
 }
 
