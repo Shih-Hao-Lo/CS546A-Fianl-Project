@@ -144,4 +144,16 @@ $(document).ready(function() {
 function updatedoc(selectObject){
   console.log(selectObject.value);
   alert(selectObject.value)
+// ======== Edit Profile & PWD ======== //
+
+function editProfile() {
+  location.href = '/edit-profile';
+}
+
+function backToDashboard() {
+  location.href = '/dashboard';
+}
+
+function changePWD() {
+  location.href = '/change-password';
 }

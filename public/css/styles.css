@@ -1,0 +1,13 @@
+.profile-status1 {
+    border-left: 6px solid rgb(6, 173, 0);
+    background-color: rgb(214, 255, 210);
+    color: rgb(104, 104, 104);
+    padding-left: 8px
+}
+
+.profile-status2 {
+    border-left: 6px solid rgb(165, 93, 0);
+    background-color: rgb(255, 230, 198);
+    color: rgb(104, 104, 104);
+    padding-left: 8px
+}
