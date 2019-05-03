@@ -140,3 +140,8 @@ $(document).ready(function() {
     return selectedOption;
   }
 })
+
+function updatedoc(selectObject){
+  console.log(selectObject.value);
+  alert(selectObject.value)
+}

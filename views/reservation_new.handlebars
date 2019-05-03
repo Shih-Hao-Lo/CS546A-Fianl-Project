@@ -27,13 +27,12 @@
             <input class="w3-input" type="text" name="email" value="{{user.email}}" readonly></p>
             <p>
             <label>Specialism</label>
-            <select class="w3-input" name="specialism">
+            <select class="w3-input" name="specialism" onchange="updatedoc(this)">
               <option></option>
               {{#each spList}}
               <option value="{{this}}">{{this}}</option>
               {{/each}}
             </select>
-            <button type="submit" class="button1">Schedule</button></p>
             <p>
             <label>Doctor</label>
             <select class="w3-input" name="doctor_id">
