@@ -287,6 +287,13 @@ button {
   width: 50%;
 }
 
+.bill-heading-container > h2 {
+  display: inline-block;
+}
+.pull-right {
+  float: right;
+}
+
 /*************************************** table css: start ****************************************/
 .info_table {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -313,3 +320,58 @@ button {
 }
 
 /*************************************** table css: end ****************************************/
+
+.bill_info_table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: gray;
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid black;
+}
+
+.bill_info_table td {
+  border: 0;
+  border-left: 1px solid black;
+  padding: 4px 8px;
+}
+.bill_info_table td.border_none {
+  border: 0;
+}
+
+/* .bill_info_table tr:nth-child(even){background-color: #f2f2f2;}
+
+.bill_info_table tr:hover {background-color: #ddd;} */
+
+.bill_info_table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: gray;
+  color: white;
+}
+.bill_info_table .border-bottom-1 {
+  border-bottom: 1px solid black;
+}
+
+#patient_info_table td {
+  vertical-align: baseline;
+}
+
+.invoice_table td {
+  border: none;
+  padding: 0;
+}
+/* .bill_body {
+  background: #ccc;
+} */
+.bill_body > main {
+  padding-top: 0;
+}
+.bill-heading-container {
+  border-bottom: 2px solid gray;
+}
+table textarea, table select {
+  color: gray;
+}
