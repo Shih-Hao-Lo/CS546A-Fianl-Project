@@ -140,3 +140,17 @@ $(document).ready(function() {
     return selectedOption;
   }
 })
+
+// ======== Edit Profile & PWD ======== //
+
+function editProfile() {
+  location.href = '/edit-profile';
+}
+
+function backToDashboard() {
+  location.href = '/dashboard';
+}
+
+function changePWD() {
+  location.href = '/change-password';
+}
