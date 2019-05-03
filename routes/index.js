@@ -93,37 +93,25 @@ const constructorMethod = app => {
       // });
 
       var user = await usersData.getUserByUsername(req.body.email)
-      .then(async() => {
-        if (await bcrypt.compare(req.body.password, user.password)) {
-          req.session.user = user;
-        }
-  
-  
-        if (!req.session.user) {
-          res.render('login', { message: "Invalid credentials!" });
-        }
-        else {
-          res.redirect('/dashboard');
-        }
-      })
-      .catch(async (e) => {
+      if (user === undefined) {
         var isdoctor = await doctorData.getDoctorByEmail(req.body.email);
-        //if (await bcrypt.compare(req.body.password, isdoctor.password)) {
-          console.log(isdoctor.password)
-          console.log(req.body.password)
-        if(isdoctor.password === req.body.password){
+        if (await bcrypt.compare(req.body.password, isdoctor.password)) {
           req.session.user = isdoctor;
           req.session.user["isDoctor"] = true;
         }
+      }
+      else {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+          req.session.user = user;
+        }
+      }
 
-        if (!req.session.user) {
-          res.render('login', { message: "Invalid credentials!" });
-        }
-        else {
-          res.redirect('/dashboard');
-        }
-        return;
-      });
+      if (!req.session.user) {
+        res.render('login', { message: "Invalid credentials!" });
+      }
+      else {
+        res.redirect('/dashboard');
+      }
     }
   });
 

@@ -22,7 +22,7 @@ async function getbyid(id){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ _id: id });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
@@ -34,7 +34,7 @@ async function getUserByUsername(username){
 
     const userCollections = await users();
     const target = await userCollections.findOne({ username: username });
-    if(target === null) throw 'User not found!';
+    if(target === null) return undefined;
 
     return target;
 }
