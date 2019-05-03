@@ -2,6 +2,8 @@ const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const doctors = mongoCollections.doctors;
 const ObjectID = require('mongodb').ObjectID;
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 // Find doctor by id. id is a string or objectid.
 async function getbyid(id){
@@ -44,14 +46,18 @@ async function getAll(){
 }
 
 // Add new doctor. newname, newusrename and newpasswprd are String.
-async function adddoctor(newname , newusername , newpassword){
+async function adddoctor(newfname , newlname , newusername , newpassword , gender , dob){
     const doctorCollections = await doctors();
+    const hashpassword = await bcrypt.hash(newpassword, saltRounds);
     const data = {
-        name: newname,
+        fname: newfname,
+        lname: newlname,
         specialism: [],
         schedule: [],
         email: newusername,
-        password: newpassword
+        password: hashpassword,
+        gender: gender,
+        dob: dob
     }
 
     const Insertinfo = await doctorCollections.insertOne(data);
@@ -111,7 +117,8 @@ async function updateschedule(id , newschedule , action){
 
 // Update doctor information. id is String or Objectid.
 // data = {
-//     newname: String or undefined,
+//     newfname: String or undefined,
+//     newlname: String or undefined,
 //     newusername: String or undefined,
 //     newpassword: String or undefined
 // }
@@ -134,8 +141,11 @@ async function updatedoctor(id , data){
     const doctorCollections = await doctors();
     const target = await this.getbyid(id);
 
-    if(data.newname === undefined){
-        data.newname = target.name;
+    if(data.newfname === undefined){
+        data.newfname = target.name;
+    }
+    if(data.newlname === undefined){
+        data.newlname = target.name;
     }
     if(data.newusername === undefined){
         data.newusername = target.email;
@@ -143,15 +153,21 @@ async function updatedoctor(id , data){
     if(data.newpassword === undefined){
         data.newpassword = target.password;
     }
+    else{
+        data.newpassword = await bcrypt.hash(newpassword, saltRounds);
+    }
 
     let updatedata = {
         $set:{
             _id: id,
-            name: data.newname,
+            fname: data.newfname,
+            lname: data.newlname,
             specialism: target.specialism,
             schedule: target.schedule,
             email: data.newusername,
-            password: data.newpassword 
+            password: data.newpassword,
+            gender: target.gender,
+            dob: target.dob
         }
     }
 
@@ -202,14 +218,11 @@ async function searchbyschedule(inschedule){
     return out;
 }
 
-// Doctor sign in. return true if username matches password.
-async function doctorsighin(dusername , dpassword){
+// Search doctor by specialism
+async function searchbyspecialism(inspecialism){
     const doctorCollections = await doctors();
-    const target = await doctorCollections.findOne({ email: dusername });
-    if(target === null) throw 'Data not found!';
-
-    if(target.password === dpassword) return true;
-    else return false;
+    const targets = await doctorCollections.find({ specialism: inspecialism }).toArray();
+    return targets
 }
 
 module.exports = {
@@ -220,7 +233,13 @@ module.exports = {
     updateschedule,
     updatedoctor,
     deldoctor,
-    doctorsighin,
+    searchbyspecialism,
     getDoctorByEmail,
     searchbyschedule
 }
+
+async function main(){
+    var a = await adddoctor("haoping" , "lin" , "hlin@m.edu" , "hplin");
+    var a = await adddoctor("weihsuan" , "wong" , "wwong@m.edu" , "wwong");
+}
+//main();
