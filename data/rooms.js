@@ -19,7 +19,7 @@ async function getbyid(id){
 
     const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
-    if(target === null) throw 'Room not found!';
+    // if(target === null) throw 'Room not found!';
 
     return target;
 }

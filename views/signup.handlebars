@@ -17,16 +17,26 @@
           <form class="w3-container" method="post" action="/signup">
             <p>
             <label>First Name</label>
-            <input class="w3-input" type="text" name="fname"></p>
+            <input class="w3-input" type="text" name="fname" required></p>
             <p>
             <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname"></p>
+            <input class="w3-input" type="text" name="lname" required></p>
+            <p>
+            <label>Gender</label><br />
+            <select name="gender">
+              <option value="" selected disabled hidden></option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select></p>
+            <p>
+            <label>Date of born</label>
+            <input class="w3-input" type="date" name="dob" value=""></p>
             <p>
             <label>Email</label>
-            <input class="w3-input" type="email" name="email"></p>
+            <input class="w3-input" type="email" name="email" required></p>
             <p>
             <label>Password</label>
-            <input class="w3-input" type="password" name="password"></p>
+            <input class="w3-input" type="password" name="password" required></p>
             <br/>
             <p><button type="submit" class="button1">Create Account</button></p>
             

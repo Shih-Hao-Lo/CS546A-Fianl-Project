@@ -42,8 +42,54 @@ function cancelResch(formId) {
 function createPrescription(resId) {
   location.href = `/prescription/add?resId=${resId}`;
 }
+function viewPrescription(resId) {
+  location.href = `/prescription/view?resId=${resId}`;
+}
+function addPrescription() {
+  let diagnosis = $('textarea[name="diagnosis"]').val();
+  let meds = $("#medicines").val();
+  let room = $('#room').val();
+  let resId = $('input[name="reservation_id"]').val();
+  // alert(`diagnosis: ${diagnosis}; meds: ${meds}; room: ${room}; resId: ${resId}`);
+  $.ajax({
+    url: '/prescription/add',
+    type: 'POST',
+    data: {
+      diagnosis,
+      meds,
+      room,
+      resId
+    },
+    success: function() { location.href = `/reservation/${resId}` },
+    error: function() { alert('failed') }
+  })
+}
+function generateBill(resId) {
+  window.open(
+    `/reservation/${resId}/bill`,
+    '_blank'
+  );
+}
+function updateReservationStatus(resId) {
+  let status = $('select[name="reservation_status"]').val();
+  // alert(`updating status for ${resId} to ${status}`);
+  let confirmation = confirm(`Are you sure you want to update the booking status to: ${status}`);
+  if(confirmation) {
+    $.ajax({
+      url: `/reservation/${resId}/status/update?newStatus=${status}`,
+      type: 'POST',
+      success: function() {
+        alert(`Booking status updated`);
+      },
+      error: function() {
+        alert('Failed to update status');
+      }
+    })
+  }
+}
 
 $(document).ready(function() {
+
   $("#medicines").change(function() {
     // alert("something changed");
     var selectedOptions = getSelectedOptions(this);
@@ -80,8 +126,8 @@ $(document).ready(function() {
     return totalPrice;
   }
   function updatePriceField(val) {
-    $('#total_cost').text(`$${val}`);
-    $('#total_cost').attr('price', val);
+    $('#total_cost').text(`$${val.toFixed(2)}`);
+    $('#total_cost').attr('price', val.toFixed(2));
   }
   function getSelectedOptions(selectBox) {
     var optionList = selectBox.options;
@@ -94,7 +140,6 @@ $(document).ready(function() {
     return selectedOption;
   }
 })
-
 
 // ======== Edit Profile & PWD ======== //
 

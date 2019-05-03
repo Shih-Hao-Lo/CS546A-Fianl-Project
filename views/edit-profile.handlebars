@@ -3,6 +3,7 @@
     <div class="w3-container medi-yellow">
         <h2>Edit Profile</h2>
     </div>
+
     <p class="profile-status1">{{status1}}</p>
     <p class="profile-status2">{{status2}}</p>
     <div class="form-container">
@@ -19,13 +20,13 @@
             <p>
                 <label>Gender</label><br />
                 <select name="gender">
-                    <option value="" selected></option>
+                    <option value="" selected disabled hidden></option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                 </select></p>
             <p>
                 <label>Date of born</label>
-                <input class="w3-input" type="date" name="dob" value=""></p>
+                <input class="w3-input" type="date" name="dob" value={{user.dob}}></p>
             <br />
             <button type="submit" class="button1">Save</button>
             <button type="button" class="button1" onclick="changePWD()">Change Password</button>

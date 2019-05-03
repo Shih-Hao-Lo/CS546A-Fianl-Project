@@ -2,6 +2,8 @@ const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const users = mongoCollections.users;
 const ObjectID = require('mongodb').ObjectID;
+const bcrypt = require("bcrypt");
+const saltRounds = 5;
 
 // Find user by id. id is String or ObjectId.
 async function getbyid(id){
@@ -47,6 +49,7 @@ async function getAll(){
 // Add new patient. newname , newgender , newdob , newusername , newpassword are string.
 async function addUser(username, email, gender, dob, fname, lname, password){
     const userCollections = await users();
+    const hashpassword = await bcrypt.hash(password, saltRounds);
     let newUser = {
         username: username,
         email: email,
@@ -54,8 +57,11 @@ async function addUser(username, email, gender, dob, fname, lname, password){
         dob: dob,
         fname: fname,
         lname: lname,
-        password: password
+        password: hashpassword
     };
+    
+    const check = await userCollections.findOne({ email: email });
+    if(check != undefined) throw 'email already exists.';
 
     const InsertInfo = await userCollections.insertOne(newUser);
     if(InsertInfo.insertedCount === 0) throw 'Insert fail!';
@@ -89,6 +95,7 @@ async function updatepatient(id , data){
 
     const patientCollections = await users();
     const target = await this.getbyid(id);
+    let changePWD = true;
 
     if(data.email == "" || data.email === undefined){
         data.email = target.email;
@@ -99,7 +106,7 @@ async function updatepatient(id , data){
     if(data.fname == "" || data.fname === undefined){
         data.fname = target.fname;
     }
-    if(data.gender == "" || data.fname === undefined){
+    if(data.gender == "" || data.gender === undefined){
         data.gender = target.gender;
     }
     if(data.dob == "" || data.dob === undefined){
@@ -107,6 +114,11 @@ async function updatepatient(id , data){
     }
     if(data.password == "" || data.password === undefined){
         data.password = target.password;
+        changePWD = false;
+    }
+
+    if (changePWD) {
+        data.password = await bcrypt.hash(data.password, saltRounds);
     }
 
     let updatedata = {
@@ -123,7 +135,6 @@ async function updatepatient(id , data){
     }
 
     const updateinfo = await patientCollections.updateOne({ _id: id } , updatedata);
-    //if(updateinfo.modifiedCount === 0) throw 'Update fail!';
     return await this.getbyid(id);
 }
 
