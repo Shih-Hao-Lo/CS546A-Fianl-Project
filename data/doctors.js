@@ -240,6 +240,11 @@ module.exports = {
 
 async function main(){
     var a = await adddoctor("haoping" , "lin" , "hlin@m.edu" , "hplin");
-    var a = await adddoctor("weihsuan" , "wong" , "wwong@m.edu" , "wwong");
+    var b = await adddoctor("weihsuan" , "wong" , "wwong@m.edu" , "wwong");
+    updatespecialism(a._id , "General Medicine" , "add");
+    updatespecialism(a._id , "General Surgery" , "add");
+    updatespecialism(b._id , "Pediatrics" , "add");
+    updatespecialism(b._id , "Orthopedics" , "add");
+    updatespecialism(b._id , "Otolaryngology" , "add");
 }
 //main();
