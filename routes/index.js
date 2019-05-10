@@ -8,6 +8,7 @@ const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
+const specialismList = require("../data/specialism");
 
 const constructorMethod = app => {
 
@@ -42,12 +43,12 @@ const constructorMethod = app => {
       console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
-      try{
+      try {
         var user = await usersData.addUser(email, email, gender, dob, fname, lname, password);
         req.session.user = user;
         res.redirect('/dashboard');
       }
-      catch(e){
+      catch (e) {
         res.json({ error: e });
       }
 
@@ -141,6 +142,16 @@ const constructorMethod = app => {
     }
   });
 
+  app.get('/doctors/search/:id', async (req, res) => {
+    console.log(req.params.id);
+    var doctors = await doctorData.searchbyspecialism(req.params.id);
+    if (doctors != undefined) {
+      console.log(doctors);
+      res.send(doctors);
+    }
+
+  });
+
   app.get('/logout', function (req, res) {
     req.session.destroy(function () {
       console.log("user logged out.")
@@ -150,7 +161,7 @@ const constructorMethod = app => {
 
   app.get("/reservation/new", loggedIn, async (req, res) => {
     var doctorList = await doctorData.getAll();
-    res.render('reservation_new', { user: req.session.user, doctorList: doctorList });
+    res.render('reservation_new', { user: req.session.user, doctorList: doctorList, spList: specialismList.List });
   });
 
   app.post("/reservation/new", loggedIn, async (req, res) => {
@@ -182,6 +193,12 @@ const constructorMethod = app => {
     res.render('reservation_view', { user: req.session.user, doctorList: doctorList, reservation: reservation });
   });
 
+  app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
+    console.log(req.params.id);
+    var updated = await reservationData.payment(req.params.id);
+    res.redirect('/reservation/' + req.params.id);
+  });
+
   app.get("/prescription/add", loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.query.resId;
@@ -202,7 +219,7 @@ const constructorMethod = app => {
   }
 
   app.get("/search", async (req, res) => {
-    
+
   });
 
   app.get("/details/:id", async (req, res) => {
@@ -291,7 +308,7 @@ const constructorMethod = app => {
     }
     try {
       let getUser = await usersData.getUserByUsername(user.email);
-      let checkPWD = await bcrypt.compare(oldPWD , getUser.password);
+      let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
       if (!checkPWD) {
         res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
         res.status(400);
@@ -312,7 +329,7 @@ const constructorMethod = app => {
   });
 
   app.use("*", (req, res) => {
-    res.render(errorPage, {title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404});
+    res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });
   });
 };
 

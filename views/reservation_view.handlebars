@@ -129,15 +129,16 @@
             </p>
             {{else}}
             <p class="edit_buttons_cont">
-              {{#ifEquals reservation.status 'confirmed'}}
+              {{!-- {{#ifEquals reservation.status 'confirmed'}}--}}
               <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
               <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
-              {{/ifEquals}}
+              <button class="button1" onclick="Pay('{{reservation._id}}')">Pay</button>
+              {{!-- {{/ifEquals}}--}}
 
-              {{#ifNotEquals reservation.status 'confirmed'}}
+              {{!-- {{#ifNotEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="alert('this will redirect to payment');return false;">Pay</button>
               <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
-              {{/ifNotEquals}}
+              {{/ifNotEquals}}--}}
             </p>
             {{/if}}
           </div>
@@ -164,7 +165,7 @@
             <select class="w3-input" name="doctor_id">
               <option></option>
               {{#each doctorList}}
-              <option value="{{this._id}}" {{#if this.selected}} selected {{/if}}>{{this.name}}</option>
+              <option value="{{this._id}}" {{#if this.selected}} selected {{/if}}>{{this.fname}} {{this.lname}}</option>
               {{/each}}
             </select></p>
             <p>

@@ -185,10 +185,11 @@ async function assignprescription(id , pid){
     }
 
     const ptarget = await prescriptionf.getbyid(pid).catch(e => { throw e });
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = await this.getbyid(id).catch(e => { throw e });
     const data = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
@@ -222,10 +223,11 @@ async function assignroom(id , rid , day){
     }
 
     const rtarget = await roomf.getbyid(rid).catch(e => { throw e });
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = await this.getbyid(id);
     const data = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
@@ -272,7 +274,7 @@ async function modifyreservation(id , data){
     }
 
     const dtarget = await doctorf.getbyid(data.did).catch(e => { throw e });
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = this.getbyid(id).catch(e => { throw e });
 
     if(data.did === undefined){
@@ -283,13 +285,14 @@ async function modifyreservation(id , data){
     }
     const updatedata = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: data.did,
             date: data.date,
-            room: target.room,
+            roomid: target.room,
             days: target.days,
-            prescription: target.prescription,
-            status: target.status            
+            prescriptionid: target.prescriptionid,
+            status: target.status  
         }
     }
 
@@ -341,7 +344,7 @@ async function delreservation(id){
         }
     } 
 
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = this.getbyid(id);
 
     const delinfo = await reservationCollections.removeOne({ _id: id });
@@ -364,23 +367,24 @@ async function payment(id){
         }
     }   
 
-    const reservationCollections = await reservation();
-    const target = this.getbyid(id).catch(e => { throw e });
+    const reservationCollections = await reservations();
+    const target = await this.getbyid(id);
     const updatedata = {
-        $set:{
+        $set:{ 
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
-            room: target.room,
+            roomid: target.room,
             days: target.days,
-            prescription: target.prescription,
-            status: 'Completed'           
+            prescriptionid: target.prescriptionid,
+            status: 'Completed'          
         }
     }
 
     const updateinfo = await reservationCollections.update({ _id: id } , updatedata);
     if(updateinfo.modifiedCount === 0) throw 'Update fail!';
-
+    //console.log(updateinfo)
     return await this.getbyid(id);
 }
 
