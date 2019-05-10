@@ -193,6 +193,12 @@ const constructorMethod = app => {
     res.render('reservation_view', { user: req.session.user, doctorList: doctorList, reservation: reservation });
   });
 
+  app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
+    console.log(req.params.id);
+    var updated = await reservationData.payment(req.params.id);
+    res.redirect('/reservation/' + req.params.id);
+  });
+
   app.get("/prescription/add", loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.query.resId;
