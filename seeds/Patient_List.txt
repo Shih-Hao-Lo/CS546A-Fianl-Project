@@ -1,5 +1,5 @@
 Patients:
-Will Smith		 | Username: will@gmail.com, Password: will1
+Will Smith		 | Username: will@web.com, Password: will1
 George Clooney		 | Username: george@web.com, Password: george1
 Robert Downey		 | Username: robert@web.com, Password: robert1
 Mark Wahlberg		 | Username: robert@web.com, Password: mark1
