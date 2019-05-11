@@ -167,13 +167,21 @@ const constructorMethod = app => {
     res.redirect('/login');
   });
 
-  app.get("/reservation/new", loggedIn, async (req, res) => {
+    app.get("/reservation/new", loggedIn, async (req, res) => {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
     //await doctorData.adddoctor('Test', 'testies', 'pass');
     var doctorList = await doctorData.getAll();
     res.render('reservation_new', { user: req.session.user, doctorList: doctorList, spList: specialismList.List });
   });
 
-  app.post("/reservation/new", loggedIn, async (req, res) => {
+    app.post("/reservation/new", loggedIn, async (req, res) => {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
     console.log(req.body);
     var pid = req.body.id;
     var did = req.body.doctor_id;
