@@ -252,6 +252,11 @@ const constructorMethod = app => {
     res.redirect('/reservation/' + req.params.id);
   });
 
+  app.get('/reservation/delete/:id' , loggedIn , async (req , res) =>{
+    var deleted = await reservationData.delreservation(req.params.id);
+    res.redirect('/reservation');
+  });
+
   app.post("/reservation/edit", loggedIn, async (req, res) => {
     var pid = req.body.patient_id;
     var did = req.body.doctor_id;
