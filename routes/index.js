@@ -198,12 +198,21 @@ const constructorMethod = app => {
     var resId = req.params.id;
     var reservation = await reservationData.getbyid(resId);
     var doctorList = await doctorData.getAll();
-    doctorList.forEach(function (ele) {
-      console.log(`comparing ${ele._id} == ${reservation.doctor._id}`);
-      if (ele._id.toString() == reservation.doctor._id.toString()) ele["selected"] = true;
-      console.log(`sel: ${ele.selected}`);
-    });
-    console.log("inside reservation view: user: " + req.session.user.isDoctor);
+
+    if(reservation) {
+      if(reservation.patientid.toString() != req.session.user._id.toString() 
+        && reservation.doctorid.toString() != req.session.user._id.toString()) {
+          reservation = null;
+        } else {
+          doctorList.forEach(function (ele) {
+            // console.log(`comparing ${ele._id} == ${reservation.doctor._id}`);
+            if (ele._id.toString() == reservation.doctor._id.toString()) ele["selected"] = true;
+            // console.log(`sel: ${ele.selected}`);
+          });
+        }
+      
+    }
+    // console.log("inside reservation view: user: " + req.session.user.isDoctor);
     res.render('reservation_view', { user: req.session.user, doctorList: doctorList, reservation: reservation });
   });
 
@@ -214,7 +223,15 @@ const constructorMethod = app => {
     // logger(`request body in update status ${req.query.newStatus}`);
     let reservation = await reservationData.updateReservationStatus(resId, newStatus);
     res.sendStatus(200);
-  })
+  });
+
+  app.get("/reservation/:id/bill", loggedIn, async (req, res) => {
+    console.log(req.body);
+    var resId = req.params.id;
+    var reservation = await reservationData.getbyid(resId);
+    
+    res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
+  });
 
   async function loginTestUser(req, res) {
     console.log(`inside loginTestUser: loggin in`)
@@ -327,7 +344,7 @@ const constructorMethod = app => {
       let medicineId = medicine._id.toString();
       let ind = medsPrescribed.indexOf(medicineId);
       // logger(`index of medicineid in prescription: ${ind}`);
-      return ind > 0;
+      return ind > -1;
     });
 
 
