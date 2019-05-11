@@ -16,11 +16,11 @@ const constructorMethod = app => {
   var users = [{ id: 0, email: 'namanyadav@gmail.com', password: 'hello', fname: 'Naman', lname: 'Yadav' }];
 
   app.get("/", loggedIn, (req, res) => {
-    res.render("search/home", { title: "People Finder" });
+    res.render("search/home", { title: "MediDesk homepage" });
   });
 
   app.get("/signup", (req, res) => {
-    res.render("signup", { title: "People Finder" });
+    res.render("signup", { title: "MediDesk signup" });
   });
 
   app.post("/signup", async (req, res) => {
@@ -78,7 +78,7 @@ const constructorMethod = app => {
   });
 
   app.get("/login", (req, res) => {
-    res.render("login", { title: "People Finder" });
+    res.render("login", { title: "MediDesk login" });
   });
 
   app.post("/login", async (req, res) => {

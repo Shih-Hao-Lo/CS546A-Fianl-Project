@@ -387,7 +387,7 @@ async function payment(id){
             roomid: target.room,
             days: target.days,
             prescriptionid: target.prescriptionid,
-            status: 'Completed'          
+            status: 'completed'          
         }
     }
 
