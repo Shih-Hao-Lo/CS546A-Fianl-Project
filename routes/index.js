@@ -255,7 +255,7 @@ const constructorMethod = app => {
     var reservation = await reservationData.modifyreservation(rid, data);
     res.redirect('/reservation');
   })
-  app.get("/prescription/add", loggedIn, async (req, res) => {
+  app.get("/prescription/add", logging, loggedIn, async (req, res) => {
     console.log(req.body);
     var resId = req.query.resId;
     var reservation = await reservationData.getbyid(resId);
@@ -295,38 +295,20 @@ const constructorMethod = app => {
   });
 
   app.post("/prescription/add", logging, loggedIn, async (req, res) => {
-    // console.log('request data::::')
-    // console.log(req.body)
-    // console.log(`::::request data over`);
-    // var resId = req.query.resId;
-
     let {resId, diagnosis, medsPrescribed, roomId } = req.body;
-    // let medsPrescribed = req.body.meds;
-    // let roomId = req.body.room;
-    // let resId = req.body.resId;
-    var reservation = await reservationData.getbyid(resId);
-    var medicineList = await medicineData.getAll();
-    var roomList = await roomData.availableroom();
+    let reservation = await reservationData.getbyid(resId);
     let { patientid, doctorid } = reservation;
-
-    // let pid = reservation.patientid;
-    // let did = reservation.doctorid;
-
-    // logger(`diagnosis: ${diagnosis}`);;
-    // logger(`medsPrecribed: ${medsPrescribed}`);
-    // logger(`roomId: ${roomId}`);
-    // logger(`patientid: ${patientid}`);
-    // logger(`doctorid: ${doctorid}`);
+    let medicineList = await medicineData.getAll();
+    let roomList = await roomData.availableroom();
 
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
       let ind = medsPrescribed.indexOf(medicineId);
-      // logger(`index of medicineid in prescription: ${ind}`);
-      return ind > 0;
+      return ind > -1;
     });
 
+    await reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
 
-    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
       reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
