@@ -363,125 +363,130 @@ const constructorMethod = app => {
     }
   }
 
-  // ====== Update user's profile ====== //
-  // A function used to set the html tag <select> to specific option
-  function GenderTool(gender) {
-    let genderArr = [];
-    if (gender === "male") {
-      genderArr.push("selected");
-      genderArr.push("");
-    }
-    else {
-      genderArr.push("");
-      genderArr.push("selected");
-    }
-    return genderArr;
-  }
+    // ====== Update user's profile ====== //
 
-  // Retrieve user's profile and show on page
+    // A function used to set the html tag <select> to specific option
+    function GenderTool(gender) {
+        let genderArr = [];
+        if (gender === "male") {
+            genderArr.push("selected");
+            genderArr.push("");
+        }
+        else {
+            genderArr.push("");
+            genderArr.push("selected");
+        }
+        return genderArr;
+    }
+
+    // Retrieve user's profile and show on page
     app.get('/edit-profile', loggedIn, function (req, res) {
-      console.log(req.session.user.isDoctor);
-      if (req.session.user.isDoctor != undefined) {
-         res.redirect("/dashboard");
-         return;
-    }
-    let user = req.session.user;
-    let name = `${user.fname} ${user.lname}`;
-    if (user.isDoctor) name = `Dr. ${name}`;
-    let genderArr = GenderTool(user.gender);
-    res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1] });
-  });
+        console.log(req.session.user.isDoctor);
+        if (req.session.user.isDoctor != undefined) {
+            res.redirect("/dashboard");
+            return;
+        }
+        let user = req.session.user;
+        let name = `${user.fname} ${user.lname}`;
+        if (user.isDoctor) name = `Dr. ${name}`;
+        let genderArr = GenderTool(user.gender);
+        res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1] });
+    });
 
-  // Update user's profile
+    // POST user's new profile
     app.post('/edit-profile', loggedIn, async (req, res) => {
-      if (req.session.user.isDoctor != undefined) {
-         res.redirect("/dashboard");
-         return;
-    }
-    let user = req.session.user;
-    let name = `${user.fname} ${user.lname}`;
-    let data = {};
-    if (user.isDoctor) name = `Dr. ${name}`;
-    data.fname = req.body.fname;
-    data.lname = req.body.lname;
-    data.email = req.body.email;
-    data.gender = req.body.gender;
-    data.dob = req.body.dob;
-    //let genderArr = GenderTool(user.gender);
+        if (req.session.user.isDoctor != undefined) {
+            res.redirect("/dashboard");
+            return;
+        }
+        let user = req.session.user;
+        let name = `${user.fname} ${user.lname}`;
+        let data = {};
+        if (user.isDoctor) name = `Dr. ${name}`;
+        data.fname = req.body.fname;
+        data.lname = req.body.lname;
+        data.email = req.body.email;
+        data.gender = req.body.gender;
+        data.dob = req.body.dob;
 
-    if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
-      res.status("400");
-      /* res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Profile Not Changed!" }); */
-      res.redirect('/dashboard');
-      return;
-    }
+        let genderArr = GenderTool(user.gender);
+        if (await usersData.getUserByUsername(data.email) != undefined) {
+            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
+            return;
+        }
 
-    try {
-      let getUser = await usersData.getUserByUsername(user.email);
-      let updatedUser = await usersData.updatepatient(getUser._id, data);
-      req.session.user = updatedUser;
-      /* res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status1: "Profile updated Successfully!", genderSel1: genderArr[0], genderSel2: genderArr[1] }); */
-      res.redirect('/dashboard');
-      return;
-    } catch (e) {
-      // res.status("400");
-      console.log(e);
-      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
-      return;
-    }
-  });
+        if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
+            res.status("400");
+            res.redirect('/dashboard');
+            return;
+        }
 
-  // ====== Update user's password ====== //
+        try {
+            let getUser = await usersData.getUserByUsername(user.email);
+            let updatedUser = await usersData.updatepatient(getUser._id, data);
+            req.session.user = updatedUser;
+            res.redirect('/dashboard');
+            return;
+        } catch (e) {
+            // res.status("400");
+            console.log(e);
+            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
+            return;
+        }
+    });
+
+    // ====== Update user's password ====== //
+
     app.get('/change-password', loggedIn, function (req, res) {
-    if (req.session.user.isDoctor != undefined) {
-      res.redirect("/dashboard");
-      return;
-    }
+        if (req.session.user.isDoctor != undefined) {
+            res.redirect("/dashboard");
+            return;
+        }
         res.render('change-pwd');
         return;
-  });
+    });
 
-  // Change user's password
+    // POST user's new password
     app.post('/change-password', loggedIn, async (req, res) => {
-    if (req.session.user.isDoctor != undefined) {
-      res.redirect("/dashboard");
-      return;
-    }
-    let user = req.session.user;
-    let data = {};
-    let oldPWD = req.body.oldPWD;
-    let newPWD = req.body.newPWD;
-    if (oldPWD == "") {
-      res.render('change-pwd', { status2: "Old Password Incorrect" });
-      res.status(400);
-      return;
-    }
-    if (newPWD == "") {
-      res.render('change-pwd', { status2: "New Password Cannot be Empty" });
-      res.status(400);
-      return;
-    }
-    try {
-      let getUser = await usersData.getUserByUsername(user.email);
-      let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
-      if (!checkPWD) {
-        res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
-        res.status(400);
-        return;
-      }
-      data.password = newPWD;
-      let updatedUser = await usersData.updatepatient(getUser._id, data);
-      req.session.user = updatedUser;
-      console.log("Password Updated");
-      res.redirect('/dashboard');
-      return;
-    } catch (e) {
-      // res.status("400");
-      console.log(e);
-      res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
-      return;
-    }
-  });
+        if (req.session.user.isDoctor != undefined) {
+            res.redirect("/dashboard");
+            return;
+        }
+        let user = req.session.user;
+        let data = {};
+        let oldPWD = req.body.oldPWD;
+        let newPWD = req.body.newPWD;
+        if (oldPWD == "") {
+            res.render('change-pwd', { status2: "Old Password Incorrect" });
+            res.status(400);
+            return;
+        }
+        if (newPWD == "") {
+            res.render('change-pwd', { status2: "New Password Cannot be Empty" });
+            res.status(400);
+            return;
+        }
+        try {
+            let getUser = await usersData.getUserByUsername(user.email);
+            let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
+            if (!checkPWD) {
+                res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
+                res.status(400);
+                return;
+            }
+            data.password = newPWD;
+            let updatedUser = await usersData.updatepatient(getUser._id, data);
+            req.session.user = updatedUser;
+            console.log("Password Updated");
+            res.redirect('/dashboard');
+            return;
+        } catch (e) {
+            // res.status("400");
+            console.log(e);
+            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
+            return;
+        }
+    });
 
   app.use("*", (req, res) => {
     res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });
