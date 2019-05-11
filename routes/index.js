@@ -197,7 +197,9 @@ const constructorMethod = app => {
 
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
-    var target = await reservationData.getbyid(req.params.id);
+      var target = await reservationData.getbyid(req.params.id);
+      //console.log(req.session.user._id);
+      //console.log(target._id);
     if(req.session.user._id != target.patientid){
       res.sendStatus(403);
       return;
