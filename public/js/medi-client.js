@@ -142,7 +142,7 @@ $(document).ready(function () {
 })
 
 function updatedoc(selectObject) {
-  alert(selectObject.value.length);
+  //alert(selectObject.value.length);
   if(selectObject.value.length == 0){
     location.href = '/reservation/new';
   }
