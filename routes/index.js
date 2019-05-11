@@ -323,6 +323,7 @@ const constructorMethod = app => {
     // var resId = req.query.resId;
 
     let {resId, diagnosis, medsPrescribed, roomId } = req.body;
+    //console.log(req.body)
     // let medsPrescribed = req.body.meds;
     // let roomId = req.body.room;
     // let resId = req.body.resId;
@@ -348,7 +349,7 @@ const constructorMethod = app => {
     });
 
 
-    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
+    reservationData.addprescription(resId, patientid, doctorid, req.body.medsPrescribed, req.body.diagnosis, req.body.roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
       reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
