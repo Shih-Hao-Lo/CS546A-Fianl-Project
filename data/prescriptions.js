@@ -84,7 +84,8 @@ async function addprescription(pid , did , medicinelist, date){
         patientid: pid,
         doctorid: did,
         medicine: medicinelist,
-        roomid: date
+        date: date,
+        roomid: undefined
     }
 
     const insertinfo = await prescriptionCollections.insertOne(data);
@@ -116,6 +117,7 @@ async function modifyprescription(id , data){
     const target = await this.getbyid(id);
     if(data.pid === undefined) data.pid = target.patientid;
     if(data.did === undefined) data.did = target.doctorid;
+    if(data.rid === undefined) data.rid = target.roomid;
     if(data.newdate === undefined) data.newdate = target.date;
 
     const prescriptionCollections = await prescriptions();
@@ -125,6 +127,7 @@ async function modifyprescription(id , data){
             patientid: data.pid,
             doctorid: data.did,
             medicine: target.medicine,
+            roomid: data.rid,
             date: data.newdate
         }
     }
@@ -181,9 +184,9 @@ async function delprescription(id){
     return target;
 }
 
-async function updatePrescription(prescId, medicinelist, date) {
+async function updatePrescription(prescId, medicinelist, roomId , date) {
     let prescriptionCollection = await prescriptions();
-    let modifyInfo = await prescriptionCollection.updateOne({_id: prescId}, {$set: { medicine: medicinelist, date: date }})
+    let modifyInfo = await prescriptionCollection.updateOne({_id: prescId}, {$set: { medicine: medicinelist, roomid: roomId , date: date }})
     return await getbyid(prescId);
 }
 

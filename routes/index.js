@@ -239,25 +239,6 @@ const constructorMethod = app => {
     
   });
 
-  async function loginTestUser(req, res) {
-    console.log(`inside loginTestUser: loggin in`)
-    let email = 'house@medi.com';
-    let password = 'hello';
-    var user = await usersData.getUserByUsername(email)
-      if (user === undefined) {
-        var isdoctor = await doctorData.getDoctorByEmail(email);
-        if (await bcrypt.compare(password, isdoctor.password)) {
-          req.session.user = isdoctor;
-          req.session.user["isDoctor"] = true;
-        }
-      }
-      else {
-        if (await bcrypt.compare(password, user.password)) {
-          req.session.user = user;
-        }
-      }
-  }
-
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
     var target = await reservationData.getbyid(req.params.id);
@@ -336,6 +317,7 @@ const constructorMethod = app => {
     // var resId = req.query.resId;
 
     let {resId, diagnosis, medsPrescribed, roomId } = req.body;
+    //console.log(req.body)
     // let medsPrescribed = req.body.meds;
     // let roomId = req.body.room;
     // let resId = req.body.resId;
@@ -361,7 +343,7 @@ const constructorMethod = app => {
     });
 
 
-    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
+    reservationData.addprescription(resId, patientid, doctorid, req.body.medsPrescribed, req.body.diagnosis, req.body.roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
       reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
