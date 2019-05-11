@@ -98,7 +98,6 @@ async function processReservationData(reservation) {
         // console.log("getting prescription data"+reservation.prescriptionid);
         reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
     }
-        
 
     if(reservation.roomid) {
         // console.log("getting room data: "+reservation.roomid);
@@ -281,10 +280,10 @@ async function modifyreservation(id , data){
     const reservationCollections = await reservations();
     const target = await this.getbyid(id).catch(e => { throw e });
 
-    console.log("target---------------------------\n");
-    console.log(target);
-    console.log("dtarget----------------------\n");
-    console.log(dtarget);
+    // console.log("target---------------------------\n");
+    // console.log(target);
+    // console.log("dtarget----------------------\n");
+    // console.log(dtarget);
 
     if(data.did === undefined){
         data.did = target.doctorid;
@@ -308,7 +307,6 @@ async function modifyreservation(id , data){
     console.log(updatedata);
 
     const updateinfo = await reservationCollections.updateOne({ _id: id } , updatedata);
-    if(updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
 }

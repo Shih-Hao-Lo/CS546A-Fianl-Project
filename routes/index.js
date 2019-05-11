@@ -21,7 +21,7 @@ const constructorMethod = app => {
   });
 
   app.get("/signup", (req, res) => {
-    res.render("signup", { title: "People Finder" });
+    res.render("signup", { title: "MediDesk signup" });
   });
 
   app.post("/signup", async (req, res) => {
@@ -53,8 +53,6 @@ const constructorMethod = app => {
       catch (e) {
         res.json({ error: e });
       }
-
-      // res.render()
     }
   });
 
@@ -86,12 +84,11 @@ const constructorMethod = app => {
   });
 
   app.get("/login", (req, res) => {
-    res.render("login", { title: "People Finder" });
+    res.render("login", { title: "MediDesk login" });
   });
 
   app.post("/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    console.log(users);
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
@@ -105,7 +102,10 @@ const constructorMethod = app => {
       var user = await usersData.getUserByUsername(req.body.email)
       if (user === undefined) {
         var isdoctor = await doctorData.getDoctorByEmail(req.body.email);
-        if(isdoctor === null) { res.render('login', { message: "Invalid email or password. "}); return; }
+        if (isdoctor === null) {
+          res.render('login', { hasError: true , message: "User not found!" });
+          return;
+        }
         if (await bcrypt.compare(req.body.password, isdoctor.password)) {
           req.session.user = isdoctor;
           req.session.user["isDoctor"] = true;
@@ -132,7 +132,6 @@ const constructorMethod = app => {
 
   app.post("/doctor/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    console.log(users);
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
@@ -154,10 +153,8 @@ const constructorMethod = app => {
     console.log(req.params.id);
     var doctors = await doctorData.searchbyspecialism(req.params.id);
     if (doctors != undefined) {
-      console.log(doctors);
       res.send(doctors);
     }
-
   });
 
   app.get('/logout', function (req, res) {
@@ -240,10 +237,10 @@ const constructorMethod = app => {
 
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
-      var target = await reservationData.getbyid(req.params.id);
-      //console.log(req.session.user._id);
-      //console.log(target._id);
-    if(req.session.user._id != target.patientid){
+    var target = await reservationData.getbyid(req.params.id);
+    //console.log(req.session.user._id);
+    //console.log(target._id);
+    if (req.session.user._id != target.patientid) {
       res.sendStatus(403);
       return;
     }
@@ -348,14 +345,6 @@ const constructorMethod = app => {
       }
     }
   }
-
-  app.get("/search", async (req, res) => {
-
-  });
-
-  app.get("/details/:id", async (req, res) => {
-
-  });
 
   // ====== Update user's profile ====== //
   // A function used to set the html tag <select> to specific option

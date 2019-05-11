@@ -5,21 +5,18 @@ const ObjectID = require('mongodb').ObjectID;
 
 // Find room by id. id is a string or objectid.
 async function getbyid(id){
-    if(id === undefined){
-        throw 'input is empty';
+    if(id === undefined || id.length === 0){
+        return;
     }
     if(id.constructor != ObjectID){
         if(ObjectID.isValid(id)){
             id = new ObjectID(id);
         }
-        else{
-            throw 'Id is invalid!(in data/room.getbyid)'
-        }
     }
 
     const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
-    // if(target === null) throw 'Room not found!';
+    if(target === null) return { price:0 };
 
     return target;
 }
