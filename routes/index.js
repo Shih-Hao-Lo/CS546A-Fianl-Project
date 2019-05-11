@@ -1,4 +1,4 @@
-// const axios = require("axios");
+const xss = require('xss');
 const usersData = require("../data/users");
 const doctorData = require("../data/doctors");
 const reservationData = require("../data/reservations");
@@ -14,28 +14,26 @@ const logger = require('../logger').logger;
 
 const constructorMethod = app => {
 
-  var users = [{ id: 0, email: 'namanyadav@gmail.com', password: 'hello', fname: 'Naman', lname: 'Yadav' }];
-
-  app.get("/", loggedIn, (req, res) => {
+  app.get("/", logging, loggedIn, (req, res) => {
       res.redirect("/dashboard");
   });
 
-  app.get("/signup", (req, res) => {
+  app.get("/signup", logging, (req, res) => {
     res.render("signup", { title: "MediDesk signup" });
   });
 
-  app.post("/signup", async (req, res) => {
+  app.post("/signup", logging, async (req, res) => {
     if (!req.body.email || !req.body.password) {
       res.status("400");
       res.send("Invalid details!");
     } else {
-      var email = req.body.email;
-      var password = req.body.password;
-      var fname = req.body.fname;
-      var lname = req.body.lname;
-      var password = req.body.password;
-      var dob = req.body.dob;
-      var gender = req.body.gender;
+      var email = xss(req.body.email);
+      var password = xss(req.body.password);
+      var fname = xss(req.body.fname);
+      var lname = xss(req.body.lname);
+      var password = xss(req.body.password);
+      var dob = xss(req.body.dob);
+      var gender = xss(req.body.gender);
       // users.filter(function(user){
       //   if(user.email === email){
       //      res.render('signup', {
@@ -56,6 +54,12 @@ const constructorMethod = app => {
     }
   });
 
+  function xssClean(req, res, next) {
+    let reqBody = req.body;
+    for(let key in reqBody) {
+      reqBody[key] = xss(reqBody[key]);
+    }
+  }
   function logging(req, res, next){
     let authUserString = req.session.user ? '(Authenticated User)' : '(Non-Authenticated User)';
     console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} ${authUserString}`);
@@ -72,47 +76,44 @@ const constructorMethod = app => {
     }
   }
 
-  app.get('/protected', loggedIn, function (req, res) {
+  app.get('/protected', logging, loggedIn, function (req, res) {
     res.render('protected_page', { id: req.session.user.id })
   });
 
-  app.get('/dashboard', loggedIn, function (req, res) {
+  app.get('/dashboard', logging, loggedIn, function (req, res) {
     var user = req.session.user;
     var name = `${user.fname} ${user.lname}`;
     if (user.isDoctor) name = `Dr. ${name}`;
     res.render('dashboard', { id: req.session.user.id, user: req.session.user, name: name });
   });
 
-  app.get("/login", (req, res) => {
+  app.get("/login", logging, (req, res) => {
     res.render("login", { title: "MediDesk login" });
   });
 
-  app.post("/login", async (req, res) => {
+  app.post("/login", logging, async (req, res) => {
     // res.render("login", {title: "People Finder"});
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
-      // users.filter(function(user){
-      //   if(user.email === req.body.email && user.password === req.body.password){
-      //       req.session.user = user;
-      //       res.redirect('/dashboard');
-      //   }
-      // });
+    
+      let email = xss(req.body.email);
+      let password = xss(req.body.password);
 
-      var user = await usersData.getUserByUsername(req.body.email)
+      var user = await usersData.getUserByUsername(email)
       if (user === undefined) {
-        var isdoctor = await doctorData.getDoctorByEmail(req.body.email);
+        var isdoctor = await doctorData.getDoctorByEmail(email);
         if (isdoctor === null) {
           res.render('login', { hasError: true , message: "User not found!" });
           return;
         }
-        if (await bcrypt.compare(req.body.password, isdoctor.password)) {
+        if (await bcrypt.compare(password, isdoctor.password)) {
           req.session.user = isdoctor;
           req.session.user["isDoctor"] = true;
         }
       }
       else {
-        if (await bcrypt.compare(req.body.password, user.password)) {
+        if (await bcrypt.compare(password, user.password)) {
           req.session.user = user;
         }
       }
@@ -126,11 +127,11 @@ const constructorMethod = app => {
     }
   });
 
-  app.get("/doctor/login", (req, res) => {
+  app.get("/doctor/login", logging, (req, res) => {
     res.render("doctor/login", { title: "Doctor Login" });
   });
 
-  app.post("/doctor/login", async (req, res) => {
+  app.post("/doctor/login", logging, async (req, res) => {
     // res.render("login", {title: "People Finder"});
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
@@ -149,22 +150,22 @@ const constructorMethod = app => {
     }
   });
 
-  app.get('/doctors/search/:id', async (req, res) => {
+  app.get('/doctors/search/:id', logging, async (req, res) => {
     console.log(req.params.id);
-    var doctors = await doctorData.searchbyspecialism(req.params.id);
+    var doctors = await doctorData.searchbyspecialism(xss(req.params.id));
     if (doctors != undefined) {
       res.send(doctors);
     }
   });
 
-  app.get('/logout', function (req, res) {
+  app.get('/logout', logging, function (req, res) {
     req.session.destroy(function () {
       console.log("user logged out.")
     });
     res.redirect('/login');
   });
 
-    app.get("/reservation/new", loggedIn, async (req, res) => {
+  app.get("/reservation/new", logging, loggedIn, async (req, res) => {
     if (req.session.user.isDoctor != undefined) {
       res.redirect("/dashboard");
       return;
@@ -174,28 +175,28 @@ const constructorMethod = app => {
     res.render('reservation_new', { user: req.session.user, doctorList: doctorList, spList: specialismList.List });
   });
 
-    app.post("/reservation/new", loggedIn, async (req, res) => {
+  app.post("/reservation/new", logging, loggedIn, async (req, res) => {
     if (req.session.user.isDoctor != undefined) {
       res.redirect("/dashboard");
       return;
     }
     console.log(req.body);
-    var pid = req.body.id;
-    var did = req.body.doctor_id;
-    var date = req.body.app_date;
+    var pid = xss(req.body.id);
+    var did = xss(req.body.doctor_id);
+    var date = xss(req.body.app_date);
     var reservation = await reservationData.makereservation(pid, did, date);
     res.redirect('/dashboard');
   });
 
-  app.get("/reservation", loggedIn, async (req, res) => {
+  app.get("/reservation", logging, loggedIn, async (req, res) => {
     console.log(req.body);
     var reservationList = await reservationData.getReservationList(req.session.user);
     res.render('reservation', { user: req.session.user, reservationList: reservationList });
   });
 
-  app.get("/reservation/:id", loggedIn, async (req, res) => {
+  app.get("/reservation/:id", logging, loggedIn, async (req, res) => {
     console.log(req.body);
-    var resId = req.params.id;
+    var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
     var doctorList = await doctorData.getAll();
 
@@ -218,16 +219,16 @@ const constructorMethod = app => {
 
   app.post('/reservation/:id/status/update', logging, loggedIn, async(req, res) => {
     // logger('inside ')
-    let resId = req.params.id;
-    let newStatus = req.query.newStatus;
+    let resId = xss(req.params.id);
+    let newStatus = xss(req.query.newStatus);
     // logger(`request body in update status ${req.query.newStatus}`);
     let reservation = await reservationData.updateReservationStatus(resId, newStatus);
     res.sendStatus(200);
   });
 
-  app.get("/reservation/:id/bill", loggedIn, async (req, res) => {
+  app.get("/reservation/:id/bill", logging, loggedIn, async (req, res) => {
     console.log(req.body);
-    var resId = req.params.id;
+    var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
@@ -239,9 +240,28 @@ const constructorMethod = app => {
     
   });
 
-  app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
+  async function loginTestUser(req, res) {
+    console.log(`inside loginTestUser: loggin in`)
+    let email = 'house@medi.com';
+    let password = 'hello';
+    var user = await usersData.getUserByUsername(email)
+      if (user === undefined) {
+        var isdoctor = await doctorData.getDoctorByEmail(email);
+        if (await bcrypt.compare(password, isdoctor.password)) {
+          req.session.user = isdoctor;
+          req.session.user["isDoctor"] = true;
+        }
+      }
+      else {
+        if (await bcrypt.compare(password, user.password)) {
+          req.session.user = user;
+        }
+      }
+  }
+
+  app.get("/reservation/pay/:id" , logging, loggedIn , async(req , res) =>{
     console.log(req.params.id);
-    var target = await reservationData.getbyid(req.params.id);
+    var target = await reservationData.getbyid(xss(req.params.id));
     //console.log(req.session.user._id);
     //console.log(target._id);
     if (req.session.user._id != target.patientid) {
@@ -252,16 +272,18 @@ const constructorMethod = app => {
     res.redirect('/reservation/' + req.params.id);
   });
 
+
   app.get('/reservation/delete/:id' , loggedIn , async (req , res) =>{
     var deleted = await reservationData.delreservation(req.params.id);
     res.redirect('/reservation');
   });
 
-  app.post("/reservation/edit", loggedIn, async (req, res) => {
-    var pid = req.body.patient_id;
-    var did = req.body.doctor_id;
-    var rid = req.body.reservation_id;
-    var date = req.body.app_date;
+  app.post("/reservation/edit", logging, loggedIn, async (req, res) => {
+    var pid = xss(req.body.patient_id);
+    var did = xss(req.body.doctor_id);
+    var rid = xss(req.body.reservation_id);
+    var date = xss(req.body.app_date);
+
     var data = {
       did: did,
       newdate: date
@@ -269,9 +291,9 @@ const constructorMethod = app => {
     var reservation = await reservationData.modifyreservation(rid, data);
     res.redirect('/reservation');
   })
-  app.get("/prescription/add", loggedIn, async (req, res) => {
+  app.get("/prescription/add", logging, xssClean, loggedIn, async (req, res) => {
     // console.log(req.body);
-    var resId = req.query.resId;
+    var resId = xss(req.query.resId);
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
@@ -316,29 +338,16 @@ const constructorMethod = app => {
   });
 
   app.post("/prescription/add", logging, loggedIn, async (req, res) => {
-    // console.log('request data::::')
-    // console.log(req.body)
-    // console.log(`::::request data over`);
-    // var resId = req.query.resId;
 
-    let {resId, diagnosis, medsPrescribed, roomId } = req.body;
-    //console.log(req.body)
-    // let medsPrescribed = req.body.meds;
-    // let roomId = req.body.room;
-    // let resId = req.body.resId;
+    // let {resId, diagnosis, medsPrescribed, roomId } = req.body;
+    let resId = xss(req.body.resId);
+    let diagnosis = xss(req.body.diagnosis);
+    let medsPrecribed = xss(req.body.medsPrecribed);
+    let roomId = xss(req.body.roomId);
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     let { patientid, doctorid } = reservation;
-
-    // let pid = reservation.patientid;
-    // let did = reservation.doctorid;
-
-    // logger(`diagnosis: ${diagnosis}`);;
-    // logger(`medsPrecribed: ${medsPrescribed}`);
-    // logger(`roomId: ${roomId}`);
-    // logger(`patientid: ${patientid}`);
-    // logger(`doctorid: ${doctorid}`);
 
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
@@ -348,7 +357,7 @@ const constructorMethod = app => {
     });
 
 
-    reservationData.addprescription(resId, patientid, doctorid, req.body.medsPrescribed, req.body.diagnosis, req.body.roomId, new Date());
+    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
       reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
@@ -380,7 +389,7 @@ const constructorMethod = app => {
     }
 
     // Retrieve user's profile and show on page
-    app.get('/edit-profile', loggedIn, function (req, res) {
+    app.get('/edit-profile', logging, loggedIn, function (req, res) {
         console.log(req.session.user.isDoctor);
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
@@ -394,7 +403,7 @@ const constructorMethod = app => {
     });
 
     // POST user's new profile
-    app.post('/edit-profile', loggedIn, async (req, res) => {
+    app.post('/edit-profile', logging, loggedIn, async (req, res) => {
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
@@ -403,11 +412,11 @@ const constructorMethod = app => {
         let name = `${user.fname} ${user.lname}`;
         let data = {};
         if (user.isDoctor) name = `Dr. ${name}`;
-        data.fname = req.body.fname;
-        data.lname = req.body.lname;
-        data.email = req.body.email;
-        data.gender = req.body.gender;
-        data.dob = req.body.dob;
+        data.fname = xss(req.body.fname);
+        data.lname = xss(req.body.lname);
+        data.email = xss(req.body.email);
+        data.gender = xss(req.body.gender);
+        data.dob = xss(req.body.dob);
 
         let genderArr = GenderTool(user.gender);
         if (await usersData.getUserByUsername(data.email) != undefined) {
@@ -437,7 +446,7 @@ const constructorMethod = app => {
 
     // ====== Update user's password ====== //
 
-    app.get('/change-password', loggedIn, function (req, res) {
+    app.get('/change-password', logging, loggedIn, function (req, res) {
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
@@ -447,15 +456,15 @@ const constructorMethod = app => {
     });
 
     // POST user's new password
-    app.post('/change-password', loggedIn, async (req, res) => {
+    app.post('/change-password', logging, loggedIn, async (req, res) => {
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
         }
         let user = req.session.user;
         let data = {};
-        let oldPWD = req.body.oldPWD;
-        let newPWD = req.body.newPWD;
+        let oldPWD = xss(req.body.oldPWD);
+        let newPWD = xss(req.body.newPWD);
         if (oldPWD == "") {
             res.render('change-pwd', { status2: "Old Password Incorrect" });
             res.status(400);
