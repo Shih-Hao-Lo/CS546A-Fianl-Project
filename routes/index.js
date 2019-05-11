@@ -229,8 +229,14 @@ const constructorMethod = app => {
     console.log(req.body);
     var resId = req.params.id;
     var reservation = await reservationData.getbyid(resId);
+
+    if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
+      || reservation.doctorid.toString() === req.session.user._id.toString())) {
+        res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
+    } else {
+      res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });      
+    }
     
-    res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
   });
 
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
@@ -259,41 +265,48 @@ const constructorMethod = app => {
     res.redirect('/reservation');
   })
   app.get("/prescription/add", loggedIn, async (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     var resId = req.query.resId;
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
 
-    let medsPrescribed = (reservation.prescription && reservation.prescription.medicineList) || [];
-    let medsIdPrescribed = medsPrescribed.map(x => x._id.toString());
-    // logger(`meds prescribed: `)
-    // console.log(medsPrescribed);
-    medicineList.forEach(medicine => {
-      let medicineId = medicine._id.toString();
-      let ind = medsIdPrescribed.indexOf(medicineId);
-      logger(`index of medicineid in prescription: ${ind}`);
-      medicine.selected = medsIdPrescribed.includes(medicineId);
-    });
+    if(reservation && req.session.user.isDoctor) {
+      let medsPrescribed = (reservation.prescription && reservation.prescription.medicineList) || [];
+      let medsIdPrescribed = medsPrescribed.map(x => x._id.toString());
+      // logger(`meds prescribed: `)
+      // console.log(medsPrescribed);
+      medicineList.forEach(medicine => {
+        let medicineId = medicine._id.toString();
+        let ind = medsIdPrescribed.indexOf(medicineId);
+        // logger(`index of medicineid in prescription: ${ind}`);
+        medicine.selected = medsIdPrescribed.includes(medicineId);
+      });
+  
+      roomList.forEach(room => {
+        if(room._id.toString() === reservation.roomid.toString()) {
+          room.selected = true;
+        } else {
+          room.selected = false;
+        }
+      });
 
-    roomList.forEach(room => {
-      if(room._id.toString() === reservation.roomid.toString()) {
-        room.selected = true;
-      } else {
-        room.selected = false;
-      }
-    });
+      let medicineCost = reservationData.getMedicineCost(reservation);
+      let roomCost = reservationData.getRoomCost(reservation);
+      let totalCost = (medicineCost + roomCost).toFixed(2);
+  
+  
+      res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
+        reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
+        totalCost: totalCost, roomCost: roomCost });
+     
 
-    let medicineCost = reservationData.getMedicineCost(reservation);
-    // let totalCost = reservationData.getR(reservation);
-    let roomCost = reservationData.getRoomCost(reservation);
-    let totalCost = (medicineCost + roomCost).toFixed(2);
+    } else {
+       res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });
+  
+    }
 
-
-    res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
-      reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
-      totalCost: totalCost, roomCost: roomCost });
-
+    
     // res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
