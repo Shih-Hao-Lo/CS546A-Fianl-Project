@@ -181,6 +181,11 @@ function Pay(reservation){
   alert('this will redirect to payment');
   location.href = '/reservation/pay/'+reservation;
 }
+
+function deleteres(reservation){
+  alert('this will delete the reservation');
+  location.href = '/reservation/delete/'+reservation;
+}
 // ======== Edit Profile & PWD ======== //
 
 function editProfile() {
