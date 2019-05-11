@@ -20,7 +20,11 @@ app.use("/public", static);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(session({secret: "Its a secret!"}));
+app.use(session({
+  secret: "Its a secret!",
+  resave: false,
+  saveUninitialized: true,
+}));
 
 app.engine("handlebars", exphbs(hbs));
 app.set("view engine", "handlebars");
