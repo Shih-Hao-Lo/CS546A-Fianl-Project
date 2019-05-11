@@ -199,6 +199,10 @@ const constructorMethod = app => {
       console.log(`sel: ${ele.selected}`);
     });
     console.log("inside reservation view: user: " + req.session.user.isDoctor);
+    if(reservation.patientid.toString() != req.session.user._id.toString() 
+      && reservation.doctorid.toString() != req.session.user._id.toString) {
+      reservation = null;
+    }
     res.render('reservation_view', { user: req.session.user, doctorList: doctorList, reservation: reservation });
   });
 

@@ -1,19 +1,21 @@
 <main>
 
-  
-  {{!-- <br/> --}}
-  {{!-- <p>
-      Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
-  </p> --}}
 
-{{!-- <br/>  --}}
-
-<div class="w3-container medi-yellow">
+          {{#unless reservation}}
+          <div class="w3-container medi-yellow">
+            <h2>Booking not found</h2>
+          </div>
+          {{/unless}}
+          
+          {{#if reservation}}
+          <div class="w3-container medi-yellow">
             <h2>Booking ID: #{{reservation._id}}</h2>
             {{!-- <p class="extra"><a href="/login">(Already have an account? Login</a>)</p> --}}
           </div>
           <br/>
-          <div class="w3-container" id="booking_info_table_cont">
+
+          
+<div class="w3-container" id="booking_info_table_cont">
             
             <table id="booking_info_table" class="info_table">
               {{!-- <tr>
@@ -161,6 +163,8 @@
             
           </form>
           </div>
+          {{/if}}
+          
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>
