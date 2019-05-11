@@ -53,10 +53,13 @@
   </div>
 
   <div>
+      {{#if user.isDoctor}}
+      {{else}}
       <button type="button" class="button1" onclick="newReservation()">New Appointment</button>
+      {{/if}}
       <button type="button" class="button1" onclick="viewReservation()">View Appointments</button>
       {{#if user.isDoctor}}
-      {{else}}      
+      {{else}}
       <button type="button" class="button1" onclick="editProfile()">Edit Profile</button>
       {{/if}}
   </div>
