@@ -84,7 +84,7 @@ async function addprescription(pid , did , medicinelist, date){
         patientid: pid,
         doctorid: did,
         medicine: medicinelist,
-        date: date
+        room: date
     }
 
     const insertinfo = await prescriptionCollections.insertOne(data);

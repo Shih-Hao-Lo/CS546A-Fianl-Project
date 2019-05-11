@@ -4,6 +4,7 @@ const doctorData = require("../data/doctors");
 const reservationData = require("../data/reservations");
 const medicineData = require("../data/medicines");
 const roomData = require("../data/rooms");
+const prescriptionData = require("../data/prescriptions");
 const errorPage = 'error';
 // const contentUrl = 'https://gist.githubusercontent.com/robherley/5112d73f5c69a632ef3ae9b7b3073f78/raw/24a7e1453e65a26a8aa12cd0fb266ed9679816aa/people.json';
 const bcrypt = require("bcrypt");
@@ -195,6 +196,11 @@ const constructorMethod = app => {
 
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
+    var target = await reservationData.getbyid(req.params.id);
+    if(req.session.user._id != target._id){
+      res.sendStatus(403);
+      return;
+    }
     var updated = await reservationData.payment(req.params.id);
     res.redirect('/reservation/' + req.params.id);
   });
@@ -206,6 +212,14 @@ const constructorMethod = app => {
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+  });
+
+  app.post("/prescription/add", loggedIn, async (req, res) => {
+    console.log(req.body);
+    var reservation = await reservationData.getbyid(req.body.resId);
+    var prescription = await prescriptionData.addprescription(reservation.patientid , reservation.doctorid , req.body.meds , req.body.room);
+    res.redirect('/reservation/' + reservation._id);
+    //res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
   function requireRole(role) {
