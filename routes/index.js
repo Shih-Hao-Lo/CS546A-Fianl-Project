@@ -52,8 +52,6 @@ const constructorMethod = app => {
       catch (e) {
         res.json({ error: e });
       }
-
-      // res.render()
     }
   });
 
@@ -99,7 +97,10 @@ const constructorMethod = app => {
       var user = await usersData.getUserByUsername(req.body.email)
       if (user === undefined) {
         var isdoctor = await doctorData.getDoctorByEmail(req.body.email);
-        if (isdoctor === null) res.sendStatus(400);
+        if (isdoctor === null) {
+          res.render('login', { hasError: true , message: "User not found!" });
+          return;
+        }
         if (await bcrypt.compare(req.body.password, isdoctor.password)) {
           req.session.user = isdoctor;
           req.session.user["isDoctor"] = true;

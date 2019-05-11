@@ -129,6 +129,9 @@
             </p>
             {{else}}
             <p class="edit_buttons_cont">
+              {{#ifEquals reservation.status 'Completed'}}
+              {{/ifEquals}}
+
               {{#ifEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
               <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
