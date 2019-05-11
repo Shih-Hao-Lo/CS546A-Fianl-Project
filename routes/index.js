@@ -162,7 +162,7 @@ const constructorMethod = app => {
   });
 
   app.get("/reservation/new", loggedIn, async (req, res) => {
-    await doctorData.adddoctor('Test', 'testies', 'pass');
+    //await doctorData.adddoctor('Test', 'testies', 'pass');
     var doctorList = await doctorData.getAll();
     res.render('reservation_new', { user: req.session.user, doctorList: doctorList, spList: specialismList.List });
   });
