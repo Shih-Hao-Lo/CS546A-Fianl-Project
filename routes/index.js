@@ -99,6 +99,7 @@ const constructorMethod = app => {
       var user = await usersData.getUserByUsername(req.body.email)
       if (user === undefined) {
         var isdoctor = await doctorData.getDoctorByEmail(req.body.email);
+        if(isdoctor === null) res.sendStatus(400);
         if (await bcrypt.compare(req.body.password, isdoctor.password)) {
           req.session.user = isdoctor;
           req.session.user["isDoctor"] = true;

@@ -41,7 +41,7 @@ async function availableroom(){
 
 //Add new room. price is a Number.
 async function addroom(price){
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const data = {
         price: price,
         available: true
@@ -67,7 +67,7 @@ async function checkin(id){
         }
     }
 
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
     if(target === null) throw 'Room not found!';
     if(target.available === false) throw 'Room already occupied!';
@@ -98,7 +98,7 @@ async function checkout(id){
         }
     }
 
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
     if(target === null) throw 'Room not found!';
     if(target.available === true) throw 'Room already available!';
@@ -130,7 +130,7 @@ async function updateroom(id , newprice){
         }
     }
 
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     const target = await roomCollections.findOne({ _id: id });
     if(target === null) throw 'Data not found!';
 
@@ -161,7 +161,7 @@ async function delroom(id){
         }
     }
 
-    const roomCollections = await room();
+    const roomCollections = await rooms();
     target = await this.getbyid(id);
 
     const delinfo = await roomCollections.removeOne({ _id: id });
