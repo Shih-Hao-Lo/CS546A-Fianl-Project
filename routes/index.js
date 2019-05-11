@@ -10,13 +10,14 @@ const errorPage = 'error';
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
 const specialismList = require("../data/specialism");
+const logger = require('../logger').logger;
 
 const constructorMethod = app => {
 
   var users = [{ id: 0, email: 'namanyadav@gmail.com', password: 'hello', fname: 'Naman', lname: 'Yadav' }];
 
   app.get("/", loggedIn, (req, res) => {
-    res.render("search/home", { title: "MediDesk homepage" });
+      res.redirect("/dashboard");
   });
 
   app.get("/signup", (req, res) => {
@@ -55,6 +56,11 @@ const constructorMethod = app => {
     }
   });
 
+  function logging(req, res, next){
+    let authUserString = req.session.user ? '(Authenticated User)' : '(Non-Authenticated User)';
+    console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} ${authUserString}`);
+    next();
+  }
   function loggedIn(req, res, next) {
     if (req.session.user) {
       next();     //If session exists, proceed to page
@@ -196,7 +202,35 @@ const constructorMethod = app => {
     res.render('reservation_view', { user: req.session.user, doctorList: doctorList, reservation: reservation });
   });
 
-  app.get("/reservation/pay/:id", loggedIn, async (req, res) => {
+  app.post('/reservation/:id/status/update', logging, loggedIn, async(req, res) => {
+    // logger('inside ')
+    let resId = req.params.id;
+    let newStatus = req.query.newStatus;
+    // logger(`request body in update status ${req.query.newStatus}`);
+    let reservation = await reservationData.updateReservationStatus(resId, newStatus);
+    res.sendStatus(200);
+  })
+
+  async function loginTestUser(req, res) {
+    console.log(`inside loginTestUser: loggin in`)
+    let email = 'house@medi.com';
+    let password = 'hello';
+    var user = await usersData.getUserByUsername(email)
+      if (user === undefined) {
+        var isdoctor = await doctorData.getDoctorByEmail(email);
+        if (await bcrypt.compare(password, isdoctor.password)) {
+          req.session.user = isdoctor;
+          req.session.user["isDoctor"] = true;
+        }
+      }
+      else {
+        if (await bcrypt.compare(password, user.password)) {
+          req.session.user = user;
+        }
+      }
+  }
+
+  app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
     var target = await reservationData.getbyid(req.params.id);
     //console.log(req.session.user._id);
@@ -227,15 +261,74 @@ const constructorMethod = app => {
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
-    res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+
+    let medsPrescribed = (reservation.prescription && reservation.prescription.medicineList) || [];
+    let medsIdPrescribed = medsPrescribed.map(x => x._id.toString());
+    // logger(`meds prescribed: `)
+    // console.log(medsPrescribed);
+    medicineList.forEach(medicine => {
+      let medicineId = medicine._id.toString();
+      let ind = medsIdPrescribed.indexOf(medicineId);
+      logger(`index of medicineid in prescription: ${ind}`);
+      medicine.selected = medsIdPrescribed.includes(medicineId);
+    });
+
+    roomList.forEach(room => {
+      if(room._id.toString() === reservation.roomid.toString()) {
+        room.selected = true;
+      } else {
+        room.selected = false;
+      }
+    });
+
+    let medicineCost = reservationData.getMedicineCost(reservation);
+    // let totalCost = reservationData.getR(reservation);
+    let roomCost = reservationData.getRoomCost(reservation);
+    let totalCost = (medicineCost + roomCost).toFixed(2);
+
+
+    res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
+      reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
+      totalCost: totalCost, roomCost: roomCost });
+
+    // res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
-  app.post("/prescription/add", loggedIn, async (req, res) => {
-    console.log(req.body);
-    var reservation = await reservationData.getbyid(req.body.resId);
-    var prescription = await prescriptionData.addprescription(reservation.patientid, reservation.doctorid, req.body.meds, req.body.room);
-    res.redirect('/reservation/' + reservation._id);
-    //res.render('doctor/prescription_new', { user: req.session.user, roomList: roomList, reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+  app.post("/prescription/add", logging, loggedIn, async (req, res) => {
+    // console.log('request data::::')
+    // console.log(req.body)
+    // console.log(`::::request data over`);
+    // var resId = req.query.resId;
+
+    let {resId, diagnosis, medsPrescribed, roomId } = req.body;
+    // let medsPrescribed = req.body.meds;
+    // let roomId = req.body.room;
+    // let resId = req.body.resId;
+    var reservation = await reservationData.getbyid(resId);
+    var medicineList = await medicineData.getAll();
+    var roomList = await roomData.availableroom();
+    let { patientid, doctorid } = reservation;
+
+    // let pid = reservation.patientid;
+    // let did = reservation.doctorid;
+
+    // logger(`diagnosis: ${diagnosis}`);;
+    // logger(`medsPrecribed: ${medsPrescribed}`);
+    // logger(`roomId: ${roomId}`);
+    // logger(`patientid: ${patientid}`);
+    // logger(`doctorid: ${doctorid}`);
+
+    medicineList.map(medicine => { 
+      let medicineId = medicine._id.toString();
+      let ind = medsPrescribed.indexOf(medicineId);
+      // logger(`index of medicineid in prescription: ${ind}`);
+      return ind > 0;
+    });
+
+
+    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
+    res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
+      reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
   function requireRole(role) {
@@ -272,7 +365,12 @@ const constructorMethod = app => {
   }
 
   // Retrieve user's profile and show on page
-  app.get('/edit-profile', loggedIn, function (req, res) {
+    app.get('/edit-profile', loggedIn, function (req, res) {
+      console.log(req.session.user.isDoctor);
+      if (req.session.user.isDoctor != undefined) {
+         res.redirect("/dashboard");
+         return;
+    }
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
     if (user.isDoctor) name = `Dr. ${name}`;
@@ -281,7 +379,11 @@ const constructorMethod = app => {
   });
 
   // Update user's profile
-  app.post('/edit-profile', loggedIn, async (req, res) => {
+    app.post('/edit-profile', loggedIn, async (req, res) => {
+      if (req.session.user.isDoctor != undefined) {
+         res.redirect("/dashboard");
+         return;
+    }
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
     let data = {};
@@ -316,12 +418,21 @@ const constructorMethod = app => {
   });
 
   // ====== Update user's password ====== //
-  app.get('/change-password', loggedIn, function (req, res) {
-    res.render('change-pwd');
+    app.get('/change-password', loggedIn, function (req, res) {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
+        res.render('change-pwd');
+        return;
   });
 
   // Change user's password
-  app.post('/change-password', loggedIn, async (req, res) => {
+    app.post('/change-password', loggedIn, async (req, res) => {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
     let user = req.session.user;
     let data = {};
     let oldPWD = req.body.oldPWD;

@@ -8,29 +8,30 @@
 
   <br />
 
-  <div class="w3-container medi-yellow">
-    <h2>Login</h2>
-    <p class="extra"><a href="/signup">(Don't have an account? Sign Up</a>)</p>
-  </div>
 
-  <div class="form-container">
-    <form class="w3-container" action="/login" method="POST">
-      <p>
-        <label>Email</label>
-        <input class="w3-input" type="email" name="email"></p>
-      <p>
-        <label>Password</label>
-        <input class="w3-input" type="password" name="password"></p>
-      <br />
-      <br />
-      {{#if hasError}}
-      <span style="color:red">{{message}}</span>
-      {{/if}}
-      <p><button type="submit" class="button1">Login</button></p>
+<div class="w3-container medi-yellow">
+            <h2>Login</h2>
+            <p class="extra"><a href="/signup">(Don't have an account? Sign Up</a>)</p>
+          </div>
+          
+          <div class="form-container">
+          <form class="w3-container" action="/login" method="POST">
+            <p>
+            <label>Email</label>
+            <input class="w3-input" type="email" name="email"></p>
+            <p>
+            <label>Password</label>
+            <input class="w3-input" type="password" name="password"></p>
 
-    </form>
-  </div>
-
+            {{#if message}}
+            <ul class = "error-list">
+              <li>{{message}}</li>
+            </ul>
+            {{/if}}
+            <p><button id="login_button" type="submit" class="button1">Login</button></p>
+            
+          </form>
+          </div>
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>

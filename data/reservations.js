@@ -4,6 +4,7 @@ const reservations = mongoCollections.reservations;
 // const doctorf = require("./doctor");
 const patientf = require("./patient");
 const prescriptions = require("./prescriptions");
+const { logger } = require('../logger');
 // const roomf = require('./room');
 const ObjectID = require('mongodb').ObjectID;
 const doctors = require("./doctors");
@@ -404,9 +405,8 @@ async function getReservationList(user){
     return await getbypid(user._id);
 }
 
-function getTotalCost(reservation) {
-    
-    let totalCost = 0;
+function getMedicineCost(reservation) {
+    let totalCost = 0
     if(reservation.prescription && reservation.prescription.medicineList) {
         let medList = reservation.prescription.medicineList;
         medList.forEach(function(elem, index) {
@@ -414,14 +414,28 @@ function getTotalCost(reservation) {
             totalCost += price;
         })
     }
-
+    return totalCost;
+}
+function getRoomCost(reservation) {
+    let totalCost = 0;
     if(reservation.room) {
         totalCost += parseInt(reservation.room.price);
     }
-
+    return totalCost;
+}
+function getConsultationCost(reservation) {
+    let totalCost = 0;
     if(reservation.consultation_fee) {
         totalCost += parseInt(reservation.consultation_fee);
     }
+    return totalCost;
+}
+function getTotalCost(reservation) {
+    
+    let totalCost = 0;
+    totalCost += getMedicineCost(reservation);
+    totalCost += getRoomCost(reservation);
+    totalCost += getConsultationCost(reservation);
 
     return totalCost.toFixed(2);
 }
@@ -447,7 +461,7 @@ async function updateReservationStatus(resId, newStatus) {
 }
 
 async function addprescription(resId, pid , did , medicinelist , diagnosis, roomId, date){
-    console.log("inside reservations.addprescription")
+    logger(`inside reservations.addprescription naman ${resId}, ${pid}, ${did}, ${medicinelist}, ${diagnosis}, ${date}`);
     if(pid === undefined || did === undefined || resId === undefined){
         throw 'input is empty';
     }
@@ -499,5 +513,8 @@ module.exports = {
     updatePrescRoomDiag,
     getTotalCost,
     addprescription,
-    updateReservationStatus
+    updateReservationStatus,
+    getMedicineCost,
+    getRoomCost,
+    getConsultationCost
 }

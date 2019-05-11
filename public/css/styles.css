@@ -11,3 +11,12 @@
     color: rgb(104, 104, 104);
     padding-left: 8px
 }
+
+.error-list {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+#login_button {
+    margin-top: 15px;
+}

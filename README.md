@@ -1,4 +1,4 @@
-# CS546A Fianl Project
+# CS546A Final Project
 
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 <br>
