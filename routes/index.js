@@ -89,7 +89,6 @@ const constructorMethod = app => {
 
   app.post("/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    console.log(users);
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
@@ -133,7 +132,6 @@ const constructorMethod = app => {
 
   app.post("/doctor/login", async (req, res) => {
     // res.render("login", {title: "People Finder"});
-    console.log(users);
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
@@ -155,7 +153,6 @@ const constructorMethod = app => {
     console.log(req.params.id);
     var doctors = await doctorData.searchbyspecialism(req.params.id);
     if (doctors != undefined) {
-      console.log(doctors);
       res.send(doctors);
     }
   });
@@ -340,14 +337,6 @@ const constructorMethod = app => {
       }
     }
   }
-
-  app.get("/search", async (req, res) => {
-
-  });
-
-  app.get("/details/:id", async (req, res) => {
-
-  });
 
   // ====== Update user's profile ====== //
   // A function used to set the html tag <select> to specific option

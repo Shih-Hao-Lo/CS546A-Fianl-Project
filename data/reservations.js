@@ -98,7 +98,6 @@ async function processReservationData(reservation) {
         // console.log("getting prescription data"+reservation.prescriptionid);
         reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
     }
-        
 
     if(reservation.roomid) {
         // console.log("getting room data: "+reservation.roomid);
