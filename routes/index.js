@@ -233,25 +233,6 @@ const constructorMethod = app => {
     res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
   });
 
-  async function loginTestUser(req, res) {
-    console.log(`inside loginTestUser: loggin in`)
-    let email = 'house@medi.com';
-    let password = 'hello';
-    var user = await usersData.getUserByUsername(email)
-      if (user === undefined) {
-        var isdoctor = await doctorData.getDoctorByEmail(email);
-        if (await bcrypt.compare(password, isdoctor.password)) {
-          req.session.user = isdoctor;
-          req.session.user["isDoctor"] = true;
-        }
-      }
-      else {
-        if (await bcrypt.compare(password, user.password)) {
-          req.session.user = user;
-        }
-      }
-  }
-
   app.get("/reservation/pay/:id" , loggedIn , async(req , res) =>{
     console.log(req.params.id);
     var target = await reservationData.getbyid(req.params.id);
