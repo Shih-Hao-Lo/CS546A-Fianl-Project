@@ -17,7 +17,7 @@ const constructorMethod = app => {
   var users = [{ id: 0, email: 'namanyadav@gmail.com', password: 'hello', fname: 'Naman', lname: 'Yadav' }];
 
   app.get("/", loggedIn, (req, res) => {
-    res.render("search/home", { title: "People Finder" });
+      res.redirect("/dashboard");
   });
 
   app.get("/signup", (req, res) => {
@@ -365,7 +365,12 @@ const constructorMethod = app => {
   }
 
   // Retrieve user's profile and show on page
-  app.get('/edit-profile', loggedIn, function (req, res) {
+    app.get('/edit-profile', loggedIn, function (req, res) {
+      console.log(req.session.user.isDoctor);
+      if (req.session.user.isDoctor != undefined) {
+         res.redirect("/dashboard");
+         return;
+    }
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
     if (user.isDoctor) name = `Dr. ${name}`;
@@ -374,7 +379,11 @@ const constructorMethod = app => {
   });
 
   // Update user's profile
-  app.post('/edit-profile', loggedIn, async (req, res) => {
+    app.post('/edit-profile', loggedIn, async (req, res) => {
+      if (req.session.user.isDoctor != undefined) {
+         res.redirect("/dashboard");
+         return;
+    }
     let user = req.session.user;
     let name = `${user.fname} ${user.lname}`;
     let data = {};
@@ -409,12 +418,21 @@ const constructorMethod = app => {
   });
 
   // ====== Update user's password ====== //
-  app.get('/change-password', loggedIn, function (req, res) {
-    res.render('change-pwd');
+    app.get('/change-password', loggedIn, function (req, res) {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
+        res.render('change-pwd');
+        return;
   });
 
   // Change user's password
-  app.post('/change-password', loggedIn, async (req, res) => {
+    app.post('/change-password', loggedIn, async (req, res) => {
+    if (req.session.user.isDoctor != undefined) {
+      res.redirect("/dashboard");
+      return;
+    }
     let user = req.session.user;
     let data = {};
     let oldPWD = req.body.oldPWD;
