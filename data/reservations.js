@@ -390,7 +390,7 @@ async function payment(id){
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
-            roomid: target.room,
+            roomid: target.roomid,
             days: target.days,
             prescriptionid: target.prescriptionid,
             status: 'completed'          
@@ -489,7 +489,7 @@ async function addprescription(resId, pid , did , medicinelist , diagnosis, room
 
     let reservation = await getbyid(resId);
     let prescription = reservation.prescriptionid ?
-        await prescriptions.updatePrescription(reservation.prescriptionid, medicinelist, date) : 
+        await prescriptions.updatePrescription(reservation.prescriptionid, medicinelist, roomId, date) : 
         await prescriptions.addprescription(pid, did, medicinelist, date);
     // if(!reservation.prescriptionid) {
     //     prescription = await prescriptions.addprescription(pid, did, medicinelist, date);

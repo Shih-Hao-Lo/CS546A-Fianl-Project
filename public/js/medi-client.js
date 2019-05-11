@@ -142,7 +142,7 @@ $(document).ready(function () {
 })
 
 function updatedoc(selectObject) {
-  alert(selectObject.value.length);
+  //alert(selectObject.value.length);
   if(selectObject.value.length == 0){
     location.href = '/reservation/new';
   }
@@ -193,4 +193,20 @@ function backToDashboard() {
 
 function changePWD() {
   location.href = '/change-password';
+}
+
+function DateRestrict() {
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth() + 1;
+    let year = today.getFullYear();
+    if (day < 10) {
+        day = '0' + day
+    }
+    if (month < 10) {
+        month = '0' + month
+    }
+
+    today = year + '-' + month + '-' + day;
+    document.getElementById("resvDate").setAttribute("min", today);
 }
