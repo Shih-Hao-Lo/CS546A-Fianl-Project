@@ -26,6 +26,7 @@
     "express-handlebars": "^3.0.2",
     "express-session": "^1.15.6",
     "mongodb": "^3.2.2",
-    "number-to-words": "^1.2.4"
+    "number-to-words": "^1.2.4",
+    "xss": "^1.0.6"
   }
 }
