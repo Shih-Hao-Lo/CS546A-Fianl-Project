@@ -1,16 +1,5 @@
 <main>
 
-  {{!-- <div class="flexdiv">
-    <h1>MediDesk</h1> --}}
-    {{!-- <button type="button" class="btn_logout button1" onclick="logout()">Logout</button> --}}
-    {{!-- <a href="/logout" class="button1 btn_logout">Logout</a>
-  </div> --}}
-  
-  {{!-- <br/> --}}
-  {{!-- <p>
-      Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
-  </p> --}}
-
   <br/> 
 
   <div class="w3-container medi-yellow">
@@ -18,13 +7,6 @@
   </div>
   
   <div class="w3-container">
-    {{!-- <p>
-      <span>ID: {{user._id}}</span><br>
-      <span>Name: {{user.fname}} {{user.lname}}</span><br>
-      <span>Email: {{user.email}}</span><br>
-      <span>Gender: {{user.gender}}</span><br>
-      <span>DOB: {{user.dob}}</span><br>
-    </p> --}}
 
     <br>
     <table class="" style="color: gray">
@@ -53,37 +35,10 @@
   </div>
 
   <div>
+    {{#ifEquals user.isDoctor false}}
     <button type="button" class="button1" onclick="newReservation()">New Appointment</button>
+    {{/ifEquals}}
     <button type="button" class="button1" onclick="viewReservation()">View Appointments</button>
     <button type="button" class="button1" onclick="editProfile()">Edit Profile</button>
   </div>
-
-          
-          {{!-- <div class="form-container">
-          <form class="w3-container" method="post" action="/signup">
-            <p>
-            <label>First Name</label>
-            <input class="w3-input" type="text" name="fname"></p>
-            <p>
-            <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname"></p>
-            <p>
-            <label>Email</label>
-            <input class="w3-input" type="text" name="email"></p>
-            <p>
-            <label>Password</label>
-            <input class="w3-input" type="password" name="password"></p>
-            <br/>
-            <p><button type="submit" class="button1">Create Account</button></p>
-            
-          </form>
-          </div> --}}
-  {{!-- <form id="search_form" action="/search">
-      <label for="person_name">Person Name</label>
-      <br/>
-      <input name="personName" id="person_name" type="text" placeholder="Enter text to search"/>
-      <br/>
-      <button type="submit" class="button1">Go!</button>
-  </form> --}}
-
 </main>

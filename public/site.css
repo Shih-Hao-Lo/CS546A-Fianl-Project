@@ -375,3 +375,22 @@ button {
 table textarea, table select {
   color: gray;
 }
+
+span.status-confirmed {
+  background-color: #b71c1c;
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+span.status-prescribed, span.status-admitted, span.status-consulted {
+  background-color: orange;
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+span.status-completed {
+  background-color: green;
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 3px;
+}

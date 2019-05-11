@@ -47,17 +47,17 @@ function viewPrescription(resId) {
 }
 function addPrescription() {
   let diagnosis = $('textarea[name="diagnosis"]').val();
-  let meds = $("#medicines").val();
-  let room = $('#room').val();
+  let medsPrescribed = $("#medicines").val();
+  let roomId = $('#room').val();
   let resId = $('input[name="reservation_id"]').val();
-  // alert(`diagnosis: ${diagnosis}; meds: ${meds}; room: ${room}; resId: ${resId}`);
+  console.log(`diagnosis: ${diagnosis}; medsPrescribed: ${medsPrescribed}; roomId: ${roomId}; resId: ${resId}`);
   $.ajax({
     url: '/prescription/add',
     type: 'POST',
     data: {
       diagnosis,
-      meds,
-      room,
+      medsPrescribed,
+      roomId,
       resId
     },
     success: function () { location.href = `/reservation/${resId}` },

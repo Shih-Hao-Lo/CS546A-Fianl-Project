@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({secret: "Its a secret!"}));
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine("handlebars", exphbs(hbs));
 app.set("view engine", "handlebars");
 // app.set('view engine', 'pug');
 app.set('views','./views');
