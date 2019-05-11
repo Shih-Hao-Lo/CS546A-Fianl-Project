@@ -158,9 +158,9 @@ async function makereservation(pid , did , newdate){
         patientid: pid,
         doctorid: did,
         date: newdate,
-        roomid: '',
+        roomid: undefined,
         days: 0,
-        prescriptionid: '',
+        prescriptionid: undefined,
         status: 'confirmed'
     }
 
