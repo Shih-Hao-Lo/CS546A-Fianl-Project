@@ -203,7 +203,7 @@ const constructorMethod = app => {
     var doctorList = await doctorData.getAll();
     if(reservation) {
       if(reservation.patientid.toString() != req.session.user._id.toString() 
-        && reservation.doctorid.toString() != req.session.user._id.toString) {
+        && reservation.doctorid.toString() != req.session.user._id.toString()) {
           reservation = null;
         } else {
           doctorList.forEach(function (ele) {
