@@ -129,16 +129,15 @@
             </p>
             {{else}}
             <p class="edit_buttons_cont">
-              {{!-- {{#ifEquals reservation.status 'confirmed'}}--}}
+              {{#ifEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
               <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
-              <button class="button1" onclick="Pay('{{reservation._id}}')">Pay</button>
-              {{!-- {{/ifEquals}}--}}
+              {{/ifEquals}}
 
-              {{!-- {{#ifNotEquals reservation.status 'confirmed'}}
-              <button class="button1" onclick="alert('this will redirect to payment');return false;">Pay</button>
+              {{#ifNotEquals reservation.status 'confirmed'}}
+              <button class="button1" onclick="Pay('{{reservation._id}}');return false;">Pay</button>
               <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
-              {{/ifNotEquals}}--}}
+              {{/ifNotEquals}}
             </p>
             {{/if}}
           </div>
@@ -155,13 +154,13 @@
             <input type="hidden" name="patient_id" value="{{reservation.patientid}}">
             <p>
             <label>First Name</label>
-            <input class="w3-input" type="text" name="fname" value="{{reservation.patient.fname}}"></p>
+            <input class="w3-input" type="text" name="fname" value="{{reservation.patient.fname}}" readonly></p>
             <p>
             <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname" value="{{reservation.patient.lname}}"></p>
+            <input class="w3-input" type="text" name="lname" value="{{reservation.patient.lname}}" readonly></p>
             <p>
             <label>Email</label>
-            <input class="w3-input" type="text" name="email" value="{{reservation.patient.email}}"></p>
+            <input class="w3-input" type="text" name="email" value="{{reservation.patient.email}}" readonly></p>
             <p>
             <label>Doctor</label>
             <select class="w3-input" name="doctor_id">
