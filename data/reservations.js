@@ -23,13 +23,14 @@ async function getbyid(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/reservation.getbyid)'
+            // throw 'Id is invalid!(in data/reservation.getbyid)'
+            return;
         }
     }
 
     const reservationCollections = await reservations();
     const target = await reservationCollections.findOne({ _id: id });
-    if(target === null) throw 'Reservation not found!';
+    // if(target === null) throw 'Reservation not found!';
 
     return await processReservationData(target);
 
@@ -88,28 +89,32 @@ async function getByDoctorId(docId){
 }
 
 async function processReservationData(reservation) {
-    var doctor = await doctors.getbyid(reservation.doctorid);
-    var patient = await users.getbyid(reservation.patientid).catch(e => {throw e});
-    reservation["doctor"] = doctor;
-    reservation["patient"] = patient;
-    reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T.+/, '');
-    reservation["consultation_fee"] = consultationFee;
-    if(reservation.prescriptionid) {
-        // console.log("getting prescription data"+reservation.prescriptionid);
-        reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
-    }
-
-    if(reservation.roomid) {
-        // console.log("getting room data: "+reservation.roomid);
-        reservation["room"] = await rooms.getbyid(reservation.roomid);
-        reservation.room.price = parseInt(reservation.room.price).toFixed(2);
-    }
+    if(reservation) {
+        var doctor = await doctors.getbyid(reservation.doctorid);
+        var patient = await users.getbyid(reservation.patientid).catch(e => {throw e});
+        reservation["doctor"] = doctor;
+        reservation["patient"] = patient;
+        reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T.+/, '');
+        reservation["consultation_fee"] = consultationFee;
+        if(reservation.prescriptionid) {
+            // console.log("getting prescription data"+reservation.prescriptionid);
+            reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
+        }
+            
     
-    reservation["cost"] = getTotalCost(reservation);
-    reservation["cost_in_words"] = capitalizeFirstLetter(numberToWords.toWords(reservation.cost));
-    
-    console.log(JSON.stringify(reservation, null, 4));
-    // reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        if(reservation.roomid) {
+            // console.log("getting room data: "+reservation.roomid);
+            reservation["room"] = await rooms.getbyid(reservation.roomid);
+            reservation.room.price = parseInt(reservation.room.price).toFixed(2);
+        }
+        
+        reservation["cost"] = getTotalCost(reservation);
+        reservation["cost_in_words"] = capitalizeFirstLetter(numberToWords.toWords(reservation.cost));
+        
+        // console.log(JSON.stringify(reservation, null, 4));
+        // reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        
+    }
     return reservation;
 }
 
@@ -256,7 +261,7 @@ async function modifyreservation(id , data){
     if(id === undefined || data.did === undefined){
         throw 'input is empty';
     }
-    console.log(data);
+    // console.log(data);
 
     if(id.constructor != ObjectID){
         if(ObjectID.isValid(id)){
@@ -440,7 +445,7 @@ function getTotalCost(reservation) {
 }
 
 async function updateReservationStatus(resId, newStatus) {
-    console.log("inside reservations.updateReservationStatus");
+    // console.log("inside reservations.updateReservationStatus");
     if(resId === undefined || newStatus === undefined) {
         throw 'input is emtpy';
     }
@@ -460,7 +465,7 @@ async function updateReservationStatus(resId, newStatus) {
 }
 
 async function addprescription(resId, pid , did , medicinelist , diagnosis, roomId, date){
-    logger(`inside reservations.addprescription naman ${resId}, ${pid}, ${did}, ${medicinelist}, ${diagnosis}, ${date}`);
+    // logger(`inside reservations.addprescription naman ${resId}, ${pid}, ${did}, ${medicinelist}, ${diagnosis}, ${date}`);
     if(pid === undefined || did === undefined || resId === undefined){
         throw 'input is empty';
     }

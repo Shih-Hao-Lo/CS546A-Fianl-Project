@@ -55,7 +55,7 @@ async function getAll(){
 //medicinelist = [{ medinine._id , amount } , ...]
 //date is string
 async function addprescription(pid , did , medicinelist, date){
-    console.log("inside prescriptions.addprescription")
+    // console.log("inside prescriptions.addprescription")
     if(pid === undefined || did === undefined){
         throw 'input is empty';
     }
