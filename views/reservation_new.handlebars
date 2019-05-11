@@ -43,13 +43,15 @@
             </select></p>
             <p>
             <label>Date</label>
-            <input class="w3-input" type="date" name="app_date" value="" required></p>
+            <input id="resvDate" class="w3-input" type="date" name="app_date" value="" required></p>
             
             <br/>
             <p><button type="submit" class="button1">Schedule</button></p>
             
           </form>
           </div>
+
+          <script>DateRestrict();</script>
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>
