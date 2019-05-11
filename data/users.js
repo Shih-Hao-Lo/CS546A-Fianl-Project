@@ -11,7 +11,7 @@ async function getbyid(id){
     if(id === undefined){
         throw 'input is empty';
     }
-    if(id.constructor != ObjectID){
+    if(id != ObjectID){
         if(ObjectID.isValid(id)){
             id = new ObjectID(id);
         }

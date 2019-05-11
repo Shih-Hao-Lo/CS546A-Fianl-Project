@@ -1,0 +1,21 @@
+Patients:
+Will Smith		 | Username: will@web.com, Password: will1
+George Clooney		 | Username: george@web.com, Password: george1
+Robert Downey		 | Username: robert@web.com, Password: robert1
+Mark Wahlberg		 | Username: robert@web.com, Password: mark1
+Orlando Bloom		 | Username: orland@web.com, Password: orland1
+Jackie Chan		 | Username: jackie@web.com, Password: jackie1
+Angelina Jolie		 | Username: angelina@web.com, Password: angelina1
+Scarlett Johansson	 | Username: scarlett@web.com, Password: scarlett1
+Adam Sandler		 | Username: adam@web.com, Password: adam1
+Anne Hathaway		 | Username: anne@web.com, Password: anne1
+Will Ferrell		 | Username: will2@web.com, Password: will1
+Julia Roberts		 | Username: julia@web.com, Password: julia1
+Nicolas Cage		 | Username: nicolas@web.com, Password: nicolas1
+Daniel Craig		 | Username: daniel@web.com, Password: daniel1
+Keanu Reeves		 | Username: keanu@web.com, Password: keanu1
+Bruce Willis		 | Username: bruce@web.com, Password: bruce1
+Ben Stiller		 | Username: ben@web.com, Password: ben1
+Steve Carell		 | Username: steve@web.com, Password: steve1
+
+

@@ -46,7 +46,7 @@ async function processPrescriptionData(prescription) {
 
 // Return all prescriptions in database.
 async function getAll(){
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const targets = await prescriptionCollections.find({}).toArray();
     return targets;
 }
@@ -84,7 +84,7 @@ async function addprescription(pid , did , medicinelist, date){
         patientid: pid,
         doctorid: did,
         medicine: medicinelist,
-        date: date
+        room: date
     }
 
     const insertinfo = await prescriptionCollections.insertOne(data);
@@ -118,7 +118,7 @@ async function modifyprescription(id , data){
     if(data.did === undefined) data.did = target.doctorid;
     if(data.newdate === undefined) data.newdate = target.date;
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
 
     const modifydata = {
         $set:{
@@ -148,7 +148,7 @@ async function modifymedicine(id , medicinedata , action){
         }
     }
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     if(action === 'add'){
         var updatedata = await prescriptionCollections.update({ _id: id } , { $addToSet: { medicine: medicinedata } });
         if(updatedata.modifiedCount === 0) throw 'Update fail!';
@@ -172,7 +172,7 @@ async function delprescription(id){
         }
     }
 
-    const prescriptionCollections = await prescription();
+    const prescriptionCollections = await prescriptions();
     const target = await this.getbyid(id);
 
     const delinfo = await prescriptionCollections.removeOne({ _id: id});

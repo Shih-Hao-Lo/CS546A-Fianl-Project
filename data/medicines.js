@@ -33,7 +33,7 @@ async function getAll(){
 
 //Add new madicine. newname is String and newprice is number.
 async function addmedicine(newname , newprice){
-    const medicineCollections = await medicine();
+    const medicineCollections = await medicines();
     const data = {
         name: newname,
         price: newprice
@@ -66,7 +66,7 @@ async function updatemedicine(id , data){
         }
     }
 
-    const medicineCollections = await medicine();
+    const medicineCollections = await medicines();
     const target = await this.getbyid(id);
 
     if(data.newname === undefined){
@@ -104,7 +104,7 @@ async function delmedicine(id){
         }
     }    
     
-    const medicineCollections = await medicine();
+    const medicineCollections = await medicines();
     target = await this.getbyid(id);
 
     const delinfo = await medicineCollections.removeOne({ _id: id });

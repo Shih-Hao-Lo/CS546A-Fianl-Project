@@ -127,7 +127,9 @@
 
 
           <div class="form-container" id="edit_reservation_form_cont" style="display: none">
-          <form class="w3-container" method="post" action="#" action1="/reservation/edit" id="edit_reservation_form">
+          <form class="w3-container" method="post" action="/reservation/edit" id="edit_reservation_form">
+            <input type="hidden" name="reservation_id" value="{{reservation._id}}">
+            <p>
             <input type="hidden" name="patient_id" value="{{reservation.patientid}}">
             <p>
             <label>First Name</label>
@@ -152,7 +154,7 @@
             
             <br/>
             {{#unless user.isDoctor}}
-            <button class="button1" onclick="alert('this will save updated reservation data');return false;">Save</button>
+            <button type="submit" class="button1">Submit</button>
             <button class="button1" onclick="hideElement('#edit_reservation_form_cont');showElement('#booking_info_table_cont'); return false;">Cancel</button>
             {{/unless}}
 

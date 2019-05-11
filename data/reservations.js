@@ -89,7 +89,7 @@ async function getByDoctorId(docId){
 
 async function processReservationData(reservation) {
     var doctor = await doctors.getbyid(reservation.doctorid);
-    var patient = await users.getbyid(reservation.patientid);
+    var patient = await users.getbyid(reservation.patientid).catch(e => {throw e});
     reservation["doctor"] = doctor;
     reservation["patient"] = patient;
     reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T.+/, '');
@@ -257,6 +257,8 @@ async function modifyreservation(id , data){
     if(id === undefined || data.did === undefined){
         throw 'input is empty';
     }
+    console.log(data);
+
     if(id.constructor != ObjectID){
         if(ObjectID.isValid(id)){
             id = new ObjectID(id);
@@ -265,6 +267,7 @@ async function modifyreservation(id , data){
             throw 'Id is invalid!(in data/reservation.modifyreservation)'
         }
     }
+
     if(data.did.constructor != ObjectID){
         if(ObjectID.isValid(data.did)){
             data.did = new ObjectID(data.did);
@@ -274,30 +277,37 @@ async function modifyreservation(id , data){
         }
     }
 
-    const dtarget = await doctorf.getbyid(data.did).catch(e => { throw e });
+    const dtarget = await doctors.getbyid(data.did).catch(e => { throw e });
     const reservationCollections = await reservations();
-    const target = this.getbyid(id).catch(e => { throw e });
+    const target = await this.getbyid(id).catch(e => { throw e });
+
+    console.log("target---------------------------\n");
+    console.log(target);
+    console.log("dtarget----------------------\n");
+    console.log(dtarget);
 
     if(data.did === undefined){
         data.did = target.doctorid;
     }
-    if(data.date === undefined){
-        data.date = target.date;
+    if(data.newdate === undefined){
+        data.newdate = target.date;
     }
     const updatedata = {
         $set:{
             _id: id,
             patientid: target.patientid,
             doctorid: data.did,
-            date: data.date,
-            roomid: target.room,
+            date: data.newdate,
+            room: target.room,
             days: target.days,
             prescriptionid: target.prescriptionid,
             status: target.status  
         }
     }
+    console.log("updatedata---------------------------\n");
+    console.log(updatedata);
 
-    const updateinfo = await reservationCollections.update({ _id: id } , updatedata);
+    const updateinfo = await reservationCollections.updateOne({ _id: id } , updatedata);
     if(updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
