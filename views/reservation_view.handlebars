@@ -107,13 +107,25 @@
             </p>
             {{else}}
             <p class="edit_buttons_cont">
-              {{#ifEquals reservation.status 'confirmed'}}
-              <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
-              <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
-              {{/ifEquals}}
-              {{#ifNotEquals reservation.status 'confirmed'}}
-              <button class="button1" onclick="Pay('{{reservation._id}}')">Pay</button>
-              {{/ifNotEquals}}
+              <p class="edit_buttons_cont">
+      {{#ifEquals reservation.status 'confirmed'}}
+      <button class="button1"
+        onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
+      <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
+      {{/ifEquals}}
+
+      {{#ifNotEquals reservation.status 'confirmed'}}
+
+      {{#ifNotEquals reservation.status 'completed'}}
+      <button class="button1" onclick="Pay('{{reservation._id}}');return false;">Pay</button>
+      <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
+      {{/ifNotEquals}}
+
+      {{#ifEquals reservation.status 'completed'}}
+      <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
+      {{/ifEquals}}
+      {{/ifNotEquals}}
+    </p>
 
               {{!-- {{#ifNotEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="alert('this will redirect to payment');return false;">Pay</button>

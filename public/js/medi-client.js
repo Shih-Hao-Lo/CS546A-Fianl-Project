@@ -142,7 +142,10 @@ $(document).ready(function () {
 })
 
 function updatedoc(selectObject) {
-  console.log(selectObject.value);
+  alert(selectObject.value.length);
+  if(selectObject.value.length == 0){
+    location.href = '/reservation/new';
+  }
   $.ajax({
     url: `/doctors/search/${selectObject.value}`,
     type: 'GET',
@@ -175,6 +178,7 @@ function updatedoc(selectObject) {
 
 function Pay(reservation){
   //alert(reservation);
+  alert('this will redirect to payment');
   location.href = '/reservation/pay/'+reservation;
 }
 // ======== Edit Profile & PWD ======== //
