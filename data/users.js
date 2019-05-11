@@ -11,7 +11,7 @@ async function getbyid(id){
     if(id === undefined){
         throw 'input is empty';
     }
-    if(id.constructor != ObjectID){
+    if(id != ObjectID){
         if(ObjectID.isValid(id)){
             id = new ObjectID(id);
         }
@@ -166,22 +166,11 @@ async function delpatient(id){
     return target;
 }
 
-// Patient sign in. return true if username matches password.
-async function patientsighin(pusername , ppassword){
-    const patientCollections = await patient();
-    const target = await patientCollections.findOne({ username: pusername });
-    if(target === null) throw 'Data not found!';
-
-    if(target.password === ppassword) return true;
-    else return false;
-}
-
 module.exports = {
     getbyid,
     getAll,
     updatepatient,
     delpatient,
-    patientsighin,
     addUser,
     getUserByUsername
 }

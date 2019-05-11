@@ -17,31 +17,41 @@
           <form class="w3-container" method="post" action="/reservation/new">
             <input type="hidden" name="id" value="{{user._id}}">
             <p>
-            <label>First Name</label>
-            <input class="w3-input" type="text" name="fname" value="{{user.fname}}" readonly></p>
+            <label for="fname">First Name</label>
+            <input class="w3-input" type="text" name="fname" id="fname" value="{{user.fname}}" readonly></p>
             <p>
-            <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname" value="{{user.lname}}" readonly></p>
+            <label for="lname">Last Name</label>
+            <input class="w3-input" type="text" name="lname" id="lname" value="{{user.lname}}" readonly></p>
             <p>
-            <label>Email</label>
-            <input class="w3-input" type="text" name="email" value="{{user.email}}" readonly></p>
+            <label for="email">Email</label>
+            <input class="w3-input" type="text" name="email" id="email" value="{{user.email}}" readonly></p>
             <p>
-            <label>Doctor</label>
-            <select class="w3-input" name="doctor_id">
+            <label for="splist">Specialism</label>
+            <select class="w3-input" name="specialism" onchange="updatedoc(this)" id="splist">
+              <option></option>
+              {{#each spList}}
+              <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            </select>
+            <p>
+            <label for="drlist">Doctor</label>
+            <select class="w3-input" name="doctor_id" id="drlist" required>
               <option></option>
               {{#each doctorList}}
-              <option value="{{this._id}}">{{this.name}}</option>
+              <option value="{{this._id}}">{{this.fname}} {{this.lname}}</option>
               {{/each}}
             </select></p>
             <p>
-            <label>Date</label>
-            <input class="w3-input" type="date" name="app_date" value=""></p>
+            <label for="date">Date</label>
+            <input class="w3-input" type="date" name="app_date" id="date" value="" required></p>
             
             <br/>
             <p><button type="submit" class="button1">Schedule</button></p>
             
           </form>
           </div>
+
+          <script>DateRestrict();</script>
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>

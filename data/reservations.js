@@ -4,6 +4,7 @@ const reservations = mongoCollections.reservations;
 // const doctorf = require("./doctor");
 const patientf = require("./patient");
 const prescriptions = require("./prescriptions");
+const { logger } = require('../logger');
 // const roomf = require('./room');
 const ObjectID = require('mongodb').ObjectID;
 const doctors = require("./doctors");
@@ -22,13 +23,14 @@ async function getbyid(id){
             id = new ObjectID(id);
         }
         else{
-            throw 'Id is invalid!(in data/reservation.getbyid)'
+            // throw 'Id is invalid!(in data/reservation.getbyid)'
+            return;
         }
     }
 
     const reservationCollections = await reservations();
     const target = await reservationCollections.findOne({ _id: id });
-    if(target === null) throw 'Reservation not found!';
+    // if(target === null) throw 'Reservation not found!';
 
     return await processReservationData(target);
 
@@ -87,29 +89,32 @@ async function getByDoctorId(docId){
 }
 
 async function processReservationData(reservation) {
-    var doctor = await doctors.getbyid(reservation.doctorid);
-    var patient = await users.getbyid(reservation.patientid);
-    reservation["doctor"] = doctor;
-    reservation["patient"] = patient;
-    reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T.+/, '');
-    reservation["consultation_fee"] = consultationFee;
-    if(reservation.prescriptionid) {
-        // console.log("getting prescription data"+reservation.prescriptionid);
-        reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
-    }
+    if(reservation) {
+        var doctor = await doctors.getbyid(reservation.doctorid);
+        var patient = await users.getbyid(reservation.patientid).catch(e => {throw e});
+        reservation["doctor"] = doctor;
+        reservation["patient"] = patient;
+        reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T.+/, '');
+        reservation["consultation_fee"] = consultationFee;
+        if(reservation.prescriptionid) {
+            // console.log("getting prescription data"+reservation.prescriptionid);
+            reservation["prescription"] = await prescriptions.getbyid(reservation.prescriptionid);
+        }
+            
+    
+        if(reservation.roomid) {
+            // console.log("getting room data: "+reservation.roomid);
+            reservation["room"] = await rooms.getbyid(reservation.roomid);
+            reservation.room.price = parseInt(reservation.room.price).toFixed(2);
+        }
         
-
-    if(reservation.roomid) {
-        // console.log("getting room data: "+reservation.roomid);
-        reservation["room"] = await rooms.getbyid(reservation.roomid);
-        reservation.room.price = parseInt(reservation.room.price).toFixed(2);
+        reservation["cost"] = getTotalCost(reservation);
+        reservation["cost_in_words"] = capitalizeFirstLetter(numberToWords.toWords(reservation.cost));
+        
+        // console.log(JSON.stringify(reservation, null, 4));
+        // reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+        
     }
-    
-    reservation["cost"] = getTotalCost(reservation);
-    reservation["cost_in_words"] = capitalizeFirstLetter(numberToWords.toWords(reservation.cost));
-    
-    console.log(JSON.stringify(reservation, null, 4));
-    // reservation["date_formatted"] = new Date(reservation.date).toISOString().replace(/T/, ' ').replace(/\..+/, '');
     return reservation;
 }
 
@@ -185,10 +190,11 @@ async function assignprescription(id , pid){
     }
 
     const ptarget = await prescriptionf.getbyid(pid).catch(e => { throw e });
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = await this.getbyid(id).catch(e => { throw e });
     const data = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
@@ -222,10 +228,11 @@ async function assignroom(id , rid , day){
     }
 
     const rtarget = await roomf.getbyid(rid).catch(e => { throw e });
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = await this.getbyid(id);
     const data = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
@@ -254,6 +261,8 @@ async function modifyreservation(id , data){
     if(id === undefined || data.did === undefined){
         throw 'input is empty';
     }
+    // console.log(data);
+
     if(id.constructor != ObjectID){
         if(ObjectID.isValid(id)){
             id = new ObjectID(id);
@@ -262,6 +271,7 @@ async function modifyreservation(id , data){
             throw 'Id is invalid!(in data/reservation.modifyreservation)'
         }
     }
+
     if(data.did.constructor != ObjectID){
         if(ObjectID.isValid(data.did)){
             data.did = new ObjectID(data.did);
@@ -271,29 +281,37 @@ async function modifyreservation(id , data){
         }
     }
 
-    const dtarget = await doctorf.getbyid(data.did).catch(e => { throw e });
-    const reservationCollections = await reservation();
-    const target = this.getbyid(id).catch(e => { throw e });
+    const dtarget = await doctors.getbyid(data.did).catch(e => { throw e });
+    const reservationCollections = await reservations();
+    const target = await this.getbyid(id).catch(e => { throw e });
+
+    console.log("target---------------------------\n");
+    console.log(target);
+    console.log("dtarget----------------------\n");
+    console.log(dtarget);
 
     if(data.did === undefined){
         data.did = target.doctorid;
     }
-    if(data.date === undefined){
-        data.date = target.date;
+    if(data.newdate === undefined){
+        data.newdate = target.date;
     }
     const updatedata = {
         $set:{
+            _id: id,
             patientid: target.patientid,
             doctorid: data.did,
-            date: data.date,
+            date: data.newdate,
             room: target.room,
             days: target.days,
-            prescription: target.prescription,
-            status: target.status            
+            prescriptionid: target.prescriptionid,
+            status: target.status  
         }
     }
+    console.log("updatedata---------------------------\n");
+    console.log(updatedata);
 
-    const updateinfo = await reservationCollections.update({ _id: id } , updatedata);
+    const updateinfo = await reservationCollections.updateOne({ _id: id } , updatedata);
     if(updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
@@ -341,7 +359,7 @@ async function delreservation(id){
         }
     } 
 
-    const reservationCollections = await reservation();
+    const reservationCollections = await reservations();
     const target = this.getbyid(id);
 
     const delinfo = await reservationCollections.removeOne({ _id: id });
@@ -364,23 +382,24 @@ async function payment(id){
         }
     }   
 
-    const reservationCollections = await reservation();
-    const target = this.getbyid(id).catch(e => { throw e });
+    const reservationCollections = await reservations();
+    const target = await this.getbyid(id);
     const updatedata = {
-        $set:{
+        $set:{ 
+            _id: id,
             patientid: target.patientid,
             doctorid: target.doctorid,
             date: target.date,
-            room: target.room,
+            roomid: target.roomid,
             days: target.days,
-            prescription: target.prescription,
-            status: 'Completed'           
+            prescriptionid: target.prescriptionid,
+            status: 'completed'          
         }
     }
 
     const updateinfo = await reservationCollections.update({ _id: id } , updatedata);
     if(updateinfo.modifiedCount === 0) throw 'Update fail!';
-
+    //console.log(updateinfo)
     return await this.getbyid(id);
 }
 
@@ -391,9 +410,8 @@ async function getReservationList(user){
     return await getbypid(user._id);
 }
 
-function getTotalCost(reservation) {
-    
-    let totalCost = 0;
+function getMedicineCost(reservation) {
+    let totalCost = 0
     if(reservation.prescription && reservation.prescription.medicineList) {
         let medList = reservation.prescription.medicineList;
         medList.forEach(function(elem, index) {
@@ -401,20 +419,34 @@ function getTotalCost(reservation) {
             totalCost += price;
         })
     }
-
+    return totalCost;
+}
+function getRoomCost(reservation) {
+    let totalCost = 0;
     if(reservation.room) {
         totalCost += parseInt(reservation.room.price);
     }
-
+    return totalCost;
+}
+function getConsultationCost(reservation) {
+    let totalCost = 0;
     if(reservation.consultation_fee) {
         totalCost += parseInt(reservation.consultation_fee);
     }
+    return totalCost;
+}
+function getTotalCost(reservation) {
+    
+    let totalCost = 0;
+    totalCost += getMedicineCost(reservation);
+    totalCost += getRoomCost(reservation);
+    totalCost += getConsultationCost(reservation);
 
     return totalCost.toFixed(2);
 }
 
 async function updateReservationStatus(resId, newStatus) {
-    console.log("inside reservations.updateReservationStatus");
+    // console.log("inside reservations.updateReservationStatus");
     if(resId === undefined || newStatus === undefined) {
         throw 'input is emtpy';
     }
@@ -434,7 +466,7 @@ async function updateReservationStatus(resId, newStatus) {
 }
 
 async function addprescription(resId, pid , did , medicinelist , diagnosis, roomId, date){
-    console.log("inside reservations.addprescription")
+    // logger(`inside reservations.addprescription naman ${resId}, ${pid}, ${did}, ${medicinelist}, ${diagnosis}, ${date}`);
     if(pid === undefined || did === undefined || resId === undefined){
         throw 'input is empty';
     }
@@ -457,7 +489,7 @@ async function addprescription(resId, pid , did , medicinelist , diagnosis, room
 
     let reservation = await getbyid(resId);
     let prescription = reservation.prescriptionid ?
-        await prescriptions.updatePrescription(reservation.prescriptionid, medicinelist, date) : 
+        await prescriptions.updatePrescription(reservation.prescriptionid, medicinelist, roomId, date) : 
         await prescriptions.addprescription(pid, did, medicinelist, date);
     // if(!reservation.prescriptionid) {
     //     prescription = await prescriptions.addprescription(pid, did, medicinelist, date);
@@ -486,5 +518,8 @@ module.exports = {
     updatePrescRoomDiag,
     getTotalCost,
     addprescription,
-    updateReservationStatus
+    updateReservationStatus,
+    getMedicineCost,
+    getRoomCost,
+    getConsultationCost
 }

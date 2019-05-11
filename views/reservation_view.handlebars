@@ -1,19 +1,21 @@
 <main>
 
-  
-  {{!-- <br/> --}}
-  {{!-- <p>
-      Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
-  </p> --}}
 
-{{!-- <br/>  --}}
-
-<div class="w3-container medi-yellow">
+          {{#unless reservation}}
+          <div class="w3-container medi-yellow">
+            <h2>Booking not found</h2>
+          </div>
+          {{/unless}}
+          
+          {{#if reservation}}
+          <div class="w3-container medi-yellow">
             <h2>Booking ID: #{{reservation._id}}</h2>
             {{!-- <p class="extra"><a href="/login">(Already have an account? Login</a>)</p> --}}
           </div>
           <br/>
-          <div class="w3-container" id="booking_info_table_cont">
+
+          
+<div class="w3-container" id="booking_info_table_cont">
             
             <table id="booking_info_table" class="info_table">
               {{!-- <tr>
@@ -48,7 +50,7 @@
                 <td>{{reservation.diagnosis}}</td>
               </tr>
               {{/if}}
-              {{#if reservation.prescription}}
+              {{#if reservation.prescription.medicineList}}
               <tr>
                 <td>Medicines</td>
                 <td>
@@ -79,42 +81,18 @@
                 <td>
                   {{#if user.isDoctor}}
                   <select style="color:gray" class="w3-input select-50" name="reservation_status">
-                    <option value="confirmed" {{#if reservation.confirmed}}selected{{/if}}>Confirmed</option>
-                    <option value="consulted" {{#if reservation.consulted}}selected{{/if}}>Consulted</option>
-                    <option value="prescribed" {{#if reservation.prescribed}}selected{{/if}}>Prescribed</option>
-                    <option value="admitted" {{#if reservation.admitted}}selected{{/if}}>Admitted</option>
-                    <option value="completed" {{#if reservation.completed}}selected{{/if}}>Completed</option>
+                    <option value="confirmed" {{#ifEquals reservation.status 'confirmed'}}selected{{/ifEquals}}>Confirmed</option>
+                    <option value="consulted" {{#ifEquals reservation.status 'consulted'}}selected{{/ifEquals}}>Consulted</option>
+                    <option value="prescribed" {{#ifEquals reservation.status 'prescribed'}}selected{{/ifEquals}}>Prescribed</option>
+                    <option value="admitted" {{#ifEquals reservation.status 'admitted'}}selected{{/ifEquals}}>Admitted</option>
+                    <option value="completed" {{#ifEquals reservation.status 'completed'}}selected{{/ifEquals}}>Completed</option>
                   </select>
                   {{else}}
                   <span>{{reservation.status}}</span>
                   {{/if}}
                 </td>
               </tr>
-              {{!-- <tr>
-                <td>Medicines</td>
-                <td>
-                  <select multiple class="w3-input select-50" name="medicines" id="medicines" price="0">
-                    {{#each medicineList}}
-                    <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}}</option>
-                    {{/each}}
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <td>Room</td>
-                <td>
-                  <select class="w3-input select-50" name="room" id="room" price="0">
-                    <option value="" price="0"></option>
-                    {{#each roomList}}
-                    <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}}</option>
-                    {{/each}}
-                  </select>
-                </td>
               
-              <tr>
-                <td>Cost</td>
-                <td id="total_cost" price="0"></td>
-              </tr> --}}
               
             </table>
             {{#if user.isDoctor}}
@@ -129,15 +107,30 @@
             </p>
             {{else}}
             <p class="edit_buttons_cont">
-              {{#ifEquals reservation.status 'confirmed'}}
-              <button class="button1" onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
-              <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
-              {{/ifEquals}}
+              <p class="edit_buttons_cont">
+      {{#ifEquals reservation.status 'confirmed'}}
+      <button class="button1"
+        onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
+      <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
+      {{/ifEquals}}
 
-              {{#ifNotEquals reservation.status 'confirmed'}}
+      {{#ifNotEquals reservation.status 'confirmed'}}
+
+      {{#ifNotEquals reservation.status 'completed'}}
+      <button class="button1" onclick="Pay('{{reservation._id}}');return false;">Pay</button>
+      <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
+      {{/ifNotEquals}}
+
+      {{#ifEquals reservation.status 'completed'}}
+      <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
+      {{/ifEquals}}
+      {{/ifNotEquals}}
+    </p>
+
+              {{!-- {{#ifNotEquals reservation.status 'confirmed'}}
               <button class="button1" onclick="alert('this will redirect to payment');return false;">Pay</button>
               <button class="button1" onclick="generateBill('{{reservation._id}}')">Invoice</button>
-              {{/ifNotEquals}}
+              {{/ifNotEquals}}--}}
             </p>
             {{/if}}
           </div>
@@ -148,23 +141,25 @@
 
 
           <div class="form-container" id="edit_reservation_form_cont" style="display: none">
-          <form class="w3-container" method="post" action="#" action1="/reservation/edit" id="edit_reservation_form">
+          <form class="w3-container" method="post" action="/reservation/edit" id="edit_reservation_form">
+            <input type="hidden" name="reservation_id" value="{{reservation._id}}">
+            <p>
             <input type="hidden" name="patient_id" value="{{reservation.patientid}}">
             <p>
-            <label>First Name</label>
-            <input class="w3-input" type="text" name="fname" value="{{reservation.patient.fname}}"></p>
+            <label for="fname">First Name</label>
+            <input class="w3-input" type="text" name="fname" id="fname" value="{{reservation.patient.fname}}"></p>
             <p>
-            <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname" value="{{reservation.patient.lname}}"></p>
+            <label for="lname">Last Name</label>
+            <input class="w3-input" type="text" name="lname" id="lname" value="{{reservation.patient.lname}}"></p>
             <p>
-            <label>Email</label>
-            <input class="w3-input" type="text" name="email" value="{{reservation.patient.email}}"></p>
+            <label for="email">Email</label>
+            <input class="w3-input" type="text" name="email" id="email" value="{{reservation.patient.email}}"></p>
             <p>
             <label>Doctor</label>
             <select class="w3-input" name="doctor_id">
               <option></option>
               {{#each doctorList}}
-              <option value="{{this._id}}" {{#if this.selected}} selected {{/if}}>{{this.name}}</option>
+              <option value="{{this._id}}" {{#if this.selected}} selected {{/if}}>{{this.fname}} {{this.lname}}</option>
               {{/each}}
             </select></p>
             <p>
@@ -173,13 +168,15 @@
             
             <br/>
             {{#unless user.isDoctor}}
-            <button class="button1" onclick="alert('this will save updated reservation data');return false;">Save</button>
+            <button type="submit" class="button1">Submit</button>
             <button class="button1" onclick="hideElement('#edit_reservation_form_cont');showElement('#booking_info_table_cont'); return false;">Cancel</button>
             {{/unless}}
 
             
           </form>
           </div>
+          {{/if}}
+          
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>

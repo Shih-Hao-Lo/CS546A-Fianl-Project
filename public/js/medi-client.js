@@ -2,10 +2,10 @@ function logout() {
   $.ajax({
     url: '/logout',
     type: 'GET',
-    success: function(res) {
+    success: function (res) {
       alert('logged out');
     },
-    error: function(err) {
+    error: function (err) {
       alert('failed to log out');
     }
   })
@@ -22,10 +22,10 @@ function showForm(form, hideElem) {
   hideElement(hideElem);
 }
 function showElement(elem) {
-  if($(elem))  $(elem).fadeIn();
+  if ($(elem)) $(elem).fadeIn();
 }
 function hideElement(elem) {
-  if($(elem))  $(elem).hide();
+  if ($(elem)) $(elem).hide();
 }
 function enableForm(formId) {
   $(`#${formId}`).find('input').removeAttr('disabled');
@@ -47,21 +47,21 @@ function viewPrescription(resId) {
 }
 function addPrescription() {
   let diagnosis = $('textarea[name="diagnosis"]').val();
-  let meds = $("#medicines").val();
-  let room = $('#room').val();
+  let medsPrescribed = $("#medicines").val();
+  let roomId = $('#room').val();
   let resId = $('input[name="reservation_id"]').val();
-  // alert(`diagnosis: ${diagnosis}; meds: ${meds}; room: ${room}; resId: ${resId}`);
+  console.log(`diagnosis: ${diagnosis}; medsPrescribed: ${medsPrescribed}; roomId: ${roomId}; resId: ${resId}`);
   $.ajax({
     url: '/prescription/add',
     type: 'POST',
     data: {
       diagnosis,
-      meds,
-      room,
+      medsPrescribed,
+      roomId,
       resId
     },
-    success: function() { location.href = `/reservation/${resId}` },
-    error: function() { alert('failed') }
+    success: function () { location.href = `/reservation/${resId}` },
+    error: function () { alert('failed') }
   })
 }
 function generateBill(resId) {
@@ -74,30 +74,30 @@ function updateReservationStatus(resId) {
   let status = $('select[name="reservation_status"]').val();
   // alert(`updating status for ${resId} to ${status}`);
   let confirmation = confirm(`Are you sure you want to update the booking status to: ${status}`);
-  if(confirmation) {
+  if (confirmation) {
     $.ajax({
       url: `/reservation/${resId}/status/update?newStatus=${status}`,
       type: 'POST',
-      success: function() {
+      success: function () {
         alert(`Booking status updated`);
       },
-      error: function() {
+      error: function () {
         alert('Failed to update status');
       }
     })
   }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-  $("#medicines").change(function() {
+  $("#medicines").change(function () {
     // alert("something changed");
     var selectedOptions = getSelectedOptions(this);
     var price = 0;
     // var selectedIndex = this.options.selectedIndex;
     // alert(selectedOptions[0].getAttribute('price'));
-    if(selectedOptions) {
-      selectedOptions.forEach(function(elem) {
+    if (selectedOptions) {
+      selectedOptions.forEach(function (elem) {
         price += parseInt(elem.getAttribute('price'));
       })
     }
@@ -106,11 +106,11 @@ $(document).ready(function() {
     updatePriceField(total);
     // alert(price);
   });
-  $("#room").change(function() {
+  $("#room").change(function () {
     // alert("room changed");
     var selectedOptions = getSelectedOptions(this);
     var price = 0;
-    if(selectedOptions) {
+    if (selectedOptions) {
       price += parseInt(selectedOptions[0].getAttribute('price'));
     }
     // alert(price);
@@ -132,8 +132,8 @@ $(document).ready(function() {
   function getSelectedOptions(selectBox) {
     var optionList = selectBox.options;
     var selectedOption = [];
-    for(var i=0; i<optionList.length; i++) {
-      if(optionList[i].selected) {
+    for (var i = 0; i < optionList.length; i++) {
+      if (optionList[i].selected) {
         selectedOption.push(optionList[i]);
       }
     }
@@ -141,6 +141,46 @@ $(document).ready(function() {
   }
 })
 
+function updatedoc(selectObject) {
+  //alert(selectObject.value.length);
+  if(selectObject.value.length == 0){
+    location.href = '/reservation/new';
+  }
+  $.ajax({
+    url: `/doctors/search/${selectObject.value}`,
+    type: 'GET',
+    success: function (res) {
+      //alert(res);
+      var List = document.getElementById("drlist");
+      while (List.firstChild) {
+        List.removeChild(List.firstChild);
+      }
+      //var out = '';
+      var a = document.createElement("OPTION");
+      var t = document.createTextNode('');
+      a.appendChild(t);
+      List.appendChild(a);
+      for (var x = 0; x < res.length; x++) {
+        //out = out + res[x].fname + res[x].lname;
+        var a = document.createElement("OPTION");
+        var t = document.createTextNode(res[x].fname + "  " + res[x].lname);
+        a.appendChild(t);
+        a.value = res[x]._id;
+        List.appendChild(a);
+      }
+      //alert(out);
+    },
+    error: function (err) {
+
+    }
+  });
+}
+
+function Pay(reservation){
+  //alert(reservation);
+  alert('this will redirect to payment');
+  location.href = '/reservation/pay/'+reservation;
+}
 // ======== Edit Profile & PWD ======== //
 
 function editProfile() {
@@ -153,4 +193,20 @@ function backToDashboard() {
 
 function changePWD() {
   location.href = '/change-password';
+}
+
+function DateRestrict() {
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth() + 1;
+    let year = today.getFullYear();
+    if (day < 10) {
+        day = '0' + day
+    }
+    if (month < 10) {
+        month = '0' + month
+    }
+
+    today = year + '-' + month + '-' + day;
+    document.getElementById("resvDate").setAttribute("min", today);
 }

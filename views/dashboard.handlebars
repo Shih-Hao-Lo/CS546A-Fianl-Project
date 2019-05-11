@@ -28,34 +28,43 @@
 
     <br>
     <table class="" style="color: gray">
-      <tr>
-        <td style="width: 30%">ID:</td>
-        <td>{{user._id}}</td>
-      </tr>
-      <tr>
-        <td>Name:</td>
-        <td>{{user.fname}} {{user.lname}}</td>
-      </tr>
-      <tr>
-        <td>Email:</td>
-        <td>{{user.email}}</td>
-      </tr>
-      <tr>
-        <td>Gender:</td>
-        <td>{{user.gender}}</td>
-      </tr>
-      <tr>
-        <td>DOB:</td>
-        <td>{{user.dob}}</td>
-      </tr>
+        <tr>
+            <td style="width: 30%">ID:</td>
+            <td>{{user._id}}</td>
+        </tr>
+        <tr>
+            <td>Name:</td>
+            <td>{{user.fname}} {{user.lname}}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{user.email}}</td>
+        </tr>
+        {{#if user.isDoctor}}
+        {{else}}
+        <tr>
+            <td>Gender:</td>
+            <td>{{user.gender}}</td>
+        </tr>
+        <tr>
+            <td>DOB:</td>
+            <td>{{user.dob}}</td>
+        </tr>
+        {{/if}}
     </table>
     <br>
   </div>
 
   <div>
-    <button type="button" class="button1" onclick="newReservation()">New Appointment</button>
-    <button type="button" class="button1" onclick="viewReservation()">View Appointments</button>
-    <button type="button" class="button1" onclick="editProfile()">Edit Profile</button>
+      {{#if user.isDoctor}}
+      {{else}}
+      <button type="button" class="button1" onclick="newReservation()">New Appointment</button>
+      {{/if}}
+      <button type="button" class="button1" onclick="viewReservation()">View Appointments</button>
+      {{#if user.isDoctor}}
+      {{else}}
+      <button type="button" class="button1" onclick="editProfile()">Edit Profile</button>
+      {{/if}}
   </div>
 
           

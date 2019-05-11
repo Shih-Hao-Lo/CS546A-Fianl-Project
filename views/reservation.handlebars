@@ -32,7 +32,7 @@
       </tr>
       <tr>
         <td>Doctor:</td>
-        <td>Dr. {{this.doctor.name}}</td>
+        <td>Dr. {{this.doctor.fname}} {{this.doctor.lname}}</td>
       </tr>
       <tr>
         <td>Date:</td>
@@ -40,7 +40,7 @@
       </tr>
       <tr>
         <td>Status:</td>
-        <td>{{this.status}}</td>
+        <td><span class="status-{{this.status}}">{{this.status}}</span></td>
       </tr>
     </table>
     </p>
