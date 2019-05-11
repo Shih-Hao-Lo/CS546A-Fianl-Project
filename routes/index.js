@@ -236,13 +236,13 @@ const constructorMethod = app => {
 
   app.get("/prescription/add", logging, async (req, res) => {
     // console.log(`request data:::: ${req.body} ::::request data over`);
-    await loginTestUser(req, res);
+    // await loginTestUser(req, res);
     var resId = req.query.resId;
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
 
-    let medsPrescribed = reservation.prescription.medicineList || [];
+    let medsPrescribed = (reservation.prescription && reservation.prescription.medicineList) || [];
     let medsIdPrescribed = medsPrescribed.map(x => x._id.toString());
     // logger(`meds prescribed: `)
     // console.log(medsPrescribed);
