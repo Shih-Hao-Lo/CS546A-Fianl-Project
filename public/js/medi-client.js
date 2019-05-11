@@ -175,7 +175,7 @@ function updatedoc(selectObject) {
 
 function Pay(reservation){
   //alert(reservation);
-  location.href = '../reservation/pay/'+reservation;
+  location.href = '/reservation/pay/'+reservation;
 }
 // ======== Edit Profile & PWD ======== //
 
