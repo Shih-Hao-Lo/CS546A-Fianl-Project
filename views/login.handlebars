@@ -21,9 +21,13 @@
             <p>
             <label>Password</label>
             <input class="w3-input" type="password" name="password"></p>
-            <br/>
-            <br/>
-            <p><button type="submit" class="button1">Login</button></p>
+
+            {{#if message}}
+            <ul class = "error-list">
+              <li>{{message}}</li>
+            </ul>
+            {{/if}}
+            <p><button id="login_button" type="submit" class="button1">Login</button></p>
             
           </form>
           </div>
