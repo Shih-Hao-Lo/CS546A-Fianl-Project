@@ -5,6 +5,8 @@ const ObjectID = require('mongodb').ObjectID;
 
 // Find medicine by id. id is a string or objectid.
 async function getbyid(id){
+    //console.log('id in medicime')
+    //console.log(id);
     if(id === undefined){
         throw 'input is empty';
     }

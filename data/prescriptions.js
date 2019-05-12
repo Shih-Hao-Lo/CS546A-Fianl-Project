@@ -32,9 +32,10 @@ async function getbyid(id){
 
 async function processPrescriptionData(prescription) {
     if(prescription && prescription.medicine) {
+        var medarr = prescription.medicine.split(',');
         let medicineList = [];
-        for(let i=0; i<prescription.medicine.length; i++) {
-            let med = await medicines.getbyid(prescription.medicine[i]);
+        for(let i=0; i<medarr.length; i++) {
+            let med = await medicines.getbyid(medarr[i]);
             med.price = parseInt(med.price).toFixed(2);
             medicineList.push(med);
         }
@@ -54,7 +55,7 @@ async function getAll(){
 //Make new prescription. pid: patient._id(String or objectid) ; did: doctor._id(String or objectid)
 //medicinelist = [{ medinine._id , amount } , ...]
 //date is string
-async function addprescription(pid , did , medicinelist, date){
+async function addprescription(pid , did , medicinelist, roomid,  date){
     console.log("inside prescriptions.addprescription")
     if(pid === undefined || did === undefined){
         throw 'input is empty';
@@ -85,7 +86,7 @@ async function addprescription(pid , did , medicinelist, date){
         doctorid: did,
         medicine: medicinelist,
         date: date,
-        roomid: undefined
+        roomid: roomid
     }
 
     const insertinfo = await prescriptionCollections.insertOne(data);
