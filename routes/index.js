@@ -295,7 +295,7 @@ const constructorMethod = app => {
   app.get("/prescription/add", logging, xssClean, loggedIn, async (req, res) => {
     // console.log(req.body);
     var resId = xss(req.query.resId);
-    var reservation = await reservationData.getbyid(req.query.resId);
+    var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
 
