@@ -226,6 +226,33 @@ async function assignprescription(id, pid) {
 
 // assign room. id = reservation._id(String or objectid) ; 
 // rid = room._id(String or objectid) , day is number.
+async function assignroom(id, day) {
+    if (id === undefined) {
+        throw 'input is empty';
+    }
+    if (id.constructor != ObjectID) {
+        if (ObjectID.isValid(id)) {
+            id = new ObjectID(id);
+        }
+        else {
+            throw 'Id is invalid!(in data/reservation.assignroom)'
+        }
+    }
+
+    const reservationCollections = await reservations();
+    const target = await this.getbyid(id);
+    const data = {
+        $set: {
+            days: day,
+        }
+    }
+
+    const updateinfo = await reservationCollections.updateOne({ _id: id }, data);
+    //if (updateinfo.modifiedCount === 0) throw 'Update fail!';
+
+    return await this.getbyid(id);
+}
+/*
 async function assignroom(id, rid, day) {
     if (id === undefined) {
         throw 'input is empty';
@@ -261,6 +288,7 @@ async function assignroom(id, rid, day) {
 
     return await this.getbyid(id);
 }
+*/
 
 // modify reservation data. id: reservation._id(String or objectid)
 // data = {
@@ -415,6 +443,23 @@ async function getReservationList(user) {
     return await getbypid(user._id);
 }
 
+async function getDays(id) {
+    if (id === undefined) {
+        throw 'input is empty';
+    }
+    if (id.constructor != ObjectID) {
+        if (ObjectID.isValid(id)) {
+            id = new ObjectID(id);
+        }
+        else {
+            throw 'Id is invalid!(in data/reservation.payment)'
+        }
+    }
+
+    const target = await this.getbyid(id);
+    return target.days;
+}
+
 function getMedicineCost(reservation) {
     let totalCost = 0
     if (reservation.prescription && reservation.prescription.medicineList) {
@@ -429,7 +474,7 @@ function getMedicineCost(reservation) {
 function getRoomCost(reservation) {
     let totalCost = 0;
     if (reservation.room) {
-        totalCost += parseInt(reservation.room.price);
+        totalCost += parseInt(reservation.room.price) * reservation.days;
     }
     return totalCost;
 }
@@ -526,5 +571,6 @@ module.exports = {
     updateReservationStatus,
     getMedicineCost,
     getRoomCost,
-    getConsultationCost
+    getConsultationCost,
+    getDays
 }

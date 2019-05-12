@@ -304,7 +304,6 @@ const constructorMethod = app => {
       let roomCost = reservationData.getRoomCost(reservation);
       let totalCost = (medicineCost + roomCost).toFixed(2);
   
-  
       res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
         reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
         totalCost: totalCost, roomCost: roomCost });
@@ -326,12 +325,16 @@ const constructorMethod = app => {
     let diagnosis = xss(req.body.diagnosis);
     let medsPrecribed = xss(req.body.medsPrescribed);
     let roomId = xss(req.body.roomId);
+
+    let days = xss(req.body.days);
+
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     let { patientid, doctorid } = reservation;
 //     console.log('medsPrecribed');
 // console.log(req.body);
+
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
       let ind = medsPrecribed.indexOf(medicineId);
@@ -339,10 +342,10 @@ const constructorMethod = app => {
       return ind > -1;
     });
 
-
+    reservationData.assignroom(resId, days);
     reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
-      reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+    reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
   function requireRole(role) {
