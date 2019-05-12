@@ -59,6 +59,7 @@ const constructorMethod = app => {
     for(let key in reqBody) {
       reqBody[key] = xss(reqBody[key]);
     }
+    next();
   }
   function logging(req, res, next){
     let authUserString = req.session.user ? '(Authenticated User)' : '(Non-Authenticated User)';
