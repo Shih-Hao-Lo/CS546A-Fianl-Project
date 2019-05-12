@@ -107,7 +107,7 @@ const constructorMethod = app => {
       if (user === undefined) {
         var isdoctor = await doctorData.getDoctorByEmail(email);
         if (isdoctor === null) {
-          res.render('login', { hasError: true , message: "User not found!" });
+          res.render('login', { hasError: true , message: "Invalid email or password." });
           return;
         }
         if (await bcrypt.compare(password, isdoctor.password)) {
@@ -122,7 +122,7 @@ const constructorMethod = app => {
       }
 
       if (!req.session.user) {
-        res.render('login', { message: "Invalid credentials!" });
+        res.render('login', { message: "Invalid email or password." });
       }
       else {
         res.redirect('/dashboard');
