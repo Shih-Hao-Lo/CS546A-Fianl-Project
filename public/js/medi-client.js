@@ -192,7 +192,7 @@ function updatedoc(selectObject) {
 
 function Pay(reservation){
   //alert(reservation);
-  alert('this will redirect to payment');
+  //alert('this will redirect to payment');
   location.href = '/reservation/pay/'+reservation;
 }
 
