@@ -87,7 +87,11 @@ const constructorMethod = app => {
   });
 
   app.get("/login", logging, (req, res) => {
-    res.render("login", { title: "MediDesk login" });
+    if(req.session.user) {
+      res.redirect('/dashboard');
+    } else {
+      res.render("login", { title: "MediDesk login" });
+    }
   });
 
   app.post("/login", logging, async (req, res) => {
