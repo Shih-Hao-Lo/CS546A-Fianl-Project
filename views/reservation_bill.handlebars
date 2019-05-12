@@ -26,7 +26,7 @@
               <p>
                 Date: {{reservation.date_formatted}} <br>
                 Name: {{reservation.patient.fname}} {{reservation.patient.lname}} <br>
-                Address: {{#if reservation.address}}{{reservation.address}}{{else}}128 Terrace Ave, NJ, 07307{{/if}}
+                Address: {{#if reservation.patient.address}}{{reservation.patient.address}}{{else}} - {{/if}}
               </p>
 
             </div>
@@ -38,7 +38,7 @@
                 </td>
               
                 <td>{{reservation.patient.fname}} {{reservation.patient.lname}} <br>
-                {{#if reservation.address}}{{reservation.address}}{{else}}128 Terrace Ave, NJ, 07307{{/if}}</td>
+                {{#if reservation.patient.address}}{{reservation.patient.address}}{{else}} - {{/if}}</td>
                 
               
                 <td>
