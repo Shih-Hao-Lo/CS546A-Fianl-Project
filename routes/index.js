@@ -71,8 +71,6 @@ const constructorMethod = app => {
       next();     //If session exists, proceed to page
     } else {
       var err = new Error("Not logged in!");
-      console.log(req.session.user);
-      //  next(err);  //Error, trying to access unauthorized page!
       res.redirect("/login");
     }
   }
@@ -329,7 +327,7 @@ const constructorMethod = app => {
     // let {resId, diagnosis, medsPrescribed, roomId } = req.body;
     let resId = xss(req.body.resId);
     let diagnosis = xss(req.body.diagnosis);
-    let medsPrecribed = xss(req.body.medsPrescribed);
+    let medsPrecribed = xss(req.body.medsPrescribed).split(',');
     let roomId = xss(req.body.roomId);
 
     let days = xss(req.body.days);
@@ -406,15 +404,11 @@ const constructorMethod = app => {
         if (user.isDoctor) name = `Dr. ${name}`;
         data.fname = xss(req.body.fname);
         data.lname = xss(req.body.lname);
-        data.email = xss(req.body.email);
         data.gender = xss(req.body.gender);
         data.dob = xss(req.body.dob);
+        data.address = xss(req.body.address);
 
         let genderArr = GenderTool(user.gender);
-        if (await usersData.getUserByUsername(data.email) != undefined) {
-            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
-            return;
-        }
         if (await doctorData.getDoctorByEmail(data.email) != undefined) {
           res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
           return;
