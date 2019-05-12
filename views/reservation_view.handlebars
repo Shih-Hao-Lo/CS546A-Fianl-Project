@@ -164,7 +164,7 @@
             </select></p>
             <p>
             <label>Date</label>
-            <input class="w3-input" type="date" name="app_date" value="{{reservation.date_formatted}}"></p>
+            <input class="w3-input" type="date" name="app_date" id="resvDate" value="{{reservation.date_formatted}}"></p>
             
             <br/>
             {{#unless user.isDoctor}}
@@ -175,6 +175,7 @@
             
           </form>
           </div>
+          <script>DateRestrict()</script>
           {{/if}}
           
   {{!-- <form id="search_form" action="/search">
