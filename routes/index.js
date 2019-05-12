@@ -59,6 +59,7 @@ const constructorMethod = app => {
     for(let key in reqBody) {
       reqBody[key] = xss(reqBody[key]);
     }
+    next();
   }
   function logging(req, res, next){
     let authUserString = req.session.user ? '(Authenticated User)' : '(Non-Authenticated User)';
@@ -151,7 +152,7 @@ const constructorMethod = app => {
   });
 
   app.get('/doctors/search/:id', logging, async (req, res) => {
-    console.log(req.params.id);
+    //console.log(req.params.id);
     var doctors = await doctorData.searchbyspecialism(xss(req.params.id));
     if (doctors != undefined) {
       res.send(doctors);
@@ -180,7 +181,7 @@ const constructorMethod = app => {
       res.redirect("/dashboard");
       return;
     }
-    console.log(req.body);
+    //console.log(req.body);
     var pid = xss(req.body.id);
     var did = xss(req.body.doctor_id);
     var date = xss(req.body.app_date);
@@ -189,13 +190,13 @@ const constructorMethod = app => {
   });
 
   app.get("/reservation", logging, loggedIn, async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     var reservationList = await reservationData.getReservationList(req.session.user);
     res.render('reservation', { user: req.session.user, reservationList: reservationList });
   });
 
   app.get("/reservation/:id", logging, loggedIn, async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
     var doctorList = await doctorData.getAll();
@@ -227,40 +228,21 @@ const constructorMethod = app => {
   });
 
   app.get("/reservation/:id/bill", logging, loggedIn, async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
       || reservation.doctorid.toString() === req.session.user._id.toString())) {
-        res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
+        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), layout: false });
     } else {
       res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });      
     }
     
   });
 
-  async function loginTestUser(req, res) {
-    console.log(`inside loginTestUser: loggin in`)
-    let email = 'house@medi.com';
-    let password = 'hello';
-    var user = await usersData.getUserByUsername(email)
-      if (user === undefined) {
-        var isdoctor = await doctorData.getDoctorByEmail(email);
-        if (await bcrypt.compare(password, isdoctor.password)) {
-          req.session.user = isdoctor;
-          req.session.user["isDoctor"] = true;
-        }
-      }
-      else {
-        if (await bcrypt.compare(password, user.password)) {
-          req.session.user = user;
-        }
-      }
-  }
-
   app.get("/reservation/pay/:id" , logging, loggedIn , async(req , res) =>{
-    console.log(req.params.id);
+    //console.log(req.params.id);
     var target = await reservationData.getbyid(xss(req.params.id));
     //console.log(req.session.user._id);
     //console.log(target._id);
@@ -272,11 +254,18 @@ const constructorMethod = app => {
     res.redirect('/reservation/' + req.params.id);
   });
 
+
+  app.get('/reservation/delete/:id' , loggedIn , async (req , res) =>{
+    var deleted = await reservationData.delreservation(req.params.id);
+    res.redirect('/reservation');
+  });
+
   app.post("/reservation/edit", logging, loggedIn, async (req, res) => {
     var pid = xss(req.body.patient_id);
     var did = xss(req.body.doctor_id);
     var rid = xss(req.body.reservation_id);
     var date = xss(req.body.app_date);
+
     var data = {
       did: did,
       newdate: date
@@ -315,7 +304,6 @@ const constructorMethod = app => {
       let roomCost = reservationData.getRoomCost(reservation);
       let totalCost = (medicineCost + roomCost).toFixed(2);
   
-  
       res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
         reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
         totalCost: totalCost, roomCost: roomCost });
@@ -335,24 +323,29 @@ const constructorMethod = app => {
     // let {resId, diagnosis, medsPrescribed, roomId } = req.body;
     let resId = xss(req.body.resId);
     let diagnosis = xss(req.body.diagnosis);
-    let medsPrecribed = xss(req.body.medsPrecribed);
+    let medsPrecribed = xss(req.body.medsPrescribed);
     let roomId = xss(req.body.roomId);
+
+    let days = xss(req.body.days);
+
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     let { patientid, doctorid } = reservation;
+//     console.log('medsPrecribed');
+// console.log(req.body);
 
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
-      let ind = medsPrescribed.indexOf(medicineId);
+      let ind = medsPrecribed.indexOf(medicineId);
       // logger(`index of medicineid in prescription: ${ind}`);
       return ind > -1;
     });
 
-
-    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
+    reservationData.assignroom(resId, days);
+    reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
-      reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+    reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
   function requireRole(role) {
@@ -411,8 +404,11 @@ const constructorMethod = app => {
         data.dob = xss(req.body.dob);
         data.address = xss(req.body.address);
 
-        let genderArr = GenderTool(user.gender); 
-
+        let genderArr = GenderTool(user.gender);
+        if (await doctorData.getDoctorByEmail(data.email) != undefined) {
+          res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
+          return;
+      }
         if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
             res.status("400");
             res.redirect('/dashboard');

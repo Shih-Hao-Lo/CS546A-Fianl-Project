@@ -50,6 +50,8 @@ function addPrescription() {
   let medsPrescribed = $("#medicines").val();
   let roomId = $('#room').val();
   let resId = $('input[name="reservation_id"]').val();
+  let days = $('#days').val();
+
   console.log(`diagnosis: ${diagnosis}; medsPrescribed: ${medsPrescribed}; roomId: ${roomId}; resId: ${resId}`);
   $.ajax({
     url: '/prescription/add',
@@ -57,6 +59,7 @@ function addPrescription() {
     data: {
       diagnosis,
       medsPrescribed,
+      days,
       roomId,
       resId
     },
@@ -111,13 +114,24 @@ $(document).ready(function () {
     var selectedOptions = getSelectedOptions(this);
     var price = 0;
     if (selectedOptions) {
-      price += parseInt(selectedOptions[0].getAttribute('price'));
+        price += parseInt(selectedOptions[0].getAttribute('price'));
+        price *= $("#days")[0].value;
     }
     // alert(price);
     $(this).attr('price', price);
     var total = getTotalCost(this, '#medicines');
     updatePriceField(total);
   });
+    // New add
+    $("#days").change(function () {       
+        var selectedOptionsRoom = getSelectedOptions($("#room")[0]);
+        var price = 0;
+        price += parseInt(selectedOptionsRoom[0].getAttribute('price'));
+        price *= $("#days")[0].value;
+        $("#room").attr('price', price);
+        var total = getTotalCost("#room", '#medicines');
+        updatePriceField(total);
+    });
 
   function getTotalCost(elem1, elem2) {
     var price1 = parseInt($(elem1).attr('price'));
@@ -178,8 +192,13 @@ function updatedoc(selectObject) {
 
 function Pay(reservation){
   //alert(reservation);
-  alert('this will redirect to payment');
+  //alert('this will redirect to payment');
   location.href = '/reservation/pay/'+reservation;
+}
+
+function deleteres(reservation){
+  alert('this will delete the reservation');
+  location.href = '/reservation/delete/'+reservation;
 }
 // ======== Edit Profile & PWD ======== //
 

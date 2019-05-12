@@ -64,7 +64,7 @@
               <tr>
                 <td>Room</td>
                 <td>
-                  <span>{{reservation.room.name}}</span>
+                  <span>{{reservation.room.name}} - {{reservation.days}} day(s)</span>
                 </td>
               </tr>
               {{/if}}
@@ -111,7 +111,7 @@
       {{#ifEquals reservation.status 'confirmed'}}
       <button class="button1"
         onclick="showElement('#edit_reservation_form_cont');hideElement('#booking_info_table_cont'); return false;">Edit</button>
-      <button class="button1" onclick="alert('this will deleted the reservation'); return false;">Delete</button>
+      <button class="button1" onclick="deleteres('{{reservation._id}}'); return false;">Delete</button>
       {{/ifEquals}}
 
       {{#ifNotEquals reservation.status 'confirmed'}}
@@ -147,13 +147,13 @@
             <input type="hidden" name="patient_id" value="{{reservation.patientid}}">
             <p>
             <label for="fname">First Name</label>
-            <input class="w3-input" type="text" name="fname" id="fname" value="{{reservation.patient.fname}}"></p>
+            <input class="w3-input" type="text" name="fname" id="fname" value="{{reservation.patient.fname}}" readonly></p>
             <p>
             <label for="lname">Last Name</label>
-            <input class="w3-input" type="text" name="lname" id="lname" value="{{reservation.patient.lname}}"></p>
+            <input class="w3-input" type="text" name="lname" id="lname" value="{{reservation.patient.lname}}" readonly></p>
             <p>
             <label for="email">Email</label>
-            <input class="w3-input" type="text" name="email" id="email" value="{{reservation.patient.email}}"></p>
+            <input class="w3-input" type="text" name="email" id="email" value="{{reservation.patient.email}}" readonly></p>
             <p>
             <label>Doctor</label>
             <select class="w3-input" name="doctor_id">
@@ -164,7 +164,7 @@
             </select></p>
             <p>
             <label>Date</label>
-            <input class="w3-input" type="date" name="app_date" value="{{reservation.date_formatted}}"></p>
+            <input class="w3-input" type="date" name="app_date" id="resvDate" value="{{reservation.date_formatted}}"></p>
             
             <br/>
             {{#unless user.isDoctor}}
@@ -175,6 +175,7 @@
             
           </form>
           </div>
+          <script>DateRestrict()</script>
           {{/if}}
           
   {{!-- <form id="search_form" action="/search">

@@ -1,88 +1,104 @@
 <main>
 
-  <div class="w3-container medi-yellow">
-    <h2>{{title}}</h2>
-  </div>
+    <div class="w3-container medi-yellow">
+        <h2>{{title}}</h2>
+    </div>
 
-          <br>
+    <br>
 
-          <div class="w3-container">
-            <table id="booking_info_table" class="info_table">
-              <tr>
+    <div class="w3-container">
+        <table id="booking_info_table" class="info_table">
+            <tr>
                 <td>Booking ID</td>
                 <td>#{{reservation._id}}</td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Date</td>
                 <td>{{reservation.date_formatted}}</td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Patient Frist Name</td>
                 <td>{{reservation.patient.fname}}</td>
-                
-              </tr>
-              <tr>
+
+            </tr>
+            <tr>
                 <td>Patient Last Name</td>
                 <td>{{reservation.patient.lname}}</td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Patient Email</td>
                 <td>{{reservation.patient.email}}</td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Doctor Name</td>
-                <td>Dr. {{reservation.doctor.name}}</td>
-              </tr>
-              <tr>
+                <td>Dr. {{reservation.doctor.fname}} {{reservation.doctor.lname}}</td>
+            </tr>
+            <tr>
                 <label for="diagnosis"></label>
                 <td>Diagnosis</td>
                 <td>
-                  <textarea class="w3-input" name="diagnosis" id="diagnosis" style="resize: none;" required>{{reservation.diagnosis}}</textarea>
+                    <textarea class="w3-input" name="diagnosis" id="diagnosis" style="resize: none;" required>{{reservation.diagnosis}}</textarea>
                 </td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Medicines</td>
                 <td>
-                  <select multiple class="w3-input select-50" name="medicines" id="medicines" price="{{medicineCost}}">
-                    {{!-- <option></option> --}}
-                    {{#each medicineList}}
-                    <option value="{{this._id}}" price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}} >{{this.name}}   <span class="price-span">(${{this.price}})</span></option>
-                    {{/each}}
-                  </select>
+                    <select multiple class="w3-input select-50" name="medicines" id="medicines" price="{{medicineCost}}">
+                        {{!-- <option></option> --}}
+                        {{#each medicineList}}
+                        <option value="{{this._id}}" price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}}>{{this.name}}   <span class="price-span">(${{this.price}})</span></option>
+                        {{/each}}
+                    </select>
                 </td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Room</td>
                 <td>
-                  <select class="w3-input select-50" name="room" id="room" price="{{roomCost}}">
-                    <option value="" price="0"></option>
-                    {{#each roomList}}
-                    <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}} (${{this.price}})</option>
-                    {{/each}}
-                  </select>
+                    <select class="w3-input select-50" name="room" id="room" price="{{roomCost}}">
+                        <option value="" price="0"></option>
+                        {{#each roomList}}
+                        <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}} (${{this.price}})</option>
+                        {{/each}}
+                    </select>
                 </td>
-              </tr>
-              
-              <tr>
+            </tr>
+            <tr>
+                <td>Days</td>
+                <td>
+                    <select class="w3-input select-50 days" name="days" id="days"></select>
+                </td>
+            </tr>
+            <tr>
                 <td>Cost</td>
                 <td><span id="total_cost" price="{{totalCost}}">{{#if totalCost}}${{totalCost}}{{/if}}</span></td>
-              </tr>
-              <tr>
+            </tr>
+            <tr>
                 <td>Consultation Fee</td>
                 <td>${{reservation.consultation_fee}}</td>
-              </tr>
-              
-          </table>
+            </tr>
 
-            <br>
-            <form action="/prescription/add" method="POST" onsubmit="addPrescription(); return false;">
+        </table>
+        <p id="tmpsaved" style="display:none">{{reservation.days}}</p>
+        <br>
+        <form action="/prescription/add" method="POST" onsubmit="addPrescription(); return false;">
             <input type="hidden" name="reservation_id" value="{{reservation._id}}">
             <button class="button1" type="submit">Save</button>
             <button class="button1" type="button" onclick="location.href='/reservation/{{reservation._id}}'">Cancel</button>
-            </form>
-          </div>
+        </form>
+    </div>
 
-
-          
-
+    <script>
+        $(function () {
+            var $select = $(".days");
+            for (i = 0; i <= 30; i++) {
+                $select.append($('<option></option>').val(i).html(i));
+                if ($("select option:last").val() == document.getElementById('tmpsaved').innerHTML) {
+                        $("#days").val($("select option:last").val()).prop('selected', true);
+                }
+                //alert($("select option:last").val());
+            }
+        });
+  
+       // alert(document.getElementById('tmpsaved').innerHTML);
+    </script>
 </main>
