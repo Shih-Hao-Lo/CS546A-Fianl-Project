@@ -234,7 +234,7 @@ const constructorMethod = app => {
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
       || reservation.doctorid.toString() === req.session.user._id.toString())) {
-        res.render('reservation_bill', { user: req.session.user, reservation: reservation, layout: false });
+        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), layout: false });
     } else {
       res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });      
     }
@@ -304,7 +304,6 @@ const constructorMethod = app => {
       let roomCost = reservationData.getRoomCost(reservation);
       let totalCost = (medicineCost + roomCost).toFixed(2);
   
-  
       res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
         reservation: reservation, medicineList: medicineList, title: 'Prescription', medicineCost: medicineCost,
         totalCost: totalCost, roomCost: roomCost });
@@ -326,12 +325,16 @@ const constructorMethod = app => {
     let diagnosis = xss(req.body.diagnosis);
     let medsPrecribed = xss(req.body.medsPrescribed);
     let roomId = xss(req.body.roomId);
+
+    let days = xss(req.body.days);
+
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     let { patientid, doctorid } = reservation;
 //     console.log('medsPrecribed');
 // console.log(req.body);
+
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
       let ind = medsPrecribed.indexOf(medicineId);
@@ -339,10 +342,10 @@ const constructorMethod = app => {
       return ind > -1;
     });
 
-
+    reservationData.assignroom(resId, days);
     reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
-      reservation: reservation, medicineList: medicineList, title: 'Prescription' });
+    reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
 
   function requireRole(role) {
@@ -406,7 +409,10 @@ const constructorMethod = app => {
             res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
             return;
         }
-
+        if (await doctorData.getDoctorByEmail(data.email) != undefined) {
+          res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
+          return;
+      }
         if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
             res.status("400");
             res.redirect('/dashboard');

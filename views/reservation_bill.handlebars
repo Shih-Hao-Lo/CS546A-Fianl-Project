@@ -96,9 +96,9 @@
               {{#if reservation.room}}
               <tr>
                 <td class="border-bottom-1">{{reservation.room.name}}</td>
-                <td class="border-bottom-1">1</td>
+                <td class="border-bottom-1">{{reservation.days}}</td>
                 <td class="border-bottom-1">{{reservation.room.price}}</td>
-                <td class="border-bottom-1">{{reservation.room.price}}</td>
+                <td class="border-bottom-1">{{rommcost}}</td>
               </tr>
               {{else}}
               <tr class="border-bottom-1">
