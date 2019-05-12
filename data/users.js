@@ -99,9 +99,6 @@ async function updatepatient(id , data){
     const target = await this.getbyid(id);
     let changePWD = true;
 
-    if(data.email == "" || data.email === undefined){
-        data.email = target.email;
-    }
     if(data.lname == "" || data.lname === undefined){
         data.lname = target.lname;
     }
@@ -113,6 +110,9 @@ async function updatepatient(id , data){
     }
     if(data.dob == "" || data.dob === undefined){
         data.dob = target.dob;
+    }
+    if(data.address == "" || data.address === undefined){
+        data.address = target.address;
     }
     if(data.password == "" || data.password === undefined){
         data.password = target.password;
@@ -126,12 +126,11 @@ async function updatepatient(id , data){
     let updatedata = {
         $set:{
             _id: id,
-            username: data.email,
-            email: data.email,
             gender: data.gender,
             dob: data.dob,
             fname: data.fname,
             lname: data.lname,
+            address: data.address,
             password: data.password
         }
     }
