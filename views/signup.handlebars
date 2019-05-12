@@ -6,42 +6,44 @@
       Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
   </p> --}}
 
-<br/> 
+  <br />
 
-<div class="w3-container medi-yellow">
-            <h2>Sign Up</h2>
-            <p class="extra"><a href="/login">(Already have an account? Login</a>)</p>
-          </div>
-          
-          <div class="form-container">
-          <form class="w3-container" method="post" action="/signup">
-            <p>
-            <label>First Name</label>
-            <input class="w3-input" type="text" name="fname" required></p>
-            <p>
-            <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname" required></p>
-            <p>
-            <label>Gender</label><br />
-            <select name="gender" required>
-              <option value="" selected disabled hidden></option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select></p>
-            <p>
-            <label>Date of born</label>
-            <input class="w3-input" type="date" name="dob" value="" required></p>
-            <p>
-            <label>Email</label>
-            <input class="w3-input" type="email" name="email" required></p>
-            <p>
-            <label>Password</label>
-            <input class="w3-input" type="password" name="password" required></p>
-            <br/>
-            <p><button type="submit" class="button1">Create Account</button></p>
-            
-          </form>
-          </div>
+  <div class="w3-container medi-yellow">
+    <h2>Sign Up</h2>
+    <p class="extra"><a href="/login">(Already have an account? Login</a>)</p>
+  </div>
+
+  <div class="form-container">
+    <form class="w3-container" method="post" action="/signup">
+      <p>
+        <label>First Name</label>
+        <input class="w3-input" type="text" name="fname" required></p>
+      <p>
+        <label>Last Name</label>
+        <input class="w3-input" type="text" name="lname" required></p>
+      <p>
+        <label>Gender</label><br />
+        <select name="gender" required>
+          <option value="" selected disabled hidden></option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select></p>
+      <p>
+        <label>Date of born</label>
+        <input class="w3-input" type="date" name="dob" value="" required></p>
+      <p>
+        <label>Email</label>
+        <input class="w3-input" type="email" name="email" onblur="checkemail(this)" value="" required>
+        <p style="color:red" id="emailerror" class="hidden">Email already exist</p></p>
+      <p>
+        <label>Password</label>
+        <input class="w3-input" type="password" name="password" required></p>
+      <br />
+      
+      <p><button type="submit" class="button1">Create Account</button></p>
+
+    </form>
+  </div>
   {{!-- <form id="search_form" action="/search">
       <label for="person_name">Person Name</label>
       <br/>
@@ -49,5 +51,4 @@
       <br/>
       <button type="submit" class="button1">Go!</button>
   </form> --}}
-
 </main>

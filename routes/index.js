@@ -49,7 +49,7 @@ const constructorMethod = app => {
         res.redirect('/dashboard');
       }
       catch (e) {
-        res.json({ error: e });
+        res.render("signup", { title: "MediDesk signup" , error: e });
       }
     }
   });
@@ -157,6 +157,12 @@ const constructorMethod = app => {
     if (doctors != undefined) {
       res.send(doctors);
     }
+  });
+
+  app.get('/emailcheck/:id', async (req, res) => {
+    var doctor = await doctorData.getDoctorByEmail(req.params.id);
+    var patient = await usersData.getUserByUsername(req.params.id);
+    res.send(doctor == null && patient == null);
   });
 
   app.get('/logout', logging, function (req, res) {
