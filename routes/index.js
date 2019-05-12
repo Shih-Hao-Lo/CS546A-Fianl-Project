@@ -344,8 +344,8 @@ const constructorMethod = app => {
       return ind > -1;
     });
 
-    reservationData.assignroom(resId, days);
-    reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
+    await reservationData.assignroom(resId, days);
+    await reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
     reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });
