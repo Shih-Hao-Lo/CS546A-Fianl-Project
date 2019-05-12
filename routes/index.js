@@ -343,22 +343,23 @@ const constructorMethod = app => {
     // let {resId, diagnosis, medsPrescribed, roomId } = req.body;
     let resId = xss(req.body.resId);
     let diagnosis = xss(req.body.diagnosis);
-    let medsPrecribed = xss(req.body.medsPrecribed);
+    let medsPrecribed = xss(req.body.medsPrescribed);
     let roomId = xss(req.body.roomId);
     var reservation = await reservationData.getbyid(resId);
     var medicineList = await medicineData.getAll();
     var roomList = await roomData.availableroom();
     let { patientid, doctorid } = reservation;
-
+//     console.log('medsPrecribed');
+// console.log(req.body);
     medicineList.map(medicine => { 
       let medicineId = medicine._id.toString();
-      let ind = medsPrescribed.indexOf(medicineId);
+      let ind = medsPrecribed.indexOf(medicineId);
       // logger(`index of medicineid in prescription: ${ind}`);
       return ind > -1;
     });
 
 
-    reservationData.addprescription(resId, patientid, doctorid, medsPrescribed, diagnosis, roomId, new Date());
+    reservationData.addprescription(resId, patientid, doctorid, medsPrecribed, diagnosis, roomId, new Date());
     res.render('doctor/prescription_view', { user: req.session.user, roomList: roomList, 
       reservation: reservation, medicineList: medicineList, title: 'Prescription' });
   });

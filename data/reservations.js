@@ -1,11 +1,9 @@
 const mongoCollections = require("./mongoCollections");
 const connection = require("./mongoConnection");
 const reservations = mongoCollections.reservations;
-// const doctorf = require("./doctor");
 const patientf = require("./patient");
 const prescriptions = require("./prescriptions");
 const { logger } = require('../logger');
-// const roomf = require('./room');
 const ObjectID = require('mongodb').ObjectID;
 const doctors = require("./doctors");
 const users = require("./users");
@@ -241,7 +239,7 @@ async function assignroom(id, rid, day) {
         }
     }
 
-    const rtarget = await roomf.getbyid(rid).catch(e => { throw e });
+    const rtarget = await rooms.getbyid(rid).catch(e => { throw e });
     const reservationCollections = await reservations();
     const target = await this.getbyid(id);
     const data = {
@@ -316,7 +314,7 @@ async function modifyreservation(id, data) {
             patientid: target.patientid,
             doctorid: data.did,
             date: data.newdate,
-            room: target.room,
+            roomid: target.roomid,
             days: target.days,
             prescriptionid: target.prescriptionid,
             status: target.status
@@ -497,7 +495,7 @@ async function addprescription(resId, pid, did, medicinelist, diagnosis, roomId,
     let reservation = await getbyid(resId);
     let prescription = reservation.prescriptionid ?
         await prescriptions.updatePrescription(reservation.prescriptionid, medicinelist, roomId, date) :
-        await prescriptions.addprescription(pid, did, medicinelist, date);
+        await prescriptions.addprescription(pid, did, medicinelist, roomId , date);
     // if(!reservation.prescriptionid) {
     //     prescription = await prescriptions.addprescription(pid, did, medicinelist, date);
     // } else {
