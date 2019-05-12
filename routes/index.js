@@ -71,8 +71,6 @@ const constructorMethod = app => {
       next();     //If session exists, proceed to page
     } else {
       var err = new Error("Not logged in!");
-      console.log(req.session.user);
-      //  next(err);  //Error, trying to access unauthorized page!
       res.redirect("/login");
     }
   }
@@ -323,7 +321,7 @@ const constructorMethod = app => {
     // let {resId, diagnosis, medsPrescribed, roomId } = req.body;
     let resId = xss(req.body.resId);
     let diagnosis = xss(req.body.diagnosis);
-    let medsPrecribed = xss(req.body.medsPrescribed);
+    let medsPrecribed = xss(req.body.medsPrescribed).split(',');
     let roomId = xss(req.body.roomId);
 
     let days = xss(req.body.days);

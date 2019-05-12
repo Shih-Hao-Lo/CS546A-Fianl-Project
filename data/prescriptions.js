@@ -7,6 +7,7 @@ const users = require("./users");
 // const reservations = require("./reservations");
 const medicines = require("./medicines");
 const ObjectID = require('mongodb').ObjectID;
+const logger = require('../logger').logger;
 
 // Find prescription by id. id is a string or objectid.
 async function getbyid(id){
@@ -32,10 +33,9 @@ async function getbyid(id){
 
 async function processPrescriptionData(prescription) {
     if(prescription && prescription.medicine) {
-        var medarr = prescription.medicine.split(',');
         let medicineList = [];
-        for(let i=0; i<medarr.length; i++) {
-            let med = await medicines.getbyid(medarr[i]);
+        for(let i=0; i<prescription.medicine.length; i++) {
+            let med = await medicines.getbyid(prescription.medicine[i]);
             med.price = parseInt(med.price).toFixed(2);
             medicineList.push(med);
         }
@@ -56,7 +56,6 @@ async function getAll(){
 //medicinelist = [{ medinine._id , amount } , ...]
 //date is string
 async function addprescription(pid , did , medicinelist, roomid,  date){
-    console.log("inside prescriptions.addprescription")
     if(pid === undefined || did === undefined){
         throw 'input is empty';
     }
