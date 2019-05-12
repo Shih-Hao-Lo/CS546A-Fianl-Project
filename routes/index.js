@@ -407,10 +407,7 @@ const constructorMethod = app => {
         data.address = xss(req.body.address);
 
         let genderArr = GenderTool(user.gender);
-        if (await doctorData.getDoctorByEmail(data.email) != undefined) {
-          res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, genderSel1: genderArr[0], genderSel2: genderArr[1], status2: "Email address already exists" });
-          return;
-      }
+
         if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
             res.status("400");
             res.redirect('/dashboard');
