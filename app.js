@@ -21,9 +21,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-  secret: "Its a secret!",
+  secret: "Finger lickin' good!",
   resave: false,
   saveUninitialized: true,
+  cookie: {maxAge: 1000*60*10}
 }));
 
 app.engine("handlebars", exphbs(hbs));
