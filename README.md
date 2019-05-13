@@ -9,7 +9,7 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 ## How to Use:
 1. Seeding MongoDB database: `$ npm ./task/seed.js`
 
-2. Install project's dependicies: `$ npm install`
+2. Install project's dependencies: `$ npm install`
 
 3. Start the project: `$ npm start`
 
@@ -17,13 +17,13 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 
 ## Features
 #### For Patients:
-* User Registration/Login
+* Signup / Login
+* Update profile
+* Change password
 * Doctor appointment booking
 * Prescription checkout
 #### For Doctors:
-* User Registration/Login
-* Prescription system
-* Medicine purchasing
+* Make prescription
 
 ## Project Structure
 * Front-end <br>
