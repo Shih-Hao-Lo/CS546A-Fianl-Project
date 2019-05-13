@@ -8,11 +8,15 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 ## CS546A Final Project
 <br>
 #### Before Use:
-Build the database by running seed:
-`npm ./task/seed.js`
+Build the database by running seed: <br>
+```sh
+npm ./task/seed.js
+```
 <br>
-Start the project:
-`npm start`
+Start the project: <br>
+```sh
+npm start
+```
 
 ## Features
 #### For Patients:
