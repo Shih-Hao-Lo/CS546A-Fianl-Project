@@ -1,11 +1,11 @@
+## CS546A Final Project
 <img src="resources/logo.PNG" width="825px" height="137px"></img>
-
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 
 #### Demo video:
 [https://youtu.be/oTC2I40KMhE](https://youtu.be/oTC2I40KMhE)
 
-# CS546A Final Project
+
 <br>
 
 ## Features
