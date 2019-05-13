@@ -170,7 +170,7 @@ const constructorMethod = app => {
   app.get('/logout', logging, function (req, res) {
     let username = req.session.user ? req.session.user.username : undefined;
     req.session.destroy(function () {
-      console.log(`User logged out: ${usernmae}`);
+      logger(`User logged out: ${username}`);
     });
     res.redirect('/login');
   });
