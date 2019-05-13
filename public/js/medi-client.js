@@ -197,7 +197,7 @@ function Pay(reservation){
 }
 
 function deleteres(reservation){
-  alert('this will delete the reservation');
+  //alert('this will delete the reservation');
   location.href = '/reservation/delete/'+reservation;
 }
 
