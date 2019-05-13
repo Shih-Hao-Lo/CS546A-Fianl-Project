@@ -7,17 +7,11 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 [https://youtu.be/oTC2I40KMhE](https://youtu.be/oTC2I40KMhE)
 
 ## How to Use:
-1. Seeding MongoDB database: <br>
+1. Seeding MongoDB database: `$ npm ./task/seed.js`
 
-`$ npm ./task/seed.js`
+2. Install project's dependicies: `$ npm install`
 
-2. Install project's dependicies: <br>
-
-`$ npm install`
-
-3. Start the project: <br>
-
-`$ npm start`
+3. Start the project: `$ npm start`
 
 4. Run `http://localhost:3000/` in your browser
 
