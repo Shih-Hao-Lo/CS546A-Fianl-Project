@@ -4,7 +4,7 @@
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 
 #### Demo video:
-[https://youtu.be/oTC2I40KMhE](https://youtu.be/oTC2I40KMhE)
+[https://youtu.be/OQdMMBOkNhg](https://youtu.be/OQdMMBOkNhg)
 
 ## How to Use:
 1. Seeding MongoDB database: `$ npm ./task/seed.js`
