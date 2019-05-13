@@ -16,28 +16,27 @@
           <div class="form-container">
           <form class="w3-container" method="post" action="/signup">
             <p>
-            <label>First Name</label>
-            <input class="w3-input" type="text" name="fname" required></p>
+            <label for="fname">First Name</label>
+            <input id="fname" class="w3-input" type="text" name="fname" required></p>
             <p>
-            <label>Last Name</label>
-            <input class="w3-input" type="text" name="lname" required></p>
+            <label for="lname">Last Name</label>
+            <input id="lname" class="w3-input" type="text" name="lname" required></p>
             <p>
-            <label>Gender</label><br />
-            <select class="w3-input" name="gender" required>
+            <label for="gender">Gender</label><br />
+            <select id="gender" class="w3-input" name="gender" required>
               <option value="" selected disabled hidden></option>
               <option value="male">Male</option>
               <option value="female">Female</option>
             </select></p>
             <p>
-            <label>Date of birth</label>
-            <input class="w3-input" type="date" name="dob" value="" required></p>
+            <label for="dob">Date of birth</label>
+            <input id="dob" class="w3-input" type="date" name="dob" value="" required></p>
             <p>
-            <label>Email</label>
-            <input class="w3-input" type="email" name="email" onblur="checkemail(this)" required>
-            <p style="color:red" id="emailerror" class="hidden">Email already exist</p></p>
+            <label for="email">Email</label>
+            <input id="email" class="w3-input" type="email" name="email" required></p>
             <p>
-            <label>Password</label>
-            <input class="w3-input" type="password" name="password" required></p>
+            <label for="password">Password</label>
+            <input id="password" class="w3-input" type="password" name="password" required></p>
             <br/>
             <p><button type="submit" class="button1">Create Account</button></p>
             
