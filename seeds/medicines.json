@@ -1,16 +1,18 @@
-{"_id":{"$oid":"5cd642690c980f19545271cd"},"name":"Nexium (esomeprazole)","price":{"$numberInt":"160"}}
-{"_id":{"$oid":"5cd642690c980f19545271d1"},"name":"Sovaldi (sofosbuvir)","price":{"$numberInt":"280"}}
-{"_id":{"$oid":"5cd642690c980f19545271d3"},"name":"Synthroid (levothyroxine)","price":{"$numberInt":"100"}}
-{"_id":{"$oid":"5cd642690c980f19545271d6"},"name":"Crestor (rosuvastatin)","price":{"$numberInt":"120"}}
-{"_id":{"$oid":"5cd642690c980f19545271ce"},"name":"Lantus Solostar (insulin glargine)","price":{"$numberInt":"200"}}
-{"_id":{"$oid":"5cd642690c980f19545271d0"},"name":"Lyrica (pregabalin)","price":{"$numberInt":"230"}}
-{"_id":{"$oid":"5cd642690c980f19545271cf"},"name":"Enbrel (etanercept)","price":{"$numberInt":"300"}}
-{"_id":{"$oid":"5cd642690c980f19545271d4"},"name":"Magic mushrooms","price":{"$numberInt":"400"}}
-{"_id":{"$oid":"5cd642690c980f19545271da"},"name":"Remicade (infliximab)","price":{"$numberInt":"290"}}
-{"_id":{"$oid":"5cd642690c980f19545271d2"},"name":"Advair Diskus (fluticasone)","price":{"$numberInt":"180"}}
-{"_id":{"$oid":"5cd642690c980f19545271d9"},"name":"Vitamin","price":{"$numberInt":"20"}}
-{"_id":{"$oid":"5cd642690c980f19545271d5"},"name":"Vyvanse (lisdexamfetamine)","price":{"$numberInt":"220"}}
-{"_id":{"$oid":"5cd642690c980f19545271d7"},"name":"Lyrica (pregabalin)","price":{"$numberInt":"350"}}
-{"_id":{"$oid":"5cd642690c980f19545271d8"},"name":"Abilify (aripiprazole)","price":{"$numberInt":"250"}}
-{"_id":{"$oid":"5cd642690c980f19545271dc"},"name":"Cocaine 100% Pure","price":{"$numberInt":"500"}}
-{"_id":{"$oid":"5cd642690c980f19545271db"},"name":"Ventolin HFA (albuterol)","price":{"$numberInt":"150"}}
+[
+{"_id":{"$oid":"5cd642690c980f19545271cd"},"name":"Nexium (esomeprazole)","price":160},
+{"_id":{"$oid":"5cd642690c980f19545271d1"},"name":"Sovaldi (sofosbuvir)","price":280},
+{"_id":{"$oid":"5cd642690c980f19545271d3"},"name":"Synthroid (levothyroxine)","price":100},
+{"_id":{"$oid":"5cd642690c980f19545271d6"},"name":"Crestor (rosuvastatin)","price":120},
+{"_id":{"$oid":"5cd642690c980f19545271ce"},"name":"Lantus Solostar (insulin glargine)","price":200},
+{"_id":{"$oid":"5cd642690c980f19545271d0"},"name":"Lyrica (pregabalin)","price":230},
+{"_id":{"$oid":"5cd642690c980f19545271cf"},"name":"Enbrel (etanercept)","price":300},
+{"_id":{"$oid":"5cd642690c980f19545271d4"},"name":"Magic mushrooms","price":400},
+{"_id":{"$oid":"5cd642690c980f19545271da"},"name":"Remicade (infliximab)","price":290},
+{"_id":{"$oid":"5cd642690c980f19545271d2"},"name":"Advair Diskus (fluticasone)","price":180},
+{"_id":{"$oid":"5cd642690c980f19545271d9"},"name":"Vitamin","price":20},
+{"_id":{"$oid":"5cd642690c980f19545271d5"},"name":"Vyvanse (lisdexamfetamine)","price":220},
+{"_id":{"$oid":"5cd642690c980f19545271d7"},"name":"Lyrica (pregabalin)","price":350},
+{"_id":{"$oid":"5cd642690c980f19545271d8"},"name":"Abilify (aripiprazole)","price":250},
+{"_id":{"$oid":"5cd642690c980f19545271dc"},"name":"Cocaine 100% Pure","price":500},
+{"_id":{"$oid":"5cd642690c980f19545271db"},"name":"Ventolin HFA (albuterol)","price":150}
+]
