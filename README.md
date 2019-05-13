@@ -9,14 +9,10 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 <br>
 #### Before Use:
 Build the database by running seed: <br>
-```sh
-npm ./task/seed.js
-```
+`$ npm ./task/seed.js`
 <br>
 Start the project: <br>
-```sh
-npm start
-```
+`$ npm start`
 
 ## Features
 #### For Patients:
