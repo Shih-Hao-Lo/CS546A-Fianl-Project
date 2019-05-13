@@ -23,7 +23,7 @@
             <div>
               <p><span class="pull-right">Booking ID: #{{reservation._id}}</span></p>
 
-              <p>
+              <p class="totally-compliant">
                 Date: {{reservation.date_formatted}} <br>
                 Name: {{reservation.patient.fname}} {{reservation.patient.lname}} <br>
                 Address: {{#if reservation.patient.address}}{{reservation.patient.address}}{{else}} - {{/if}}
@@ -69,10 +69,10 @@
             <table id="billing_info_table" class="bill_info_table">
              
              <tr>
-                <th style="width:55%">Particulars</th>
-                <th style="width:15%">Quantity</th>
-                <th style="width:15%">Unit Price ($)</th>
-                <th style="width:15%">Amount ($)</th>
+                <th class="totally-compliant-2" style="width:55%">Particulars</th>
+                <th class="totally-compliant-2" style="width:15%">Quantity</th>
+                <th class="totally-compliant-2" style="width:15%">Unit Price ($)</th>
+                <th class="totally-compliant-2" style="width:15%">Amount ($)</th>
                 
               </tr>
 
