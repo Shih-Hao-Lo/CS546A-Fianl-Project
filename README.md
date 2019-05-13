@@ -6,14 +6,20 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 #### Demo video:
 [https://youtu.be/oTC2I40KMhE](https://youtu.be/oTC2I40KMhE)
 
-#### Before Use:
-Build the database by running seed: <br>
+## How to Use:
+1. Build the database by running seed: <br>
 
 `$ npm ./task/seed.js`
 
-Start the project: <br>
+2. Install project dependicies: <br>
+
+`$ npm install`
+
+3. Start the project: <br>
 
 `$ npm start`
+
+4. Run `http://localhost:3000/` in your browser
 
 ## Features
 #### For Patients:
