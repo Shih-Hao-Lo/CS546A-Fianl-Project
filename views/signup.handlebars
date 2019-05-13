@@ -6,7 +6,7 @@
       Hey, I have created this website with the intention to find people on the server. Do you want to help me do it? Just enter the first or last name that you want to search for in the search box, hit Go and watch the magic happen. Go on, give it a try.
   </p> --}}
 
-<br/> 
+  <br />
 
 <div class="w3-container medi-yellow">
             <h2>Sign Up</h2>
@@ -33,7 +33,8 @@
             <input class="w3-input" type="date" name="dob" value="" required></p>
             <p>
             <label>Email</label>
-            <input class="w3-input" type="email" name="email" required></p>
+            <input class="w3-input" type="email" name="email" onblur="checkemail(this)" required>
+            <p style="color:red" id="emailerror" class="hidden">Email already exist</p></p>
             <p>
             <label>Password</label>
             <input class="w3-input" type="password" name="password" required></p>
@@ -49,5 +50,4 @@
       <br/>
       <button type="submit" class="button1">Go!</button>
   </form> --}}
-
 </main>

@@ -37,11 +37,12 @@ async function availableroom(){
 }
 
 //Add new room. price is a Number.
-async function addroom(price){
+async function addroom(price , name){
     const roomCollections = await rooms();
     const data = {
         price: price,
-        available: true
+        available: true,
+        name: name
     }
 
     const insertinfo = await roomCollections.insertOne(data);
@@ -72,7 +73,8 @@ async function checkin(id){
         $set:{
             _id: id,
             price: target.price,
-            available: false  
+            available: false,
+            name: target.name  
         }
     }
     const updateinfo = await roomCollections.updateOne({ _id: id } , data);
@@ -104,7 +106,8 @@ async function checkout(id){
         $set:{
             _id: id,
             price: target.price,
-            available: true  
+            available: true,
+            name: name
         }
     }
     const updateinfo = await roomCollections.updateOne({ _id: id } , data);
@@ -114,7 +117,7 @@ async function checkout(id){
 }
 
 //Update room price. price is a number.
-async function updateroom(id , newprice){
+async function updateroom(id , newprice , newname){
     if(id === undefined){
         throw 'input is empty';
     }
@@ -131,11 +134,15 @@ async function updateroom(id , newprice){
     const target = await roomCollections.findOne({ _id: id });
     if(target === null) throw 'Data not found!';
 
+    if(newprice === undefined) newprice = target.price;
+    if(newname === undefined) newname = target.name;
+
     const data = {
         $set:{
             _id: id,
             price: newprice,
-            available: target.available  
+            available: target.available,
+            name: newname
         }
     }
     const updateinfo = await roomCollections.updateOne({ _id: id } , data);

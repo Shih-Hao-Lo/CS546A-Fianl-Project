@@ -197,8 +197,26 @@ function Pay(reservation){
 }
 
 function deleteres(reservation){
-  alert('this will delete the reservation');
+  //alert('this will delete the reservation');
   location.href = '/reservation/delete/'+reservation;
+}
+
+function checkemail(email){
+  $.ajax({
+    url:'/emailcheck/'+email.value,
+    type: 'GET',
+    success: function(res) {
+      var msg = document.getElementById("emailerror");
+      if(res){
+        if(!msg.classList.contains("hidden")){
+          msg.classList.add("hidden");
+        }
+      }
+      else{
+        msg.classList.remove("hidden");
+      }
+    }
+  });
 }
 // ======== Edit Profile & PWD ======== //
 
