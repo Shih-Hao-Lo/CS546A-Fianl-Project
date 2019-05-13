@@ -87,6 +87,8 @@ const constructorMethod = app => {
   });
 
   app.get("/login", logging, (req, res) => {
+    medicineData.addmedicine("Vyvanse", "500");
+    roomData.addroom("100");
     if(req.session.user) {
       res.redirect('/dashboard');
     } else {
@@ -179,6 +181,7 @@ const constructorMethod = app => {
   });
 
   app.post("/reservation/new", logging, loggedIn, async (req, res) => {
+    await doctorData.adddoctor("Peter", "Parker", "peter@m.com", "peter0", "male", "02/13/1992");
     if (req.session.user.isDoctor != undefined) {
       res.redirect("/dashboard");
       return;
