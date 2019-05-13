@@ -40,7 +40,7 @@ const constructorMethod = app => {
       //         message: "User Already Exists! Login or choose another user id"});
       //   }
       // });
-      console.log(`${email} : ${password}`);
+      // console.log(`${email} : ${password}`);
       // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
       // users.push(newUser);
       try {
@@ -168,8 +168,9 @@ const constructorMethod = app => {
   });
 
   app.get('/logout', logging, function (req, res) {
+    let username = req.session.user ? req.session.user.username : undefined;
     req.session.destroy(function () {
-      console.log("user logged out.")
+      console.log(`User logged out: ${usernmae}`);
     });
     res.redirect('/login');
   });

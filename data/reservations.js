@@ -325,10 +325,10 @@ async function modifyreservation(id, data) {
     const reservationCollections = await reservations();
     const target = await this.getbyid(id).catch(e => { throw e });
 
-    console.log("target---------------------------\n");
-    console.log(target);
-    console.log("dtarget----------------------\n");
-    console.log(dtarget);
+    // console.log("target---------------------------\n");
+    // console.log(target);
+    // console.log("dtarget----------------------\n");
+    // console.log(dtarget);
 
     if (data.did === undefined) {
         data.did = target.doctorid;
