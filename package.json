@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "seed": "node ./seeds/seed.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "express-handlebars": "^3.0.2",
     "express-session": "^1.15.6",
     "mongodb": "^3.2.2",
+    "mongoose": "^5.5.7",
     "number-to-words": "^1.2.4",
     "xss": "^1.0.6"
   }
