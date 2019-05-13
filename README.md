@@ -1,4 +1,4 @@
-<img src="resources/preview.PNG" width="825px" height="137px"></img>
+<img src="resources/logo.PNG" width="825px" height="137px"></img>
 
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 
