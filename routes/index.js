@@ -34,15 +34,9 @@ const constructorMethod = app => {
       var password = xss(req.body.password);
       var dob = xss(req.body.dob);
       var gender = xss(req.body.gender);
-      // users.filter(function(user){
-      //   if(user.email === email){
-      //      res.render('signup', {
-      //         message: "User Already Exists! Login or choose another user id"});
-      //   }
-      // });
+
       console.log(`${email} : ${password}`);
-      // var newUser = {id: users.length, email: email, password: password, fname: req.body.fname, lname: req.body.lname};
-      // users.push(newUser);
+
       try {
         var user = await usersData.addUser(email, email, gender, dob, fname, lname, password);
         req.session.user = user;
@@ -95,7 +89,6 @@ const constructorMethod = app => {
   });
 
   app.post("/login", logging, async (req, res) => {
-    // res.render("login", {title: "People Finder"});
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
