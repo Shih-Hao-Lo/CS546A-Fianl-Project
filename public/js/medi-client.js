@@ -81,7 +81,9 @@ function updateReservationStatus(resId) {
     $.ajax({
       url: `/reservation/${resId}/status/update?newStatus=${status}`,
       type: 'POST',
-      success: function () {},
+      success: function () {
+        //alert(`Booking status updated`);
+      },
       error: function () {
         alert('Failed to update status');
       }
