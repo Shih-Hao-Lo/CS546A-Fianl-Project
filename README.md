@@ -14,8 +14,6 @@ Build the database by running seed: <br>
 
 `$ npm ./task/seed.js`
 
-<br>
-
 Start the project: <br>
 
 `$ npm start`
