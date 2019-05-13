@@ -1,4 +1,5 @@
 <img src="resources/logo.PNG" width="825px" height="137px"></img>
+<br>
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
 
 #### Demo video:
@@ -6,6 +7,12 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 
 ## CS546A Final Project
 <br>
+#### Before Use:
+Build the database by running seed:
+`npm ./task/seed.js`
+<br>
+Start the project:
+`npm start`
 
 ## Features
 #### For Patients:
