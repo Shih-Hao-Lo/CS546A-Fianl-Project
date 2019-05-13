@@ -1,5 +1,4 @@
 ## CS546A Final Project
-
 <img src="resources/logo.PNG" width="825px" height="137px"></img>
 <br>
 A Hospital Managment System which provides patient and doctor a convenient way to access to hospital services
@@ -8,7 +7,6 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 [https://youtu.be/oTC2I40KMhE](https://youtu.be/oTC2I40KMhE)
 
 #### Before Use:
-
 Build the database by running seed: <br>
 
 `$ npm ./task/seed.js`
