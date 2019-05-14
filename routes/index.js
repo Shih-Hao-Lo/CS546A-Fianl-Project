@@ -176,7 +176,7 @@ const constructorMethod = app => {
     var did = xss(req.body.doctor_id);
     var date = xss(req.body.app_date);
     var reservation = await reservationData.makereservation(pid, did, date);
-    res.redirect('/dashboard');
+    res.redirect('/reservation');
   });
 
   // show all appointments page
@@ -220,7 +220,7 @@ const constructorMethod = app => {
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
       || reservation.doctorid.toString() === req.session.user._id.toString())) {
-        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), layout: false });
+        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), todayDate: todayDate, layout: false });
     } else {
       res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });      
     }
@@ -343,7 +343,6 @@ const constructorMethod = app => {
 
     // Retrieve user's profile and show on page
     app.get('/edit-profile', logging, loggedIn, function (req, res) {
-        console.log(req.session.user.isDoctor);
         /*
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
@@ -402,9 +401,8 @@ const constructorMethod = app => {
             res.redirect('/dashboard');
             return;
         } catch (e) {
-            // res.status("400");
             console.log(e);
-            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
+            res.status(401).render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
             return;
         }
     });
@@ -457,8 +455,7 @@ const constructorMethod = app => {
             // Compare old & new password
             let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
             if (!checkPWD) {
-                res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
-                res.status(400);
+                res.status(401).render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
                 return;
             }
             data.password = newPWD;
@@ -478,9 +475,8 @@ const constructorMethod = app => {
             res.redirect('/dashboard');
             return;
         } catch (e) {
-            // res.status("400");
             console.log(e);
-            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
+            res.status(401).render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
             return;
         }
     });
