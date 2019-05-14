@@ -48,6 +48,7 @@ const constructorMethod = app => {
     }
   });
 
+
   app.get("/signup/doctor" , async (req , res) => {
     res.render("signup" , { role: "/signup/doctor"  , list: specialismList.List });
   });
@@ -80,6 +81,7 @@ const constructorMethod = app => {
       }
     }
   });
+
 
   // user dashboard page
   app.get('/dashboard', logging, loggedIn, function (req, res) {
@@ -217,6 +219,7 @@ const constructorMethod = app => {
   app.get("/reservation/:id/bill", logging, loggedIn, async (req, res) => {
     var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
+    let todayDate = new Date().toISOString().replace(/T.+/, '');
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
       || reservation.doctorid.toString() === req.session.user._id.toString())) {
