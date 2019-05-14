@@ -191,14 +191,14 @@ function updatedoc(selectObject) {
 }
 
 function Pay(reservation){
-  //alert(reservation);
-  //alert('this will redirect to payment');
   location.href = '/reservation/pay/'+reservation;
 }
 
 function deleteres(reservation){
-  //alert('this will delete the reservation');
-  location.href = '/reservation/delete/'+reservation;
+  let confirmation = confirm('Are you sure you want to delete this appointment?');
+  if(confirmation) {
+    location.href = '/reservation/delete/'+reservation;
+  }
 }
 
 function checkemail(email){
