@@ -35,7 +35,7 @@ const constructorMethod = app => {
       var dob = xss(req.body.dob);
       var gender = xss(req.body.gender);
 
-      console.log(`${email} : ${password}`);
+      //console.log(`${email} : ${password}`);
 
       try {
         var user = await usersData.addUser(email, email, gender, dob, fname, lname, password);
@@ -161,8 +161,9 @@ const constructorMethod = app => {
   });
 
   app.get('/logout', logging, function (req, res) {
+    let username = req.session.user ? req.session.user.username : undefined;
     req.session.destroy(function () {
-      console.log("user logged out.")
+      console.log(`User logged out: ${username}`);
     });
     res.redirect('/login');
   });

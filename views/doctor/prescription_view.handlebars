@@ -34,9 +34,10 @@
                 <td>Dr. {{reservation.doctor.fname}} {{reservation.doctor.lname}}</td>
             </tr>
             <tr>
-                <label for="diagnosis"></label>
+                
                 <td>Diagnosis</td>
                 <td>
+                    <label for="diagnosis"></label>
                     <textarea class="w3-input" name="diagnosis" id="diagnosis" style="resize: none;" required>{{reservation.diagnosis}}</textarea>
                 </td>
             </tr>
@@ -46,7 +47,7 @@
                     <select multiple class="w3-input select-50" name="medicines" id="medicines" price="{{medicineCost}}">
                         {{!-- <option></option> --}}
                         {{#each medicineList}}
-                        <option value="{{this._id}}" price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}}>{{this.name}}   <span class="price-span">(${{this.price}})</span></option>
+                        <option value="{{this._id}}" price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}}>{{this.name}}   (${{this.price}})</option>
                         {{/each}}
                     </select>
                 </td>
@@ -55,7 +56,7 @@
                 <td>Room</td>
                 <td>
                     <select class="w3-input select-50" name="room" id="room" price="{{roomCost}}">
-                        <option value="" price="0"></option>
+                        <option value="" price="0">Not assigning a room...</option>
                         {{#each roomList}}
                         <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}} (${{this.price}})</option>
                         {{/each}}

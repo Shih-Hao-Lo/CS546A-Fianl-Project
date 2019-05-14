@@ -17,14 +17,14 @@
   {{#each reservationList}}
   <a href="/reservation/{{this._id}}" class="card_link">
   <div class="card">
-    <div class="container">
+    <div class="container" style="padding:16px">
       {{!-- <p>
         <span><b>Booking ID: {{this._id}}</b></span><br>
         <span>Doctor: Dr. {{this.doctor.name}}</span><br>
         <span>Date: {{this.date_formatted}}</span><br>
         <span>Status: {{this.status}}</span>
     </p> --}}
-    <p>
+    
     <table style="color: gray">
       <tr>
         <td style="width: 30%"><b>Booking ID:</b></td>
@@ -43,7 +43,7 @@
         <td><span class="status-{{this.status}}">{{this.status}}</span></td>
       </tr>
     </table>
-    </p>
+    
     </div>
   </div>
   </a>

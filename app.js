@@ -24,6 +24,7 @@ app.use(session({
   secret: "Its a secret!",
   resave: false,
   saveUninitialized: true,
+  cookie: {maxAge: 1000*60*10}
 }));
 
 app.engine("handlebars", exphbs(hbs));
