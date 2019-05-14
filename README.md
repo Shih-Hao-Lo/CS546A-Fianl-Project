@@ -23,7 +23,8 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 * Doctor appointment booking
 * Prescription checkout
 #### For Doctors:
-* Signup / Login
+* Login: Login system will determine the login informaiton belongs to doctor or patient
+* Signup
 * Update profile
 * Change password
 * Make prescription

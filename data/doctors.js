@@ -134,6 +134,68 @@ async function updatedoctor(id , data){
             id = new ObjectID(id);
         }
         else{
+            throw 'Id is invalid!(in data/patient.updatepatient)'
+        }
+    }
+
+    const doctorCollections = await doctors();
+    const target = await this.getbyid(id);
+    let changePWD = true;
+
+    if(data.lname == "" || data.lname === undefined){
+        data.lname = target.lname;
+    }
+    if(data.fname == "" || data.fname === undefined){
+        data.fname = target.fname;
+    }
+    
+    if(data.gender == "" || data.gender === undefined){
+        data.gender = target.gender;
+    }
+    if(data.dob == "" || data.dob === undefined){
+        data.dob = target.dob;
+    }
+    if(data.address == "" || data.address === undefined){
+        data.address = target.address;
+    }
+    if(data.password == "" || data.password === undefined){
+        data.password = target.password;
+        changePWD = false;
+    }
+
+    if (changePWD) {
+        data.password = await bcrypt.hash(data.password, saltRounds);
+    }
+
+    let updatedata = {
+        $set:{
+            _id: id,
+            gender: data.gender,
+            dob: data.dob,
+            fname: data.fname,
+            lname: data.lname,
+            address: data.address,
+            password: data.password
+        }
+    }
+
+    const updateinfo = await doctorCollections.updateOne({ _id: id } , updatedata);
+    return await this.getbyid(id);
+}
+
+/*
+async function updatedoctor(id , data){
+    if(id === undefined){
+        throw 'input is empty';
+    }
+    if(id.constructor != ObjectID){
+        if(id.constructor != String){
+            throw 'Id is not a String!';
+        }
+        if(ObjectID.isValid(id)){
+            id = new ObjectID(id);
+        }
+        else{
             throw 'Id is invalid!(in data/patient.updatedoctor)'
         }
     }
@@ -175,6 +237,7 @@ async function updatedoctor(id , data){
     if(updateinfo.modifiedCount === 0) throw 'Update fail!';
     return await this.getbyid(id);
 }
+*/
 
 // Delete a doctor. id is String or Objectid.
 async function deldoctor(id){
@@ -201,6 +264,7 @@ async function deldoctor(id){
 
     return target;
 }
+
 
 //Search doctor by schedule. inschedule is { week: arr1 , time: arr2 }. 
 // action is 'add' or 'del'.

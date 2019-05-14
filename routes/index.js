@@ -20,7 +20,7 @@ const constructorMethod = app => {
 
   // signup route for new user
   app.get("/signup", logging, (req, res) => {
-    res.render("signup", { title: "MediDesk signup" });
+    res.render("signup", { title: "MediDesk signup"  , role: "/signup"});
   });
 
   // signup post handler
@@ -48,6 +48,41 @@ const constructorMethod = app => {
     }
   });
 
+
+  app.get("/signup/doctor" , async (req , res) => {
+    res.render("signup" , { role: "/signup/doctor"  , list: specialismList.List });
+  });
+
+  app.post("/signup/doctor", logging, async (req, res) => {
+    if (!req.body.email || !req.body.password) {
+      res.status("400");
+      res.send("Invalid details!");
+    } else {
+      var email = xss(req.body.email);
+      var password = xss(req.body.password);
+      var fname = xss(req.body.fname);
+      var lname = xss(req.body.lname);
+      var dob = xss(req.body.dob);
+      var gender = xss(req.body.gender);
+      var spList = xss(req.body.splist).split(",");
+      try {
+        var doctor = await doctorData.adddoctor(fname, lname, email, password, gender, dob);
+        if(spList.length != 0){
+          for(var x = 0 ; x < spList.length ; x++){
+            var cur = await doctorData.updatespecialism(doctor._id , spList[x] , 'add');
+          }
+        }
+        req.session.user = doctor;
+        req.session.user["isDoctor"] = true;
+        res.redirect('/dashboard');
+      }
+      catch (e) {
+        res.render("signup", { title: "MediDesk signup" , error: e });
+      }
+    }
+  });
+
+
   // user dashboard page
   app.get('/dashboard', logging, loggedIn, function (req, res) {
     var user = req.session.user;
@@ -70,7 +105,6 @@ const constructorMethod = app => {
     if (!req.body.email || !req.body.password) {
       res.render('login', { message: "Please enter both email and password" });
     } else {
-    
       let email = xss(req.body.email);
       let password = xss(req.body.password);
 
@@ -316,6 +350,7 @@ const constructorMethod = app => {
             res.redirect("/dashboard");
             return;
         }
+        */
         let user = req.session.user;
         let name = `${user.fname} ${user.lname}`;
         if (user.isDoctor) name = `Dr. ${name}`;
@@ -325,10 +360,12 @@ const constructorMethod = app => {
 
     // POST user's new profile
     app.post('/edit-profile', logging, loggedIn, async (req, res) => {
+        /*
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
         }
+        */
         let user = req.session.user;
         let name = `${user.fname} ${user.lname}`;
         let data = {};
@@ -338,7 +375,6 @@ const constructorMethod = app => {
         data.gender = xss(req.body.gender);
         data.dob = xss(req.body.dob);
         data.address = xss(req.body.address);
-
         let genderArr = GenderTool(user.gender);
 
         if (data.fname == "" && data.lname == "" && data.email == "" && data.gender == "" && data.dob == "") {
@@ -348,9 +384,22 @@ const constructorMethod = app => {
         }
 
         try {
-            let getUser = await usersData.getUserByUsername(user.email);
-            let updatedUser = await usersData.updatepatient(getUser._id, data);
-            req.session.user = updatedUser;
+            let getUser;
+            let updatedUser;
+            
+            // Retrieve & Update doctor / patient information
+            if (user.isDoctor) {
+              getUser = await doctorData.getDoctorByEmail(user.email);
+              updatedUser = await doctorData.updatedoctor(getUser._id, data);
+              req.session.user = updatedUser;
+              req.session.user.isDoctor = true;
+            }
+            else {
+              getUser = await usersData.getUserByUsername(user.email);
+              updatedUser = await usersData.updatepatient(getUser._id, data);
+              req.session.user = updatedUser;
+            }
+
             res.redirect('/dashboard');
             return;
         } catch (e) {
@@ -364,24 +413,29 @@ const constructorMethod = app => {
     // ====== Update user's password ====== //
 
     app.get('/change-password', logging, loggedIn, function (req, res) {
+        /*
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
         }
+        */
         res.render('change-pwd');
         return;
     });
 
     // POST user's new password
     app.post('/change-password', logging, loggedIn, async (req, res) => {
+        /*
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
         }
+        */
         let user = req.session.user;
         let data = {};
         let oldPWD = xss(req.body.oldPWD);
         let newPWD = xss(req.body.newPWD);
+
         if (oldPWD == "") {
             res.render('change-pwd', { status2: "Old Password Incorrect" });
             res.status(400);
@@ -392,8 +446,16 @@ const constructorMethod = app => {
             res.status(400);
             return;
         }
+
         try {
-            let getUser = await usersData.getUserByUsername(user.email);
+            let getUser;
+            let updatedUser;
+
+            // Retrieve doctor / patient information
+            if (user.isDoctor) getUser = await doctorData.getDoctorByEmail(user.email);
+            else getUser = await usersData.getUserByUsername(user.email);
+
+            // Compare old & new password
             let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
             if (!checkPWD) {
                 res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
@@ -401,8 +463,18 @@ const constructorMethod = app => {
                 return;
             }
             data.password = newPWD;
-            let updatedUser = await usersData.updatepatient(getUser._id, data);
-            req.session.user = updatedUser;
+            
+            // Update doctor / patient information
+            if (user.isDoctor) {
+              updatedUser = await doctorData.updatedoctor(getUser._id, data);
+              req.session.user = updatedUser;
+              req.session.user.isDoctor = true;
+            }
+            else {
+              updatedUser = await usersData.updatepatient(getUser._id, data);
+              req.session.user = updatedUser;
+            }
+
             console.log("Password Updated");
             res.redirect('/dashboard');
             return;
