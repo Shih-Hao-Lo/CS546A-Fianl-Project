@@ -350,7 +350,7 @@ const constructorMethod = app => {
             res.redirect("/dashboard");
             return;
         }
-        */
+        
         let user = req.session.user;
         let name = `${user.fname} ${user.lname}`;
         if (user.isDoctor) name = `Dr. ${name}`;
