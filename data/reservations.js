@@ -219,7 +219,7 @@ async function assignprescription(id, pid) {
     }
 
     const updatedata = await reservationCollections.update({ _id: id }, data);
-    if (updatedata.modifiedCount === 0) throw 'Update fail!';
+    //if (updatedata.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
 }
@@ -345,7 +345,7 @@ async function modifyreservation(id, data) {
     }
 
     const updateinfo = await reservationCollections.updateOne({ _id: id }, updatedata);
-    if (updateinfo.modifiedCount === 0) throw 'Update fail!';
+    //if (updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(id);
 }
@@ -373,7 +373,7 @@ async function updatePrescRoomDiag(resId, prescId, roomId, diagnosis) {
 
     const reservationCollections = await reservations();
     const updateinfo = await reservationCollections.update({ _id: resId }, { $set: { prescriptionid: prescId, roomid: roomId, diagnosis: diagnosis } });
-    if (updateinfo.modifiedCount === 0) throw 'Update fail!';
+    //if (updateinfo.modifiedCount === 0) throw 'Update fail!';
 
     return await this.getbyid(resId);
 }
@@ -424,7 +424,7 @@ async function payment(id) {
     }
 
     const updateinfo = await reservationCollections.update({ _id: id }, updatedata);
-    if (updateinfo.modifiedCount === 0) throw 'Update fail!';
+    //if (updateinfo.modifiedCount === 0) throw 'Update fail!';
     //console.log(updateinfo)
     return await this.getbyid(id);
 }
