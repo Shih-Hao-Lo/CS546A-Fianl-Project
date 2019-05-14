@@ -44,10 +44,10 @@
             <tr>
                 <td>Medicines</td>
                 <td>
-                    <select multiple class="w3-input select-50" name="medicines" id="medicines" price="{{medicineCost}}">
+                    <select multiple class="w3-input select-50" name="medicines" id="medicines" data-price="{{medicineCost}}">
                         {{!-- <option></option> --}}
                         {{#each medicineList}}
-                        <option value="{{this._id}}" price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}}>{{this.name}}   (${{this.price}})</option>
+                        <option value="{{this._id}}" data-price="{{this.price}}" {{#ifEquals this.selected true}} selected {{/ifEquals}}>{{this.name}}   (${{this.price}})</option>
                         {{/each}}
                     </select>
                 </td>
@@ -55,10 +55,10 @@
             <tr>
                 <td>Room</td>
                 <td>
-                    <select class="w3-input select-50" name="room" id="room" price="{{roomCost}}">
-                        <option value="" price="0">Not assigning a room...</option>
+                    <select class="w3-input select-50" name="room" id="room" data-price="{{roomCost}}">
+                        <option value="" data-price="0">None</option>
                         {{#each roomList}}
-                        <option value="{{this._id}}" price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}} (${{this.price}})</option>
+                        <option value="{{this._id}}" data-price="{{this.price}}" {{#if this.selected}} selected {{/if}}>{{this.name}} (${{this.price}})</option>
                         {{/each}}
                     </select>
                 </td>
@@ -71,7 +71,7 @@
             </tr>
             <tr>
                 <td>Cost</td>
-                <td><span id="total_cost" price="{{totalCost}}">{{#if totalCost}}${{totalCost}}{{/if}}</span></td>
+                <td><span id="total_cost" data-price="{{totalCost}}">{{#if totalCost}}${{totalCost}}{{/if}}</span></td>
             </tr>
             <tr>
                 <td>Consultation Fee</td>

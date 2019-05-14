@@ -101,10 +101,10 @@ $(document).ready(function () {
     // alert(selectedOptions[0].getAttribute('price'));
     if (selectedOptions) {
       selectedOptions.forEach(function (elem) {
-        price += parseInt(elem.getAttribute('price'));
+        price += parseInt(elem.getAttribute('data-price'));
       })
     }
-    $(this).attr('price', price);
+    $(this).attr('data-price', price);
     var total = getTotalCost(this, '#room');
     updatePriceField(total);
     // alert(price);
@@ -114,11 +114,11 @@ $(document).ready(function () {
     var selectedOptions = getSelectedOptions(this);
     var price = 0;
     if (selectedOptions) {
-        price += parseInt(selectedOptions[0].getAttribute('price'));
+        price += parseInt(selectedOptions[0].getAttribute('data-price'));
         price *= $("#days")[0].value;
     }
     // alert(price);
-    $(this).attr('price', price);
+    $(this).attr('data-price', price);
     var total = getTotalCost(this, '#medicines');
     updatePriceField(total);
   });
@@ -126,22 +126,22 @@ $(document).ready(function () {
     $("#days").change(function () {       
         var selectedOptionsRoom = getSelectedOptions($("#room")[0]);
         var price = 0;
-        price += parseInt(selectedOptionsRoom[0].getAttribute('price'));
+        price += parseInt(selectedOptionsRoom[0].getAttribute('data-price'));
         price *= $("#days")[0].value;
-        $("#room").attr('price', price);
+        $("#room").attr('data-price', price);
         var total = getTotalCost("#room", '#medicines');
         updatePriceField(total);
     });
 
   function getTotalCost(elem1, elem2) {
-    var price1 = parseInt($(elem1).attr('price'));
-    var price2 = parseInt($(elem2).attr('price'));
+    var price1 = parseInt($(elem1).attr('data-price'));
+    var price2 = parseInt($(elem2).attr('data-price'));
     var totalPrice = price1 + price2;
     return totalPrice;
   }
   function updatePriceField(val) {
     $('#total_cost').text(`$${val.toFixed(2)}`);
-    $('#total_cost').attr('price', val.toFixed(2));
+    $('#total_cost').attr('data-price', val.toFixed(2));
   }
   function getSelectedOptions(selectBox) {
     var optionList = selectBox.options;
