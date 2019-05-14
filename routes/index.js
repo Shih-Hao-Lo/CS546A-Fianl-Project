@@ -144,7 +144,7 @@ const constructorMethod = app => {
     var did = xss(req.body.doctor_id);
     var date = xss(req.body.app_date);
     var reservation = await reservationData.makereservation(pid, did, date);
-    res.redirect('/dashboard');
+    res.redirect('/reservation');
   });
 
   // show all appointments page
@@ -185,10 +185,11 @@ const constructorMethod = app => {
   app.get("/reservation/:id/bill", logging, loggedIn, async (req, res) => {
     var resId = xss(req.params.id);
     var reservation = await reservationData.getbyid(resId);
+    let todayDate = new Date().toISOString().replace(/T.+/, '');
 
     if(reservation && (reservation.patientid.toString() === req.session.user._id.toString()
       || reservation.doctorid.toString() === req.session.user._id.toString())) {
-        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), layout: false });
+        res.render('reservation_bill', { user: req.session.user, reservation: reservation, rommcost: reservationData.getRoomCost(reservation).toFixed(2), todayDate: todayDate, layout: false });
     } else {
       res.render(errorPage, { title: "Not Found", errorMsg: "It seems you are trying to access an invalid URL", errorCode: 404 });      
     }
@@ -311,7 +312,6 @@ const constructorMethod = app => {
 
     // Retrieve user's profile and show on page
     app.get('/edit-profile', logging, loggedIn, function (req, res) {
-        console.log(req.session.user.isDoctor);
         if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;

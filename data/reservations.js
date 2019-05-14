@@ -343,8 +343,6 @@ async function modifyreservation(id, data) {
             status: target.status
         }
     }
-    console.log("updatedata---------------------------\n");
-    console.log(updatedata);
 
     const updateinfo = await reservationCollections.updateOne({ _id: id }, updatedata);
     if (updateinfo.modifiedCount === 0) throw 'Update fail!';
