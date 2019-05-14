@@ -48,7 +48,6 @@ const constructorMethod = app => {
     }
   });
 
-
   app.get("/signup/doctor" , async (req , res) => {
     res.render("signup" , { role: "/signup/doctor"  , list: specialismList.List });
   });
@@ -81,7 +80,6 @@ const constructorMethod = app => {
       }
     }
   });
-
 
   // user dashboard page
   app.get('/dashboard', logging, loggedIn, function (req, res) {
