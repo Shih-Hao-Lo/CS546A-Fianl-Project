@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-  secret: "Its a secret!",
+  secret: "Finger lickin' good!",
   resave: false,
   saveUninitialized: true,
   cookie: {maxAge: 1000*60*10}
@@ -35,6 +35,6 @@ app.set('views','./views');
 configRoutes(app);
 
 app.listen(3000, () => {
-  console.log("We've now got a server!");
+  console.log("MediDesk server up and running...");
   console.log("Your routes will be running on http://localhost:3000");
 });
