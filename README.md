@@ -28,6 +28,7 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 * Update profile
 * Change password
 * Make prescription
+* Update prescription
 
 ## Project Structure
 * Front-end <br>
