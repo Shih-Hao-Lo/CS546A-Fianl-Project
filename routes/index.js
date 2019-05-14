@@ -346,6 +346,7 @@ const constructorMethod = app => {
 
     // Retrieve user's profile and show on page
     app.get('/edit-profile', logging, loggedIn, function (req, res) {
+
         /*if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
@@ -403,9 +404,8 @@ const constructorMethod = app => {
             res.redirect('/dashboard');
             return;
         } catch (e) {
-            // res.status("400");
             console.log(e);
-            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
+            res.status(401).render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Internal Error, Please Contact the Dev team" });
             return;
         }
     });
@@ -458,8 +458,7 @@ const constructorMethod = app => {
             // Compare old & new password
             let checkPWD = await bcrypt.compare(oldPWD, getUser.password);
             if (!checkPWD) {
-                res.render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
-                res.status(400);
+                res.status(401).render('change-pwd', { status2: "Old Password Incorrect, Please insert again" });
                 return;
             }
             data.password = newPWD;
@@ -479,9 +478,8 @@ const constructorMethod = app => {
             res.redirect('/dashboard');
             return;
         } catch (e) {
-            // res.status("400");
             console.log(e);
-            res.render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
+            res.status(401).render('edit-profile', { id: req.session.user.id, user: req.session.user, name: name, status2: "Change Password failed" });
             return;
         }
     });
