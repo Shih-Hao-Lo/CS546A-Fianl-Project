@@ -344,8 +344,8 @@ const constructorMethod = app => {
 
     // Retrieve user's profile and show on page
     app.get('/edit-profile', logging, loggedIn, function (req, res) {
-        /*
-        if (req.session.user.isDoctor != undefined) {
+
+        /*if (req.session.user.isDoctor != undefined) {
             res.redirect("/dashboard");
             return;
         }
