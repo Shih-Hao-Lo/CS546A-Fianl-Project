@@ -13,7 +13,7 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 
 3. Start the project: `npm start`
 
-4. Enter `http://localhost:3000/` in your browser
+4. Run `http://localhost:3000/` in your browser
 
 ## Features
 #### For Patients:

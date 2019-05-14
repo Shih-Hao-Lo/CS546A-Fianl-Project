@@ -158,14 +158,14 @@
         </p>
         <p>
           <label>Doctor</label>
-          <select class="w3-input" name="doctor_id">
+          <select class="w3-input" name="doctor_id" required>
             {{#each doctorList}}
             <option value="{{this._id}}" {{#if this.selected}} selected {{/if}}>{{this.fname}} {{this.lname}}</option>
             {{/each}}
           </select></p>
         <p>
           <label for="resvDate">Date</label>
-          <input class="w3-input" type="date" name="app_date" id="resvDate" value="{{reservation.date_formatted}}"></p>
+          <input class="w3-input" type="date" name="app_date" id="resvDate" value="{{reservation.date_formatted}}" required></p>
 
         <br />
         {{#unless user.isDoctor}}

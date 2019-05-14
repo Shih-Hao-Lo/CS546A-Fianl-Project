@@ -175,11 +175,14 @@ p {
 }
 
 label {
+  font-weight: bold;
   color: #767676;
+  font-size: 20px;
 }
 
 .footer-text {
   color: #767676;
+  font-size: 20px;
 }
 
 input0 {
