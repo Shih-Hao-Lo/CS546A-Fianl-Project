@@ -15,6 +15,10 @@ A Hospital Managment System which provides patient and doctor a convenient way t
 
 4. Run `http://localhost:3000/` in your browser
 
+** Please refer to the following files for sample login data:
+1. `task/Sample_login_data_for_Doctors`
+2. `task/Sample_login_data_for_Patients`
+
 ## Features
 #### For Patients:
 * Signup / Login
