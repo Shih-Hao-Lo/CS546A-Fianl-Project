@@ -206,14 +206,21 @@ function checkemail(email){
     url:'/emailcheck/'+email.value,
     type: 'GET',
     success: function(res) {
-      var msg = document.getElementById("emailerror");
+        var msg = document.getElementById("emailerror");
+        var btn = document.getElementById("bt1");
       if(res){
         if(!msg.classList.contains("hidden")){
           msg.classList.add("hidden");
-        }
+          }
+          if (btn.classList.contains("hidden")) {
+              btn.classList.remove("hidden");
+          }
       }
       else{
-        msg.classList.remove("hidden");
+          msg.classList.remove("hidden");
+          if (!btn.classList.contains("hidden")) {
+              btn.classList.add("hidden");
+          }
       }
     }
   });
