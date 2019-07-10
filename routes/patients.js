@@ -5,8 +5,8 @@ const patients = require("../data/patients");
 // GET http://localhost:3000/patients
 router.get("/", async (req, res) => {
     try {
-        const patients = patients.getAll();
-        res.render("posts/patient", {patients: patients});
+        const all_patients = await patients.getAll();
+        res.render("posts/patient", {patients: all_patients});
     } catch (e) {
         res.status(500);
         res.render("posts/patient", {error: e});
@@ -85,7 +85,7 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/", async(req, res) => {
-    const data = req.body.patientId;
+    const patientId = req.body.patientId;
     try {
         const status = await patients.delpatient(patientId);
         res.status(200);
